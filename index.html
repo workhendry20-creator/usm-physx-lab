@@ -14,9 +14,9 @@
         }
     </style>
 </head>
-<body class="bg-[#F8FAFC] min-h-screen text-slate-800">
+<body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
 
         <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-8">
             <div class="flex items-center space-x-3">
@@ -46,7 +46,202 @@
             </div>
         </nav>
 
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
+            <div class="lg:col-span-7 flex flex-col justify-center">
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-[#2E3A59] tracking-tight leading-[1.15] mb-6">
+                    Selamat datang di <br class="hidden sm:inline">
+                    <span class="text-[#6366F1]">Laboratorium Virtual</span> USM! <br>
+                    Eksperimen fisika <br class="hidden sm:inline">
+                    apa hari ini?
+                </h1>
+                
+                <div class="relative max-w-xl shadow-sm rounded-2xl bg-white border border-slate-200 p-1.5 flex items-center justify-between focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+                    <div class="flex items-center flex-1 pl-3">
+                        <svg class="w-5 h-5 text-slate-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="searchBar" placeholder="Cari simulasi (misal: Proyektil, Magnet, Cahaya)..." class="w-full bg-transparent text-slate-700 placeholder-slate-400 text-sm font-medium focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5">
+                <div class="relative bg-gradient-to-tr from-indigo-500 to-violet-600 rounded-3xl p-1 shadow-xl shadow-indigo-100 group overflow-hidden">
+                    <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+                    <div class="relative bg-[#1E293B] rounded-[22px] overflow-hidden aspect-[16/10] flex items-center justify-center">
+                        <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&w=600&q=80" alt="Physics Engine Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity">
+                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center space-x-2 shadow-lg">
+                            <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>
+                            <span class="text-[10px] font-bold text-slate-800 tracking-wider uppercase">Live Simulation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <div class="flex flex-wrap items-center gap-3 mb-8">
+            <button class="px-5 py-2.5 bg-[#6366F1] text-white text-sm font-semibold rounded-full border border-[#6366F1] shadow-sm flex items-center space-x-2"><span>🌌</span> <span>Mekanika</span></button>
+            <button class="px-5 py-2.5 bg-white text-slate-600 hover:text-slate-950 hover:bg-slate-50 text-sm font-medium rounded-full border border-slate-200 flex items-center space-x-2 transition-all"><span>⚡</span> <span>Listrik & Magnet</span></button>
+            <button class="px-5 py-2.5 bg-white text-slate-600 hover:text-slate-950 hover:bg-slate-50 text-sm font-medium rounded-full border border-slate-200 flex items-center space-x-2 transition-all"><span>🔬</span> <span>Gelombang & Optik</span></button>
+            <button class="px-5 py-2.5 bg-white text-slate-600 hover:text-slate-950 hover:bg-slate-50 text-sm font-medium rounded-full border border-slate-200 flex items-center space-x-2 transition-all"><span>🌡️</span> <span>Termodinamika</span></button>
+        </div>
+
+        <div class="relative">
+            <div id="simulationGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-500 max-h-[460px] overflow-hidden">
+                
+                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=300&q=80" alt="Parabola" class="w-full h-full object-cover">
+                        </div>
+                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
+                        <h3 class="text-lg font-bold text-slate-800 mt-2 mb-1">Gerak Parabola</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Pelajari lintasan benda yang dipengaruhi gravitasi dan kecepatan awal.</p>
+                    </div>
+                    <div class="px-5 pb-5"><a href="simulations/gerak-parabola/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all"><span>Mulai Eksperimen</span> <span class="text-sm">→</span></a></div>
+                </div>
+
+                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=300&q=80" alt="Coulomb" class="w-full h-full object-cover">
+                        </div>
+                        <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 12</span>
+                        <h3 class="text-lg font-bold text-slate-800 mt-2 mb-1">Hukum Coulomb</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Eksperimen interaksi antara muatan listrik statis dalam ruang hampa.</p>
+                    </div>
+                    <div class="px-5 pb-5"><button class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all"><span>Mulai Eksperimen</span> <span class="text-sm">→</span></button></div>
+                </div>
+
+                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=300&q=80" alt="Refraction" class="w-full h-full object-cover">
+                        </div>
+                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+                        <h3 class="text-lg font-bold text-slate-800 mt-2 mb-1">Pembiasan Cahaya</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Analisis perubahan arah rambat cahaya saat melewati dua medium berbeda.</p>
+                    </div>
+                    <div class="px-5 pb-5"><button class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all"><span>Mulai Eksperimen</span> <span class="text-sm">→</span></button></div>
+                </div>
+
+                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1532187863486-abf9d39d6618?auto=format&fit=crop&w=300&q=80" alt="Gas Ideal" class="w-full h-full object-cover">
+                        </div>
+                        <span class="bg-[#F97316]/10 text-[#F97316] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+                        <h3 class="text-lg font-bold text-slate-800 mt-2 mb-1">Hukum Gas Ideal</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Hubungan antara tekanan, volume, dan suhu pada sistem gas tertutup.</p>
+                    </div>
+                    <div class="px-5 pb-5"><button class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all"><span>Mulai Eksperimen</span> <span class="text-sm">→</span></button></div>
+                </div>
+
+                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=300&q=80" alt="Hooke" class="w-full h-full object-cover">
+                        </div>
+                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+                        <h3 class="text-lg font-bold text-slate-800 mt-2 mb-1">Hukum Hooke</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Eksplorasi elastisitas, gaya regang, dan konstanta pertambahan panjang pegas.</p>
+                    </div>
+                    <div class="px-5 pb-5"><button class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all"><span>Mulai Eksperimen</span> <span class="text-sm">→</span></button></div>
+                </div>
+
+                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd6a?auto=format&fit=crop&w=300&q=80" alt="Doppler" class="w-full h-full object-cover">
+                        </div>
+                        <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+                        <h3 class="text-lg font-bold text-slate-800 mt-2 mb-1">Efek Doppler</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Amati perubahan frekuensi gelombang bunyi dari sumber yang bergerak.</p>
+                    </div>
+                    <div class="px-5 pb-5"><button class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all"><span>Mulai Eksperimen</span> <span class="text-sm">→</span></button></div>
+                </div>
+
+                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1517420728787-86c630819a61?auto=format&fit=crop&w=300&q=80" alt="DC Circuit" class="w-full h-full object-cover">
+                        </div>
+                        <span class="bg-[#F97316]/10 text-[#F97316] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 12</span>
+                        <h3 class="text-lg font-bold text-slate-800 mt-2 mb-1">Rangkaian Arus DC</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Simulasi perakitan sirkuit listrik dinamis mandiri dengan saklar & lampu.</p>
+                    </div>
+                    <div class="px-5 pb-5"><button class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all"><span>Mulai Eksperimen</span> <span class="text-sm">→</span></button></div>
+                </div>
+
+            </div>
+
+            <div id="gradientOverlay" class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/80 to-transparent flex items-end justify-center pb-2">
+                <button 
+                    onclick="toggleSeeMore()" 
+                    id="btnSeeMore"
+                    class="px-6 py-3 bg-white text-[#6366F1] border border-slate-200 hover:border-[#6366F1] font-semibold text-sm rounded-full shadow-md hover:shadow-lg flex items-center space-x-2 transition-all cursor-pointer z-10"
+                >
+                    <span id="btnText">Lihat Semua Simulasi</span>
+                    <svg id="btnIcon" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="bg-[#E2E8F0] mt-16 py-12 border-t border-slate-200 text-center w-full">
+        <div class="max-w-7xl mx-auto px-4 text-slate-600">
+            <h4 class="text-md font-bold text-[#6366F1] mb-4">▲ USM PhysX Lab</h4>
+            <div class="flex justify-center space-x-6 text-xs font-medium mb-6">
+                <a href="#" class="hover:text-slate-900">Kebijakan Privasi</a>
+                <a href="#" class="hover:text-slate-900">Kontak Kami</a>
+                <a href="#" class="hover:text-slate-900">Peta Situs</a>
+            </div>
+            <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Educational Research Division. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Fungsi Collapsible Expand "Lihat Semua"
+        function toggleSeeMore() {
+            const grid = document.getElementById('simulationGrid');
+            const overlay = document.getElementById('gradientOverlay');
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+
+            if (grid.style.maxHeight === 'none') {
+                // Tutup kembali
+                grid.style.maxHeight = '460px';
+                overlay.classList.add('absolute', 'bottom-0', 'h-40', 'bg-gradient-to-t');
+                overlay.classList.remove('relative', 'pt-6', 'pb-0');
+                btnText.innerText = 'Lihat Semua Simulasi';
+                btnIcon.style.transform = 'rotate(0deg)';
+            } else {
+                // Buka semua kartu
+                grid.style.maxHeight = 'none';
+                overlay.classList.remove('absolute', 'bottom-0', 'h-40', 'bg-gradient-to-t');
+                overlay.classList.add('relative', 'pt-6', 'pb-0'); // Ubah layout tombol agar bertengger di bawah grid
+                btnText.innerText = 'Sembunyikan Sebagian';
+                btnIcon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Live Search Filter Feature
+        document.getElementById('searchBar').addEventListener('input', function(e) {
+            const keyword = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.sim-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const desc = card.querySelector('p').innerText.toLowerCase();
+                
+                if (title.includes(keyword) || desc.includes(keyword)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
