@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Efek Doppler - USM PhysX Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center text-slate-600 font-bold text-sm transition-colors cursor-pointer">
+                    ←
+                </a>
+                <span class="text-md font-bold text-[#2E3A59] tracking-tight">
+                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                </span>
+                <span class="text-slate-300">/</span>
+                <span class="text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">Gelombang</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-bold text-[#2E3A59] hidden sm:inline-block">Akustik & Efek Doppler</span>
+                <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col justify-between min-h-[520px]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
+                        <h2 class="text-sm font-bold text-slate-700 tracking-wide uppercase">Laboratorium Akustik Doppler</h2>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                        <div>Frek. Sumber ($f_s$): <span id="m-fs" class="text-indigo-600 font-bold">400</span> Hz</div>
+                        <div>Frek. Pendengar ($f_p$): <span id="m-fp" class="text-rose-600 font-bold">400</span> Hz</div>
+                    </div>
+                </div>
+
+                <div class="relative w-full bg-slate-950 rounded-xl overflow-hidden flex-grow shadow-inner border border-slate-800 aspect-[16/9]">
+                    <canvas id="physicsCanvas" class="w-full h-full block"></canvas>
+                    
+                    <div class="absolute top-3 right-3 flex space-x-2">
+                        <button id="audioBtn" onclick="toggleAudio()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-md transition-all cursor-pointer flex items-center space-x-1.5">
+                            <span>🔊</span> <span id="audioBtnText">Mainkan Audio</span>
+                        </button>
+                        <button onclick="resetSimulation()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg shadow-md transition-all cursor-pointer">
+                            Reset Posisi
+                        </button>
+                    </div>
+
+                    <div class="absolute bottom-3 left-3 bg-black/40 backdrop-blur-sm text-[10px] text-slate-400 p-2 rounded border border-slate-800">
+                        * Klik di mana saja pada jalan raya di dalam canvas untuk memindahkan posisi Pendengar (Icon Biru).
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-500">
+                    <div>Persamaan Doppler: <span class="font-mono font-bold">f_p = f_s · (v ± v_p) / (v ± v_s)</span></div>
+                    <div class="text-[11px] text-slate-400 font-medium">Status Gelombang: <span id="wave-status" class="text-emerald-500 font-bold">Konsetris (Statis)</span></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col space-y-6">
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-600 bg-[#6366F1] rounded-2xl shadow-sm p-5 text-white">
+                    <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-3">
+                        <h3 class="text-sm font-bold flex items-center space-x-2">
+                            <span>🎯</span> <span>Tantangan Frekuensi</span>
+                        </h3>
+                        <span id="challenge-status" class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Mulai</span>
+                    </div>
+                    <p class="text-xs text-indigo-100 leading-relaxed mb-3">Sesuaikan kecepatan sumber bunyi agar frekuensi yang didengar oleh pengamat tepat pada target:</p>
+                    <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
+                        <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Frekuensi Pendengar ($f_p$)</span>
+                        <span class="text-2xl font-black font-mono tracking-tight"><span id="target-fp-display">---</span> Hz</span>
+                    </div>
+                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                        Acak Target Baru
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] border-b border-slate-100 pb-3 flex items-center space-x-2">
+                        <span>🎛️</span> <span>Pengatur Parameter Akustik</span>
+                    </h3>
+                    
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600">Kecepatan Sumber ($v_s$)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 border border-indigo-100 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-vs" min="-100" max="100" value="40" class="w-12 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('vs', 'num')">
+                                <span class="text-[10px] font-bold text-indigo-400 font-mono">m/s</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-vs" min="-100" max="100" value="40" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('vs', 'range')">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                            <span>← Kiri (-100 m/s)</span>
+                            <span>Diam (0)</span>
+                            <span>Kanan (+100 m/s)</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600">Frekuensi Dasar ($f_s$)</label>
+                            <div class="flex items-center space-x-1 bg-rose-50 border border-rose-100 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-fs" min="300" max="600" step="10" value="400" class="w-12 bg-transparent text-xs font-bold font-mono text-rose-600 focus:outline-none text-right" oninput="syncInputs('fs', 'num')">
+                                <span class="text-[10px] font-bold text-rose-400 font-mono">Hz</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-fs" min="300" max="600" step="10" value="400" class="w-full accent-rose-500 cursor-pointer" oninput="syncInputs('fs', 'range')">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                            <span>Bass (300 Hz)</span>
+                            <span>Treble (600 Hz)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="bg-[#E2E8F0] mt-12 py-8 border-t border-slate-200 text-center w-full">
+        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.6. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // State Parameter Fisika & Audio Context
+        const v_sound = 340; // Kecepatan rambat bunyi konstan di udara (m/s)
+        let v_source = 40;   // Kecepatan gerak ambulans (m/s)
+        let f_source = 400;  // Frekuensi gelombang asal (Hz)
+        let f_listener = 400; // Frekuensi yang didengar (Hz)
+
+        // Visual Layout Properties
+        let sourceX = 100;
+        let listenerX = 500;
+        let waveList = [];
+        let waveTimer = 0;
+        let restLength = 100; 
+        let scaleFactor = 1;
+
+        // Audio Oscillator Web Api
+        let audioCtx = null;
+        let oscillator = null;
+        let gainNode = null;
+        let isAudioPlaying = false;
+
+        // Challenge State
+        let targetFp = null;
+        let challengeCompleted = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            listenerX = canvas.width * 0.7; // Posisikan pendengar di 70% area horizontal
+        }
+
+        function syncInputs(id, origin) {
+            const rangeInput = document.getElementById(`param-${id}`);
+            const numInput = document.getElementById(`num-${id}`);
+            
+            if (origin === 'range') {
+                numInput.value = rangeInput.value;
+            } else if (origin === 'num') {
+                let val = parseFloat(numInput.value);
+                if (isNaN(val)) return;
+                let min = parseFloat(numInput.min);
+                let max = parseFloat(numInput.max);
+                if (val < min) val = min;
+                if (val > max) val = max;
+                rangeInput.value = val;
+            }
+
+            if (id === 'vs') v_source = parseFloat(rangeInput.value);
+            if (id === 'fs') f_source = parseFloat(rangeInput.value);
+
+            updateEnginePhysics();
+        }
+
+        function generateNewChallenge() {
+            // Formula acak fp target berkisar antara efek menjauh dan mendekat
+            const targets = [320, 355, 380, 425, 450, 480];
+            targetFp = targets[Math.floor(Math.random() * targets.length)];
+            challengeCompleted = false;
+            
+            document.getElementById('target-fp-display').innerText = targetFp;
+            const badge = document.getElementById('challenge-status');
+            badge.innerText = "Mencari";
+            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            
+            updateEnginePhysics();
+        }
+
+        function updateEnginePhysics() {
+            // Hitung Efek Doppler: fp = fs * (v / (v - vs)) -> Pengamat diam (vp = 0)
+            // Tanda berbalik otomatis jika vs negatif (artinya bergerak ke kiri menjauhi)
+            
+            // Pengondisian arah tanda gerak relatif terhadap posisi pendengar
+            let relativeVs = v_source;
+            if (sourceX > listenerX) {
+                // Jika posisi mobil berada di kanan pendengar, arah kecepatan dibalik untuk kalkulasi fisis mendekat/menjauh
+                relativeVs = -v_source;
+            }
+
+            f_listener = Math.round(f_source * (v_sound / (v_sound - relativeVs)));
+
+            // Update Tampilan Dashboard Meter
+            document.getElementById('m-fs').innerText = f_source;
+            document.getElementById('m-fp').innerText = f_listener;
+
+            // Logika Tingkat Perubahan Frekuensi (Glow Status)
+            const statusLabel = document.getElementById('wave-status');
+            if (v_source === 0) {
+                statusLabel.innerText = "Konsetris (Statis)";
+                statusLabel.className = "text-emerald-500 font-bold";
+            } else if (f_listener > f_source) {
+                statusLabel.innerText = "Kompresi Gelombang (Nada Tinggi)";
+                statusLabel.className = "text-indigo-500 font-bold animate-pulse";
+            } else {
+                statusLabel.innerText = "Renggangan Gelombang (Nada Rendah)";
+                statusLabel.className = "text-amber-500 font-bold";
+            }
+
+            // Atur Frekuensi Audio Real-Time
+            if (isAudioPlaying && oscillator) {
+                oscillator.frequency.setValueAtTime(f_listener, audioCtx.currentTime);
+            }
+
+            // Validasi Tantangan Lab
+            const badge = document.getElementById('challenge-status');
+            if (targetFp !== null && Math.abs(f_listener - targetFp) <= 5) {
+                challengeCompleted = true;
+                badge.innerText = "Sukses";
+                badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+            } else if (targetFp !== null) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
+        }
+
+        function toggleAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (!isAudioPlaying) {
+                oscillator = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(f_listener, audioCtx.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume safety cap (10%)
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                
+                isAudioPlaying = true;
+                document.getElementById('audioBtnText').innerText = "Matikan Audio";
+                document.getElementById('audioBtn').className = "px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg shadow-md transition-all cursor-pointer flex items-center space-x-1.5";
+            } else {
+                oscillator.stop();
+                oscillator.disconnect();
+                isAudioPlaying = false;
+                document.getElementById('audioBtnText').innerText = "Mainkan Audio";
+                document.getElementById('audioBtn').className = "px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-md transition-all cursor-pointer flex items-center space-x-1.5";
+            }
+        }
+
+        function resetSimulation() {
+            sourceX = 50;
+            waveList = [];
+            updateEnginePhysics();
+        }
+
+        // Animasi Loop Render Gelombang Kinetik Efek Doppler
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const midY = canvas.height / 2;
+
+            // 1. Gambar Jalan Raya (Environment Lintasan)
+            ctx.fillStyle = '#1E293B';
+            ctx.fillRect(0, midY - 25, canvas.width, 50);
+            ctx.strokeStyle = '#64748B'; ctx.lineWidth = 2; ctx.setLineDash([15, 10]);
+            ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
+            ctx.setLineDash([]); // Reset line dash
+
+            // 2. Kalkulasi Pergerakan Sumber Bunyi (Ambulans)
+            // Kecepatan visual diskalakan agar muat di canvas
+            sourceX += (v_source * 0.05);
+            if (sourceX > canvas.width + 50) sourceX = -50;
+            if (sourceX < -50) sourceX = canvas.width + 50;
+
+            // Emit gelombang berkala berdasarkan posisi ambulans waktu itu
+            waveTimer++;
+            if (waveTimer % 18 === 0) {
+                waveList.push({ x: sourceX, y: midY, r: 2 });
+            }
+
+            // 3. Render Rambatan Gelombang Bunyi Sferis
+            ctx.lineWidth = 1.5;
+            for (let i = waveList.length - 1; i >= 0; i--) {
+                let w = waveList[i];
+                w.r += 2.2; // Kecepatan rambat gelombang visual keluar
+
+                // Hitung transparansi memudar seiring meluasnya radius gelombang
+                let alpha = 1 - (w.r / (canvas.width * 0.6));
+                if (alpha <= 0) {
+                    waveList.splice(i, 1);
+                    continue;
+                }
+
+                ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+                ctx.beginPath();
+                ctx.arc(w.x, w.y, w.r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // 4. Gambar Icon Pendengar (Statis) di Pinggir Jalan
+            ctx.fillStyle = '#38BDF8'; ctx.shadowBlur = 10; ctx.shadowColor = '#38BDF8';
+            ctx.beginPath(); ctx.arc(listenerX, midY + 40, 12, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = 0; // Reset
+            // Label Pendengar
+            ctx.fillStyle = '#94A3B8'; ctx.font = 'bold 10px font-mono'; ctx.textAlign = 'center';
+            ctx.fillText("PENDENGAR", listenerX, midY + 68);
+
+            // 5. Gambar Kendaraan Ambulans (Sumber Bunyi)
+            ctx.fillStyle = '#EF4444'; ctx.fillRect(sourceX - 20, midY - 14, 40, 22);
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(sourceX + 4, midY - 14, 12, 10); // Kaca depan
+            // Roda Mobil
+            ctx.fillStyle = '#0F172A';
+            ctx.beginPath(); ctx.arc(sourceX - 10, midY + 10, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(sourceX + 12, midY + 10, 5, 0, Math.PI * 2); ctx.fill();
+            // Lampu Sirine Glow Pulsing
+            let pulseColor = (Math.floor(Date.now() / 150) % 2 === 0) ? '#3B82F6' : '#EF4444';
+            ctx.fillStyle = pulseColor; ctx.fillRect(sourceX - 4, midY - 20, 8, 6);
+
+            // Pemicu Update nilai fisika karena posisi ambulans terus berjalan melintasi pengamat
+            updateEnginePhysics();
+
+            requestAnimationFrame(animate);
+        }
+
+        // Interaktivitas Klik Canvas untuk Memindahkan Posisi Pendengar
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            // Batasi perpindahan agar pengamat hanya bergeser secara horisontal di lintasan aman
+            if (clickX > 50 && clickX < canvas.width - 50) {
+                listenerX = clickX;
+            }
+        });
+
+        window.addEventListener('resize', () => { resizeCanvas(); });
+        window.onload = function() { resizeCanvas(); generateNewChallenge(); animate(); };
+    </script>
+</body>
+</html>
