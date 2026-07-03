@@ -48,6 +48,7 @@
                         <div>Waktu: <span id="m-time" class="text-indigo-600 font-bold">0.00</span>s</div>
                         <div>Jarak (X): <span id="m-posX" class="text-cyan-600 font-bold">0.00</span>m</div>
                         <div>Tinggi (Y): <span id="m-posY" class="text-emerald-600 font-bold">0.00</span>m</div>
+                        <div class="hidden sm:block text-slate-400">| Zoom: <span id="m-zoom" class="font-bold text-amber-600">100%</span></div>
                     </div>
                 </div>
 
@@ -82,7 +83,7 @@
                             <label class="text-xs font-semibold text-slate-600">Kecepatan Awal (v₀)</label>
                             <span class="text-xs font-bold font-mono text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100"><span id="val-v0">20</span> m/s</span>
                         </div>
-                        <input type="range" id="param-v0" min="5" max="40" value="20" class="w-full accent-[#6366F1] cursor-pointer" oninput="updateParamValues()">
+                        <input type="range" id="param-v0" min="5" max="60" value="25" class="w-full accent-[#6366F1] cursor-pointer" oninput="updateParamValues()">
                     </div>
 
                     <div class="mb-5">
@@ -93,41 +94,51 @@
                         <input type="range" id="param-angle" min="0" max="90" value="45" class="w-full accent-[#6366F1] cursor-pointer" oninput="updateParamValues()">
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-5">
                         <div class="flex justify-between items-center mb-1.5">
                             <label class="text-xs font-semibold text-slate-600">Percepatan Gravitasi (g)</label>
                             <span class="text-xs font-bold font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100"><span id="val-g">9.8</span> m/s²</span>
                         </div>
                         <input type="range" id="param-g" min="5" max="20" step="0.1" value="9.8" class="w-full accent-[#6366F1] cursor-pointer" oninput="updateParamValues()">
                     </div>
+
+                    <div class="mb-2">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                                <span>💨</span> Hambatan Udara ($C_d$)
+                            </label>
+                            <span class="text-xs font-bold font-mono text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100"><span id="val-drag">0.20</span></span>
+                        </div>
+                        <input type="range" id="param-drag" min="0" max="1" step="0.01" value="0.20" class="w-full accent-rose-500 cursor-pointer" oninput="updateParamValues()">
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex-grow">
                     <h3 class="text-sm font-bold text-[#2E3A59] border-b border-slate-100 pb-3 mb-4 flex items-center space-x-2">
-                        <span>📊</span> <span>Hasil Kalkulasi Maksimum</span>
+                        <span>📊</span> <span>Hasil Analisis Numerik Lintasan</span>
                     </h3>
                     
                     <div class="space-y-4">
                         <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center">
                             <div>
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tinggi Maksimum (H_max)</div>
-                                <div class="text-xs text-slate-500 font-medium">Titik puncak lintasan vertikal</div>
+                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tinggi Maksimum ($H_{max}$)</div>
+                                <div class="text-xs text-slate-500 font-medium">Puncak kurva asimetris</div>
                             </div>
                             <div class="text-lg font-extrabold text-emerald-600 font-mono"><span id="calc-hmax">0.00</span> <span class="text-xs font-semibold">m</span></div>
                         </div>
 
                         <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center">
                             <div>
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jarak Terjauh (R_max)</div>
-                                <div class="text-xs text-slate-500 font-medium">Titik jatuh pendaratan tanah</div>
+                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jarak Terjauh ($R_{max}$)</div>
+                                <div class="text-xs text-slate-500 font-medium">Titik pendaratan tanah</div>
                             </div>
                             <div class="text-lg font-extrabold text-cyan-600 font-mono"><span id="calc-rmax">0.00</span> <span class="text-xs font-semibold">m</span></div>
                         </div>
 
                         <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center">
                             <div>
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Waktu Udara (T_total)</div>
-                                <div class="text-xs text-slate-500 font-medium">Lama waktu objek terbang melayang</div>
+                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Waktu Udara ($T_{total}$)</div>
+                                <div class="text-xs text-slate-500 font-medium">Durasi melayang di atmosfer</div>
                             </div>
                             <div class="text-lg font-extrabold text-indigo-600 font-mono"><span id="calc-ttotal">0.00</span> <span class="text-xs font-semibold">s</span></div>
                         </div>
@@ -140,7 +151,7 @@
     </div>
 
     <footer class="bg-[#E2E8F0] mt-12 py-8 border-t border-slate-200 text-center w-full">
-        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.0. All rights reserved.</p>
+        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.1. All rights reserved.</p>
     </footer>
 
     <script>
@@ -148,140 +159,215 @@
         const ctx = canvas.getContext('2d');
 
         // Parameter Simulasi
-        let v0, angle, g;
+        let v0, angle, g, dragCoeff;
         let isRunning = false;
         let t = 0;
         let animationId;
+        
+        // State Posisi Fisika Objek Aktif
+        let currentX = 0, currentY = 0;
+        let currentVx = 0, currentVy = 0;
+        
         let pathTrajectory = [];
+        
+        // Variabel Sistem Penskalaan Otomatis (Auto-Scaling Viewport)
+        let scale = 8; 
+        let defaultScale = 8;
+        let maxSimX = 100;
+        let maxSimY = 50;
 
-        // Inisialisasi Ukuran Respon Canvas
         function resizeCanvas() {
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
-            drawStaticScene();
+            drawScene();
         }
 
-        // Sinkronisasi Parameter Nilai Input Slider
+        // Kalkulasi Prediksi Lintasan Numerik (Pre-run) untuk mencari Batas Maksimum lintasan
+        function preCalculateTrajectoryBounds() {
+            const rad = angle * Math.PI / 180;
+            let tempVx = v0 * Math.cos(rad);
+            let tempVy = v0 * Math.sin(rad);
+            let tempX = 0, tempY = 0;
+            let tempT = 0;
+            const dt = 0.01;
+
+            let localHMax = 0;
+            let localRMax = 0;
+
+            while (tempY >= 0 && tempT < 100) {
+                const speed = Math.sqrt(tempVx * tempVx + tempVy * tempVy);
+                // Gaya seret udara f = -c * v
+                const ax = -dragCoeff * speed * tempVx;
+                const ay = -g - (dragCoeff * speed * tempVy);
+
+                tempVx += ax * dt;
+                tempVy += ay * dt;
+                tempX += tempVx * dt;
+                tempY += tempVy * dt;
+                tempT += dt;
+
+                if (tempY > localHMax) localHMax = tempY;
+            }
+            localRMax = tempX;
+
+            document.getElementById('calc-hmax').innerText = localHMax.toFixed(2);
+            document.getElementById('calc-rmax').innerText = localRMax.toFixed(2);
+            document.getElementById('calc-ttotal').innerText = tempT.toFixed(2);
+
+            // Simpan nilai ekstrem untuk keperluan auto-scaling
+            maxSimX = Math.max(localRMax, 20); 
+            maxSimY = Math.max(localHMax, 10);
+
+            // Hitung skala ideal agar lintasan pas di area canvas dengan padding 15%
+            const availableWidth = canvas.width - 100;
+            const availableHeight = canvas.height - 80;
+
+            const scaleX = availableWidth / maxSimX;
+            const scaleY = availableHeight / maxSimY;
+            
+            // Pilih skala terkecil agar seluruh bagian sumbu X dan Y muat di dalam monitor canvas
+            scale = Math.min(scaleX, scaleY);
+            
+            // Tampilkan info zoom persentase ke user
+            const zoomPercent = Math.round((scale / defaultScale) * 100);
+            document.getElementById('m-zoom').innerText = zoomPercent + '%';
+        }
+
         function updateParamValues() {
             v0 = parseFloat(document.getElementById('param-v0').value);
             angle = parseFloat(document.getElementById('param-angle').value);
             g = parseFloat(document.getElementById('param-g').value);
+            dragCoeff = parseFloat(document.getElementById('param-drag').value);
 
             document.getElementById('val-v0').innerText = v0;
             document.getElementById('val-angle').innerText = angle;
             document.getElementById('val-g').innerText = g.toFixed(1);
+            document.getElementById('val-drag').innerText = dragCoeff.toFixed(2);
 
-            // Prediksi Teoretis Fisika Hukum Newton
-            const rad = angle * Math.PI / 180;
-            const hMax = (v0 * v0 * Math.sin(rad) * Math.sin(rad)) / (2 * g);
-            const rMax = (v0 * v0 * Math.sin(2 * rad)) / g;
-            const tTotal = (2 * v0 * Math.sin(rad)) / g;
-
-            document.getElementById('calc-hmax').innerText = hMax.toFixed(2);
-            document.getElementById('calc-rmax').innerText = rMax.toFixed(2);
-            document.getElementById('calc-ttotal').innerText = tTotal.toFixed(2);
+            preCalculateTrajectoryBounds();
 
             if (!isRunning) {
-                drawStaticScene();
+                resetSimulation();
             }
         }
 
-        // Gambar Background Skala Grid Statis Canvas
-        function drawStaticScene() {
+        function drawScene() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Gambar Garis Skala Kisi (Grid System)
-            ctx.strokeStyle = '#334155';
+            // Gambar Garis Kisi-Kisi Grid Dinamis menyesuaikan Faktor Skala Zoom
+            ctx.strokeStyle = '#1E293B';
             ctx.lineWidth = 0.5;
-            const gridSize = 40;
-            for (let x = 0; x < canvas.width; x += gridSize) {
-                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            const stepSizeInMeters = scale < 2 ? 20 : (scale < 5 ? 10 : 5);
+            const gridSizeInPixels = stepSizeInMeters * scale;
+
+            for (let x = 40; x < canvas.width; x += gridSizeInPixels) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height - 40); ctx.stroke();
             }
-            for (let y = 0; y < canvas.height; y += gridSize) {
-                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            for (let y = canvas.height - 40; y > 0; y -= gridSizeInPixels) {
+                ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(canvas.width, y); ctx.stroke();
             }
 
-            // Batas Dasar Tanah (Ground Baseline)
-            ctx.strokeStyle = '#64748B';
+            // Garis Batas Tanah (Ground Baseline)
+            ctx.strokeStyle = '#475569';
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.moveTo(0, canvas.height - 40);
             ctx.lineTo(canvas.width, canvas.height - 40);
             ctx.stroke();
 
-            // Render Titik Pelontar Awal (Launcher)
+            // Titik Pelontar Launcher awal
             ctx.fillStyle = '#6366F1';
             ctx.beginPath();
-            ctx.arc(40, canvas.height - 40, 10, 0, Math.PI * 2);
+            ctx.arc(40, canvas.height - 40, 8, 0, Math.PI * 2);
             ctx.fill();
+
+            // Gambar Garis Lintasan Jejak Ekor (Asimetris akibat Hambatan Udara)
+            ctx.strokeStyle = '#06B6D4';
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            if (pathTrajectory.length > 0) {
+                ctx.moveTo(pathTrajectory[0].px, pathTrajectory[0].py);
+                for(let i=1; i<pathTrajectory.length; i++) {
+                    ctx.lineTo(pathTrajectory[i].px, pathTrajectory[i].py);
+                }
+            }
+            ctx.stroke();
+            ctx.setLineDash([]); 
+
+            // Gambar Bola Proyektil Utama jika simulasi berjalan atau dipause
+            if (t > 0) {
+                const pixelX = 40 + (currentX * scale);
+                const pixelY = (canvas.height - 40) - (currentY * scale);
+
+                ctx.fillStyle = '#F59E0B';
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(pixelX, pixelY, 8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            }
         }
 
-        // Loop Animasi Fisika Utama
         function simulationLoop() {
             if (!isRunning) return;
 
-            // Increment Waktu
-            t += 0.03; // Time step delta t
+            const dt = 0.02; // Delta time step stabil
+            t += dt;
 
-            const rad = angle * Math.PI / 180;
-            // Rumus Kinematika Gerak Parabola (X & Y)
-            const posX = v0 * Math.cos(rad) * t;
-            const posY = (v0 * Math.sin(rad) * t) - (0.5 * g * t * t);
+            // Vektor besar kecepatan total objek saat ini
+            const speed = Math.sqrt(currentVx * currentVx + currentVy * currentVy);
 
-            // Faktor Konversi Skala Meter Fisika ke Pixel Layar Monitor
-            const scale = 8; 
-            const pixelX = 40 + (posX * scale);
-            const pixelY = (canvas.height - 40) - (posY * scale);
+            // Persamaan Diferensial Udara: a = -g - (c * v * v_vector)
+            const ax = -dragCoeff * speed * currentVx;
+            const ay = -g - (dragCoeff * speed * currentVy);
 
-            // Cek Batas Tabrakan dengan Tanah (Ground Landing Boundary Check)
-            if (posY < 0 && t > 0.1) {
+            // Integrasi Euler-Cromer
+            currentVx += ax * dt;
+            currentVy += ay * dt;
+            currentX += currentVx * dt;
+            currentY += currentVy * dt;
+
+            const pixelX = 40 + (currentX * scale);
+            const pixelY = (canvas.height - 40) - (currentY * scale);
+
+            // Deteksi benturan jatuh tanah
+            if (currentY <= 0 && t > 0.05) {
+                currentY = 0;
                 isRunning = false;
                 document.getElementById('status-label').innerText = 'Finished';
                 document.getElementById('status-label').className = 'text-emerald-500 font-bold';
+                updateDashboardLabels();
+                drawScene();
                 cancelAnimationFrame(animationId);
                 return;
             }
 
-            // Update Papan Skor Realtime Monitor
-            document.getElementById('m-time').innerText = t.toFixed(2);
-            document.getElementById('m-posX').innerText = posX.toFixed(2);
-            document.getElementById('m-posY').innerText = Math.max(0, posY).toFixed(2);
-
-            // Simpan Histori Jejak Ekor Lintasan
-            pathTrajectory.push({ x: pixelX, y: pixelY });
-
-            // Render Refresh Grafis Ulang
-            drawStaticScene();
-
-            // Gambar Garis Lintasan (Trajectory Dot Tail)
-            ctx.strokeStyle = '#06B6D4';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            if (pathTrajectory.length > 0) {
-                ctx.moveTo(pathTrajectory[0].x, pathTrajectory[0].y);
-                for(let i=1; i<pathTrajectory.length; i++) {
-                    ctx.lineTo(pathTrajectory[i].x, pathTrajectory[i].y);
-                }
-            }
-            ctx.stroke();
-            ctx.setLineDash([]); // Reset line dash
-
-            // Gambar Bola Proyektil Utama
-            ctx.fillStyle = '#F59E0B';
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(pixelX, pixelY, 8, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
+            updateDashboardLabels();
+            pathTrajectory.push({ px: pixelX, py: pixelY });
+            drawScene();
 
             animationId = requestAnimationFrame(simulationLoop);
         }
 
-        // Tombol Kontrol Handlers
+        function updateDashboardLabels() {
+            document.getElementById('m-time').innerText = t.toFixed(2);
+            document.getElementById('m-posX').innerText = currentX.toFixed(2);
+            document.getElementById('m-posY').innerText = Math.max(0, currentY).toFixed(2);
+        }
+
         function startSimulation() {
             if (!isRunning) {
+                // Jika memulai dari nol awal hulu
+                if (t === 0) {
+                    const rad = angle * Math.PI / 180;
+                    currentVx = v0 * Math.cos(rad);
+                    currentVy = v0 * Math.sin(rad);
+                    currentX = 0;
+                    currentY = 0;
+                    pathTrajectory = [];
+                }
                 isRunning = true;
                 document.getElementById('status-label').innerText = 'Running';
                 document.getElementById('status-label').className = 'text-indigo-500 font-bold';
@@ -300,16 +386,16 @@
             isRunning = false;
             cancelAnimationFrame(animationId);
             t = 0;
+            currentX = 0;
+            currentY = 0;
             pathTrajectory = [];
             document.getElementById('status-label').innerText = 'Ready';
             document.getElementById('status-label').className = 'text-slate-500 font-bold';
-            document.getElementById('m-time').innerText = '0.00';
-            document.getElementById('m-posX').innerText = '0.00';
-            document.getElementById('m-posY').innerText = '0.00';
-            updateParamValues();
+            updateDashboardLabels();
+            preCalculateTrajectoryBounds();
+            drawScene();
         }
 
-        // Mulai Bootstrapping Window Event listeners
         window.addEventListener('resize', resizeCanvas);
         window.onload = function() {
             resizeCanvas();
