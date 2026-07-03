@@ -46,21 +46,21 @@
                         <h2 class="text-sm font-bold text-slate-700 tracking-wide uppercase">Visualisasi Hukum Snellius</h2>
                     </div>
                     <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                        <div>Sudut Datang (θ₁): <span id="m-angle1" class="text-indigo-600 font-bold">45.0</span>°</div>
-                        <div>Sudut Bias (θ₂): <span id="m-angle2" class="text-cyan-600 font-bold">28.1</span>°</div>
+                        <div>Sudut Datang (θ₁): <span id="m-angle1" class="text-indigo-600 font-bold">45.0</span>° <span id="m-dir1" class="text-slate-400 text-[10px]">(Kiri)</span></div>
+                        <div>Sudut Bias (θ₂): <span id="m-angle2" class="text-cyan-600 font-bold">28.1</span>° <span id="m-dir2" class="text-slate-400 text-[10px]">(Kanan)</span></div>
                     </div>
                 </div>
 
                 <div class="relative w-full bg-slate-950 rounded-xl overflow-hidden flex-grow shadow-inner border border-slate-800 aspect-[16/9]">
                     <canvas id="physicsCanvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
                     <div class="absolute bottom-3 left-3 bg-black/40 backdrop-blur-sm text-[10px] text-slate-400 p-2 rounded border border-slate-800">
-                        * Tarik kepala laser di area atas untuk mengubah sudut datang secara langsung.
+                        * Tarik kepala laser di area atas ke kiri atau kanan untuk mengubah arah dan sudut datang secara bebas (180°).
                     </div>
                 </div>
 
                 <div class="flex items-center justify-between mt-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-500">
                     <div>Persamaan Snellius: <span class="font-mono font-bold">n₁ · sin(θ₁) = n₂ · sin(θ₂)</span></div>
-                    <div class="text-[11px] text-slate-400 font-medium">Status: <span class="text-emerald-500 font-bold">Interactive Live</span></div>
+                    <div class="text-[11px] text-slate-400 font-medium">Status: <span class="text-emerald-500 font-bold">Interactive Live (Dual-Side)</span></div>
                 </div>
             </div>
 
@@ -117,11 +117,16 @@
                         <div class="flex justify-between items-center mb-1.5">
                             <label class="text-xs font-semibold text-slate-600">Sudut Datang (θ₁)</label>
                             <div class="flex items-center space-x-1 bg-indigo-50 border border-indigo-100 rounded px-1.5 py-0.5">
-                                <input type="number" id="num-theta" min="0" max="89" value="45" class="w-8 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('theta', 'num')">
+                                <input type="number" id="num-theta" min="-89" max="89" value="45" class="w-10 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('theta', 'num')">
                                 <span class="text-[10px] font-bold text-indigo-400 font-mono">°</span>
                             </div>
                         </div>
-                        <input type="range" id="param-theta" min="0" max="89" value="45" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('theta', 'range')">
+                        <input type="range" id="param-theta" min="-89" max="89" value="45" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('theta', 'range')">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                            <span>← Kanan (-89°)</span>
+                            <span>Tegak Lurus (0°)</span>
+                            <span>Kiri (89°) →</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,17 +136,17 @@
     </div>
 
     <footer class="bg-[#E2E8F0] mt-12 py-8 border-t border-slate-200 text-center w-full">
-        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.4. All rights reserved.</p>
+        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.5. All rights reserved.</p>
     </footer>
 
-    <script>
+    <script {nonce}>
         const canvas = document.getElementById('physicsCanvas');
         const ctx = canvas.getContext('2d');
 
         // Konstanta Fisika Indeks Bias awal
         let n1 = 1.00;
         let n2 = 1.33;
-        let theta1Deg = 45;
+        let theta1Deg = 45; // Positif = dari Kiri Atas, Negatif = dari Kanan Atas
         let theta2Deg = 0;
 
         // Variabel Target Mode Tantangan
@@ -157,7 +162,6 @@
         }
 
         function generateNewChallenge() {
-            // Target-target sudut bias realistis dalam derajat
             const randomTargets = [32.0, 19.2, 45.0, 28.1, 22.1, 30.0, 15.6];
             targetAngle = randomTargets[Math.floor(Math.random() * randomTargets.length)];
             
@@ -186,7 +190,7 @@
             } else if (origin === 'num') {
                 let val = parseInt(numInput.value);
                 if (isNaN(val)) return;
-                if (val < 0) val = 0;
+                if (val < -89) val = -89;
                 if (val > 89) val = 89;
                 rangeInput.value = val;
             }
@@ -200,33 +204,37 @@
         }
 
         function calculateRefraction() {
-            const theta1Rad = theta1Deg * Math.PI / 180;
-            
-            // Hukum Snellius: n1 * sin(theta1) = n2 * sin(theta2)
-            const sinTheta2 = (n1 * Math.sin(theta1Rad)) / n2;
+            const absTheta1Rad = Math.abs(theta1Deg) * Math.PI / 180;
+            const sinTheta2 = (n1 * Math.sin(absTheta1Rad)) / n2;
 
             if (sinTheta2 > 1) {
-                // Pemantulan Internal Sempurna (Total Internal Reflection)
-                theta2Deg = -1; 
+                theta2Deg = -1; // Total Internal Reflection
             } else {
                 const theta2Rad = Math.asin(sinTheta2);
-                theta2Deg = theta2Rad * 180 / Math.PI;
+                // Sinkronisasi arah sumbu X bias terhadap sumbu X datang
+                theta2Deg = (theta2Rad * 180 / Math.PI) * (theta1Deg >= 0 ? 1 : -1);
             }
 
-            // Update Papan Skor teks HTML
-            document.getElementById('m-angle1').innerText = theta1Deg.toFixed(1);
+            // Update Teks Papan Skor
+            document.getElementById('m-angle1').innerText = Math.abs(theta1Deg).toFixed(1);
+            document.getElementById('m-dir1').innerText = theta1Deg > 0 ? "(Kiri)" : (theta1Deg < 0 ? "(Kanan)" : "(Pusat)");
+            
             const angle2Display = document.getElementById('m-angle2');
+            const dir2Display = document.getElementById('m-dir2');
+            
             if (theta2Deg === -1) {
                 angle2Display.innerText = "Pantulan Total";
                 angle2Display.className = "text-rose-500 font-bold animate-pulse";
+                dir2Display.innerText = "";
             } else {
-                angle2Display.innerText = theta2Deg.toFixed(1);
+                angle2Display.innerText = Math.abs(theta2Deg).toFixed(1);
                 angle2Display.className = "text-cyan-600 font-bold";
+                dir2Display.innerText = theta2Deg > 0 ? "(Kanan)" : (theta2Deg < 0 ? "(Kiri)" : "(Pusat)");
             }
 
-            // Validasi Mini-Game Tantangan
+            // Validasi Tantangan (Mendukung mutlak sudut)
             const badge = document.getElementById('challenge-status');
-            if (targetAngle !== null && Math.abs(theta2Deg - targetAngle) < 0.4) {
+            if (targetAngle !== null && Math.abs(Math.abs(theta2Deg) - targetAngle) < 0.4) {
                 challengeCompleted = true;
                 badge.innerText = "Sukses";
                 badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
@@ -241,53 +249,50 @@
             const midX = canvas.width / 2;
             const midY = canvas.height / 2;
 
-            // 1. Gambar Latar Belakang Medium 2 (Bawah) berwarna biru air transparan
+            // 1. Background Air Medium Bawah
             ctx.fillStyle = 'rgba(6, 182, 212, 0.15)';
             ctx.fillRect(0, midY, canvas.width, midY);
 
-            // 2. Garis Batas Medium (Interface)
+            // 2. Garis Batas Medium
             ctx.strokeStyle = '#334155';
             ctx.lineWidth = 2;
             ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
 
-            // 3. Garis Normal (Putus-putus vertikal)
+            // 3. Garis Normal Vertikal
             ctx.strokeStyle = '#64748B';
             ctx.lineWidth = 1;
             ctx.setLineDash([6, 4]);
             ctx.beginPath(); ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height); ctx.stroke();
             ctx.setLineDash([]);
 
-            // Label Teks Nama Medium
+            // Label Informasi Pendukung
             ctx.fillStyle = '#94A3B8';
             ctx.font = '11px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText("Medium 1", 20, 30);
-            ctx.fillText("Medium 2", 20, midY + 30);
+            ctx.fillText("Medium 1 (n₁ = " + n1.toFixed(2) + ")", 20, 30);
+            ctx.fillText("Medium 2 (n₂ = " + n2.toFixed(2) + ")", 20, midY + 30);
 
-            // 4. Hitung Posisi Kepala Sumber Laser & Jalur Sinar Datang
+            // 4. Hitung Posisi Kepala Sinar Laser
             const beamLength = Math.min(canvas.width, canvas.height) * 0.4;
             const theta1Rad = theta1Deg * Math.PI / 180;
 
-            // Koordinat asal sinar (dari kiri atas menuju titik tengah normal)
             const laserX = midX - beamLength * Math.sin(theta1Rad);
             const laserY = midY - beamLength * Math.cos(theta1Rad);
 
-            // Sinar Datang (Merah terang menyala neon)
+            // Sinar Datang (Neon Glow Merah)
             ctx.strokeStyle = '#FF3366';
             ctx.lineWidth = 3.5;
             ctx.shadowBlur = 10;
             ctx.shadowColor = '#FF3366';
             ctx.beginPath(); ctx.moveTo(laserX, laserY); ctx.lineTo(midX, midY); ctx.stroke();
 
-            // 5. Jalur Sinar Bias / Sinar Pantul
+            // 5. Hitung Jalur Pembiasan / Pemantulan Total
             if (theta2Deg === -1) {
-                // Pemantulan internal sempurna (Sudut pantul = sudut datang ke kanan bawah)
                 const reflectX = midX + beamLength * Math.sin(theta1Rad);
                 const reflectY = midY - beamLength * Math.cos(theta1Rad);
                 ctx.strokeStyle = '#FF3366';
                 ctx.beginPath(); ctx.moveTo(midX, midY); ctx.lineTo(reflectX, reflectY); ctx.stroke();
             } else {
-                // Pembiasan normal masuk ke medium bawah
                 const theta2Rad = theta2Deg * Math.PI / 180;
                 const refractX = midX + beamLength * Math.sin(theta2Rad);
                 const refractY = midY + beamLength * Math.cos(theta2Rad);
@@ -295,9 +300,9 @@
                 ctx.shadowColor = '#06B6D4';
                 ctx.beginPath(); ctx.moveTo(midX, midY); ctx.lineTo(refractX, refractY); ctx.stroke();
             }
-            ctx.shadowBlur = 0; // Reset efek neon glow
+            ctx.shadowBlur = 0;
 
-            // 6. Gambar Alat Tembakan Laser (Kotak Indikator)
+            // 6. Gambar Alat Tembakan Laser Kotak
             ctx.save();
             ctx.translate(laserX, laserY);
             ctx.rotate(-theta1Rad + Math.PI/2);
@@ -306,19 +311,22 @@
             ctx.lineWidth = 2;
             ctx.fillRect(-25, -12, 50, 24);
             ctx.strokeRect(-25, -12, 50, 24);
-            // Moncong laser kecil kuning
             ctx.fillStyle = '#F59E0B';
             ctx.fillRect(25, -5, 6, 10);
             ctx.restore();
 
-            // Busur Derajat Bantu Teks Sudut
+            // Penempatan Label Teks Sudut Pintar
             ctx.fillStyle = '#FFFFFF';
             ctx.font = '10px monospace';
-            ctx.fillText("θ₁", midX - 25, midY - 30);
-            if(theta2Deg !== -1) ctx.fillText("θ₂", midX + 15, midY + 35);
+            const offsetLabelX = theta1Deg >= 0 ? -25 : 15;
+            ctx.fillText("θ₁", midX + offsetLabelX, midY - 30);
+            if(theta2Deg !== -1) {
+                const offsetLabelX2 = theta2Deg >= 0 ? 15 : -25;
+                ctx.fillText("θ₂", midX + offsetLabelX2, midY + 35);
+            }
         }
 
-        // Interaksi Geser langsung (Drag & Drop) Kepala Alat Laser menggunakan Mouse
+        // Logic Drag & Drop Jangkauan 180 Derajat Penuh
         function getMouseAngle(e) {
             const rect = canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
@@ -327,21 +335,21 @@
             const midX = canvas.width / 2;
             const midY = canvas.height / 2;
 
-            if(mouseY >= midY) return null; // Batasi pemicu hanya di area atas medium 1
+            if(mouseY >= midY) return null;
 
             const dx = midX - mouseX;
             const dy = midY - mouseY;
             let angleRad = Math.atan2(dx, dy);
             let angleDeg = Math.round(angleRad * 180 / Math.PI);
             
-            if(angleDeg < 0) angleDeg = 0;
+            if(angleDeg < -89) angleDeg = -89;
             if(angleDeg > 89) angleDeg = 89;
             return angleDeg;
         }
 
         canvas.addEventListener('mousedown', (e) => {
             const clickedAngle = getMouseAngle(e);
-            if(clickedAngle !== null && Math.abs(clickedAngle - theta1Deg) < 15) {
+            if(clickedAngle !== null && Math.abs(clickedAngle - theta1Deg) < 20) {
                 isDraggingLaser = true;
             }
         });
@@ -358,6 +366,25 @@
         });
 
         window.addEventListener('mouseup', () => { isDraggingLaser = false; });
+
+        // Touch Device Adaptations (Mobile / Tablet)
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                const clickedAngle = getMouseAngle({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+                if(clickedAngle !== null && Math.abs(clickedAngle - theta1Deg) < 25) isDraggingLaser = true;
+            }
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            if(!isDraggingLaser || e.touches.length === 0) return;
+            const currentAngle = getMouseAngle({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+            if(currentAngle !== null) {
+                theta1Deg = currentAngle;
+                document.getElementById('param-theta').value = theta1Deg;
+                document.getElementById('num-theta').value = theta1Deg;
+                updateEngineValues();
+            }
+        });
+        window.addEventListener('touchend', () => { isDraggingLaser = false; });
 
         window.addEventListener('resize', resizeCanvas);
         window.onload = function() { resizeCanvas(); };
