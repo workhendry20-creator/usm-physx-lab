@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Hukum Gas Ideal - USM PhysX Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center text-slate-600 font-bold text-sm transition-colors cursor-pointer">
+                    ←
+                </a>
+                <span class="text-md font-bold text-[#2E3A59] tracking-tight">
+                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                </span>
+                <span class="text-slate-300">/</span>
+                <span class="text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">Termodinamika</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-bold text-[#2E3A59] hidden sm:inline-block">Teori Kinetik & Hukum Gas Ideal</span>
+                <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col justify-between min-h-[520px]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
+                        <h2 class="text-sm font-bold text-slate-700 tracking-wide uppercase">Kamar Mikroskopis Gas Ideal</h2>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                        <div>Tekanan (P): <span id="m-pressure" class="text-rose-600 font-bold">1.00</span> atm</div>
+                        <div>Volume (V): <span id="m-volume" class="text-indigo-600 font-bold">5.0</span> L</div>
+                        <div>Suhu (T): <span id="m-temperature" class="text-amber-600 font-bold">300</span> K</div>
+                    </div>
+                </div>
+
+                <div class="relative w-full bg-slate-950 rounded-xl overflow-hidden flex-grow shadow-inner border border-slate-800 aspect-[16/9]">
+                    <canvas id="physicsCanvas" class="w-full h-full block"></canvas>
+                    
+                    <div id="explosion-overlay" class="absolute inset-0 bg-red-600/90 hidden flex-col items-center justify-center text-white transition-all z-10">
+                        <span class="text-5xl mb-2">💥</span>
+                        <h3 class="text-xl font-black uppercase tracking-wider">Wadah Meledak!</h3>
+                        <p class="text-xs text-red-200 mt-1 mb-4">Tekanan melebihi batas kekuatan material wadah (P > 4.00 atm).</p>
+                        <button onclick="resetSimulation()" class="px-4 py-2 bg-white text-red-600 font-bold text-xs rounded-xl shadow hover:bg-red-50 transition-all cursor-pointer">
+                            Reset Wadah Baru
+                        </button>
+                    </div>
+
+                    <div class="absolute bottom-3 left-3 bg-black/40 backdrop-blur-sm text-[10px] text-slate-400 p-2 rounded border border-slate-800">
+                        * Tarik pegangan piston di sebelah kanan wadah untuk mengubah volume secara manual.
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-500">
+                    <div>Persamaan Keadaan: <span class="font-mono font-bold">P · V = n · R · T</span></div>
+                    <div class="text-[11px] text-slate-400 font-medium">Status Wadah: <span id="container-status" class="text-emerald-500 font-bold">Aman (Normal)</span></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col space-y-6">
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-600 bg-[#6366F1] rounded-2xl shadow-sm p-5 text-white">
+                    <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-3">
+                        <h3 class="text-sm font-bold flex items-center space-x-2">
+                            <span>🎯</span> <span>Tantangan Tekanan</span>
+                        </h3>
+                        <span id="challenge-status" class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Mulai</span>
+                    </div>
+                    <p class="text-xs text-indigo-100 leading-relaxed mb-3">Atur kombinasi Volume, Suhu, atau Jumlah Partikel agar Tekanan wadah pas pada angka target:</p>
+                    <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
+                        <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Tekanan Gas (P)</span>
+                        <span class="text-2xl font-black font-mono tracking-tight"><span id="target-pressure-display">---</span> atm</span>
+                    </div>
+                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                        Acak Target Baru
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] border-b border-slate-100 pb-3 flex items-center space-x-2">
+                        <span>🎛️</span> <span>Pengatur Parameter Gas</span>
+                    </h3>
+                    
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600">Suhu Sistem (T)</label>
+                            <div class="flex items-center space-x-1 bg-amber-50 border border-amber-100 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-temp" min="100" max="600" value="300" class="w-12 bg-transparent text-xs font-bold font-mono text-amber-600 focus:outline-none text-right" oninput="syncInputs('temp', 'num')">
+                                <span class="text-[10px] font-bold text-amber-400 font-mono">K</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-temp" min="100" max="600" value="300" class="w-full accent-amber-500 cursor-pointer" oninput="syncInputs('temp', 'range')">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                            <span>Dingin (100 K)</span>
+                            <span>Panas (600 K)</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600">Jumlah Partikel Gas (n)</label>
+                            <div class="flex items-center space-x-1 bg-emerald-50 border border-emerald-100 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-particles" min="20" max="150" value="60" class="w-10 bg-transparent text-xs font-bold font-mono text-emerald-600 focus:outline-none text-right" oninput="syncInputs('particles', 'num')">
+                                <span class="text-[10px] font-bold text-emerald-400 font-mono">pcs</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-particles" min="20" max="150" value="60" class="w-full accent-emerald-500 cursor-pointer" oninput="syncInputs('particles', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600">Volume Wadah (V)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 border border-indigo-100 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-vol" min="3" max="9" step="0.1" value="6.0" class="w-10 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('vol', 'num')">
+                                <span class="text-[10px] font-bold text-indigo-400 font-mono">L</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-vol" min="3" max="9" step="0.1" value="6.0" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('vol', 'range')">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="bg-[#E2E8F0] mt-12 py-8 border-t border-slate-200 text-center w-full">
+        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.6. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // State Parameter Fisika
+        let temperature = 300; // Kelvin
+        let numParticlesTarget = 60; 
+        let containerVolume = 6.0; // Liter (merepresentasikan lebar wadah di canvas)
+        let pressure = 1.00; // atm
+
+        // Konstanta Skala Wadah & Partikel
+        const R_constant = 0.1; 
+        let particles = [];
+        let isDraggingPiston = false;
+        let isExploded = false;
+        let isWarning = false;
+        let warningPulse = 0;
+
+        // Challenge State
+        let targetPressure = null;
+        let challengeCompleted = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            adjustParticleCounts();
+        }
+
+        // Triple-Sync Control Binder
+        function syncInputs(id, origin) {
+            if (isExploded) return;
+            const rangeInput = document.getElementById(`param-${id}`);
+            const numInput = document.getElementById(`num-${id}`);
+            
+            if (origin === 'range') {
+                numInput.value = rangeInput.value;
+            } else if (origin === 'num') {
+                let val = parseFloat(numInput.value);
+                if (isNaN(val)) return;
+                let min = parseFloat(numInput.min);
+                let max = parseFloat(numInput.max);
+                if (val < min) val = min;
+                if (val > max) val = max;
+                rangeInput.value = val;
+            }
+
+            if (id === 'temp') temperature = parseFloat(rangeInput.value);
+            if (id === 'particles') {
+                numParticlesTarget = parseInt(rangeInput.value);
+                adjustParticleCounts();
+            }
+            if (id === 'vol') containerVolume = parseFloat(rangeInput.value);
+
+            updateEnginePhysics();
+        }
+
+        function adjustParticleCounts() {
+            while (particles.length < numParticlesTarget) {
+                const midY = canvas.height / 2;
+                const containerHeight = canvas.height * 0.6;
+                const containerWidth = (containerVolume / 10) * (canvas.width * 0.7);
+                const startX = canvas.width * 0.1;
+                
+                particles.push({
+                    x: startX + Math.random() * (containerWidth - 20) + 10,
+                    y: (midY - containerHeight/2) + Math.random() * (containerHeight - 20) + 10,
+                    vx: (Math.random() - 0.5) * 5,
+                    vy: (Math.random() - 0.5) * 5,
+                    radius: 4,
+                    color: Math.random() > 0.5 ? '#FF3366' : '#06B6D4'
+                });
+            }
+            if (particles.length > numParticlesTarget) {
+                particles = particles.slice(0, numParticlesTarget);
+            }
+        }
+
+        function generateNewChallenge() {
+            const targets = [0.80, 1.50, 2.20, 3.10, 0.50, 1.25];
+            targetPressure = targets[Math.floor(Math.random() * targets.length)];
+            challengeCompleted = false;
+            
+            document.getElementById('target-pressure-display').innerText = targetPressure.toFixed(2);
+            const badge = document.getElementById('challenge-status');
+            badge.innerText = "Mencari";
+            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            
+            updateEnginePhysics();
+        }
+
+        function updateEnginePhysics() {
+            if (isExploded) return;
+
+            // P = (n * R * T) / V
+            pressure = (numParticlesTarget * R_constant * temperature) / (containerVolume * 100);
+
+            // Tampilkan Data ke Dashboard Panel
+            document.getElementById('m-pressure').innerText = pressure.toFixed(2);
+            document.getElementById('m-volume').innerText = containerVolume.toFixed(1);
+            document.getElementById('m-temperature').innerText = Math.round(temperature);
+
+            const statusLabel = document.getElementById('container-status');
+
+            // LOGIKA 3 TINGKAT STATUS WADAH
+            if (pressure > 4.00) {
+                triggerExplosion();
+                return;
+            } else if (pressure > 2.50) {
+                isWarning = true;
+                statusLabel.innerText = "Peringatan (Kritis)";
+                statusLabel.className = "text-amber-500 font-bold animate-pulse";
+            } else {
+                isWarning = false;
+                statusLabel.innerText = "Aman (Normal)";
+                statusLabel.className = "text-emerald-500 font-bold";
+            }
+
+            // Validasi Tantangan Lab
+            const badge = document.getElementById('challenge-status');
+            if (targetPressure !== null && Math.abs(pressure - targetPressure) < 0.1) {
+                challengeCompleted = true;
+                badge.innerText = "Sukses";
+                badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+            } else if (targetPressure !== null) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
+        }
+
+        function triggerExplosion() {
+            isExploded = true;
+            document.getElementById('explosion-overlay').classList.remove('hidden');
+            document.getElementById('container-status').innerText = "HANCUR";
+            document.getElementById('container-status').className = "text-rose-500 font-bold";
+        }
+
+        function resetSimulation() {
+            isExploded = false;
+            isWarning = false;
+            temperature = 300;
+            containerVolume = 6.0;
+            numParticlesTarget = 60;
+            
+            document.getElementById('explosion-overlay').classList.add('hidden');
+            document.getElementById('container-status').innerText = "Aman (Normal)";
+            document.getElementById('container-status').className = "text-emerald-500 font-bold";
+
+            document.getElementById('param-temp').value = 300;
+            document.getElementById('num-temp').value = 300;
+            document.getElementById('param-vol').value = 6.0;
+            document.getElementById('num-vol').value = 6.0;
+            document.getElementById('param-particles').value = 60;
+            document.getElementById('num-particles').value = 60;
+
+            particles = [];
+            adjustParticleCounts();
+            updateEnginePhysics();
+        }
+
+        // Animasi Loop
+        function animate() {
+            if (!isExploded) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const midY = canvas.height / 2;
+                const containerHeight = canvas.height * 0.6;
+                const startX = canvas.width * 0.1;
+                const containerWidth = (containerVolume / 10) * (canvas.width * 0.7);
+                const endX = startX + containerWidth;
+                
+                const topY = midY - containerHeight/2;
+                const bottomY = midY + containerHeight/2;
+
+                // LOGIKA WARNA DINDING WADAH
+                if (isWarning) {
+                    warningPulse += 0.1;
+                    const alpha = 0.4 + Math.sin(warningPulse) * 0.4;
+                    ctx.strokeStyle = `rgba(245, 158, 11, ${alpha + 0.2})`;
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#F59E0B';
+                } else {
+                    ctx.strokeStyle = '#475569';
+                    ctx.shadowBlur = 0;
+                }
+
+                // 1. Dinding Wadah
+                ctx.lineWidth = 6; ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(endX, topY); ctx.lineTo(startX, topY);
+                ctx.lineTo(startX, bottomY); ctx.lineTo(endX, bottomY);
+                ctx.stroke();
+
+                // 2. Piston Kanan
+                ctx.strokeStyle = isWarning ? '#F59E0B' : '#6366F1'; 
+                ctx.lineWidth = 8;
+                ctx.beginPath(); ctx.moveTo(endX, topY + 4); ctx.lineTo(endX, bottomY - 4); ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                // Pegangan Batang Piston
+                ctx.strokeStyle = '#475569'; ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.moveTo(endX, midY); ctx.lineTo(endX + 30, midY); ctx.stroke();
+                
+                ctx.fillStyle = isWarning ? '#F59E0B' : '#6366F1';
+                ctx.beginPath(); ctx.arc(endX + 30, midY, 6, 0, Math.PI * 2); ctx.fill();
+
+                // 3. Update Kinetik Partikel
+                const speedFactor = Math.sqrt(temperature / 300) * 0.8;
+
+                particles.forEach(p => {
+                    p.x += p.vx * speedFactor;
+                    p.y += p.vy * speedFactor;
+
+                    if (p.x - p.radius <= startX + 3) { p.x = startX + 3 + p.radius; p.vx *= -1; }
+                    if (p.x + p.radius >= endX - 3) { p.x = endX - 3 - p.radius; p.vx *= -1; }
+                    if (p.y - p.radius <= topY + 3) { p.y = topY + 3 + p.radius; p.vy *= -1; }
+                    if (p.y + p.radius >= bottomY - 3) { p.y = bottomY - 3 - p.radius; p.vy *= -1; }
+
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+                });
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Interactive Drag Piston Engine
+        function handlePistonDrag(clientX) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = clientX - rect.left;
+            const startX = canvas.width * 0.1;
+            
+            let calculatedVol = ((mouseX - startX) / (canvas.width * 0.7)) * 10;
+            if (calculatedVol < 3.0) calculatedVol = 3.0;
+            if (calculatedVol > 9.0) calculatedVol = 9.0;
+
+            containerVolume = parseFloat(calculatedVol.toFixed(1));
+            
+            document.getElementById('param-vol').value = containerVolume;
+            document.getElementById('num-vol').value = containerVolume;
+            
+            updateEnginePhysics();
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (isExploded) return;
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const startX = canvas.width * 0.1;
+            const currentEndX = startX + (containerVolume / 10) * (canvas.width * 0.7);
+            
+            if (Math.abs(mouseX - (currentEndX + 30)) < 25) isDraggingPiston = true;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDraggingPiston) handlePistonDrag(e.clientX);
+        });
+        window.addEventListener('mouseup', () => { isDraggingPiston = false; });
+
+        // Touch Mobile Support
+        canvas.addEventListener('touchstart', (e) => {
+            if (isExploded || e.touches.length === 0) return;
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.touches[0].clientX - rect.left;
+            const startX = canvas.width * 0.1;
+            const currentEndX = startX + (containerVolume / 10) * (canvas.width * 0.7);
+            if (Math.abs(mouseX - (currentEndX + 30)) < 30) isDraggingPiston = true;
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            if (isDraggingPiston && e.touches.length > 0) handlePistonDrag(e.touches[0].clientX);
+        });
+        window.addEventListener('touchend', () => { isDraggingPiston = false; });
+
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = function() { resizeCanvas(); animate(); };
+    </script>
+</body>
+</html>
