@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rangkaian Arus AC RLC - USM PhysX Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center text-slate-600 font-bold text-sm transition-colors cursor-pointer">
+                    ←
+                </a>
+                <span class="text-md font-bold text-[#2E3A59] tracking-tight">
+                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                </span>
+                <span class="text-slate-300">/</span>
+                <span class="text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">Elektromagnetik</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-bold text-[#2E3A59] hidden sm:inline-block">Rangkaian Arus Bolak Balik (AC)</span>
+                <span class="bg-[#10B981]/10 text-[#10B981] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 12</span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col justify-between min-h-[520px]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+                        <h2 class="text-sm font-bold text-slate-700 tracking-wide uppercase">Oskiloskop & Diagram Fasor</h2>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                        <div>Impedansi (Z): <span id="m-z" class="text-indigo-600 font-bold">0.00</span> Ω</div>
+                        <div>Arus (I_max): <span id="m-imax" class="text-rose-600 font-bold">0.00</span> A</div>
+                        <div>Beda Fase (φ): <span id="m-phi" class="text-amber-600 font-bold">0</span>°</div>
+                    </div>
+                </div>
+
+                <div class="relative w-full bg-slate-950 rounded-xl overflow-hidden flex-grow shadow-inner border border-slate-800 aspect-[16/9]">
+                    <canvas id="physicsCanvas" class="w-full h-full block"></canvas>
+                    
+                    <div class="absolute top-3 left-3 bg-black/40 backdrop-blur-md p-2 rounded border border-slate-800 text-[10px] flex flex-col space-y-1">
+                        <div class="flex items-center space-x-2"><div class="w-3 h-1 bg-amber-400"></div> <span class="text-slate-300">Tegangan (V)</span></div>
+                        <div class="flex items-center space-x-2"><div class="w-3 h-1 bg-cyan-400"></div> <span class="text-slate-300">Arus (I)</span></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-500">
+                    <div>Persamaan: <span class="font-mono font-bold">V = Vm · sin(ωt)</span></div>
+                    <div class="text-[11px] text-slate-400 font-medium">Status Rangkaian: <span id="circuit-status" class="text-emerald-500 font-bold">Resonansi</span></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col space-y-6">
+                <div class="bg-gradient-to-br from-emerald-600 to-teal-600 bg-[#10B981] rounded-2xl shadow-sm p-5 text-white">
+                    <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-3">
+                        <h3 class="text-sm font-bold flex items-center space-x-2">
+                            <span>🎯</span> <span>Tantangan Impedansi</span>
+                        </h3>
+                        <span id="challenge-status" class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Mulai</span>
+                    </div>
+                    <p class="text-xs text-emerald-50 text-opacity-80 leading-relaxed mb-3">Atur nilai R, L, atau C agar impedansi (Z) rangkaian tepat pada angka target:</p>
+                    <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
+                        <span class="text-[10px] block text-emerald-200 uppercase font-bold tracking-wider">Target Impedansi (Z)</span>
+                        <span class="text-2xl font-black font-mono tracking-tight"><span id="target-z-display">---</span> Ω</span>
+                    </div>
+                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-emerald-50 text-[#10B981] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                        Acak Target Baru
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] border-b border-slate-100 pb-3 flex items-center space-x-2">
+                        <span>🎛️</span> <span>Parameter Komponen RLC</span>
+                    </h3>
+                    
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600">Hambatan (R)</label>
+                            <div class="flex items-center space-x-1 bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-r" min="10" max="200" value="100" class="w-10 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('r', 'num')">
+                                <span class="text-[10px] font-bold text-slate-400 font-mono">Ω</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-r" min="10" max="200" value="100" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('r', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600">Induktansi (L)</label>
+                            <div class="flex items-center space-x-1 bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-l" min="0.1" max="2.0" step="0.1" value="0.5" class="w-10 bg-transparent text-xs font-bold font-mono text-cyan-600 focus:outline-none text-right" oninput="syncInputs('l', 'num')">
+                                <span class="text-[10px] font-bold text-slate-400 font-mono">H</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-l" min="0.1" max="2.0" step="0.1" value="0.5" class="w-full accent-cyan-500 cursor-pointer" oninput="syncInputs('l', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600">Kapasitansi (C)</label>
+                            <div class="flex items-center space-x-1 bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-c" min="10" max="1000" step="10" value="100" class="w-12 bg-transparent text-xs font-bold font-mono text-rose-600 focus:outline-none text-right" oninput="syncInputs('c', 'num')">
+                                <span class="text-[10px] font-bold text-slate-400 font-mono">μF</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-c" min="10" max="1000" step="10" value="100" class="w-full accent-rose-500 cursor-pointer" oninput="syncInputs('c', 'range')">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="bg-[#E2E8F0] mt-12 py-8 border-t border-slate-200 text-center w-full">
+        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.8. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Parameter Fisika Dasar AC
+        const V_max = 100;    // Volt
+        const freq = 50;      // Hz
+        const omega = 2 * Math.PI * freq;
+        
+        let R = 100;          // Ohm
+        let L = 0.5;          // Henry
+        let C = 100 * 1e-6;   // Farad
+        
+        let X_L, X_C, Z, phi, I_max;
+        let time = 0;
+
+        // Challenge State
+        let targetZ = null;
+        let challengeCompleted = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        function syncInputs(id, origin) {
+            const rangeInput = document.getElementById(`param-${id}`);
+            const numInput = document.getElementById(`num-${id}`);
+            
+            if (origin === 'range') {
+                numInput.value = rangeInput.value;
+            } else if (origin === 'num') {
+                let val = parseFloat(numInput.value);
+                if (isNaN(val)) return;
+                let min = parseFloat(numInput.min);
+                let max = parseFloat(numInput.max);
+                if (val < min) val = min;
+                if (val > max) val = max;
+                rangeInput.value = val;
+            }
+
+            if (id === 'r') R = parseFloat(rangeInput.value);
+            if (id === 'l') L = parseFloat(rangeInput.value);
+            if (id === 'c') C = parseFloat(rangeInput.value) * 1e-6;
+
+            updateEnginePhysics();
+        }
+
+        function generateNewChallenge() {
+            const targets = [120, 150, 180, 210, 250];
+            targetZ = targets[Math.floor(Math.random() * targets.length)];
+            challengeCompleted = false;
+            
+            document.getElementById('target-z-display').innerText = targetZ;
+            const badge = document.getElementById('challenge-status');
+            badge.innerText = "Mencari";
+            badge.className = "bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            
+            updateEnginePhysics();
+        }
+
+        function updateEnginePhysics() {
+            X_L = omega * L;
+            X_C = 1 / (omega * C);
+            Z = Math.sqrt(R**2 + (X_L - X_C)**2);
+            I_max = V_max / Z;
+            phi = Math.atan((X_L - X_C) / R);
+
+            // Update Labels
+            document.getElementById('m-z').innerText = Z.toFixed(2);
+            document.getElementById('m-imax').innerText = I_max.toFixed(2);
+            document.getElementById('m-phi').innerText = (phi * 180 / Math.PI).toFixed(1);
+
+            // Status Rangkaian
+            const statusLabel = document.getElementById('circuit-status');
+            if (Math.abs(X_L - X_C) < 1) {
+                statusLabel.innerText = "Resonansi Listrik (Z Minimum)";
+                statusLabel.className = "text-amber-500 font-bold animate-pulse";
+            } else if (X_L > X_C) {
+                statusLabel.innerText = "Induktif (Arus Tertinggal)";
+                statusLabel.className = "text-indigo-500 font-bold";
+            } else {
+                statusLabel.innerText = "Kapasitif (Arus Mendahului)";
+                statusLabel.className = "text-rose-500 font-bold";
+            }
+
+            // Challenge Validation
+            const badge = document.getElementById('challenge-status');
+            if (targetZ !== null && Math.abs(Z - targetZ) < 5) {
+                challengeCompleted = true;
+                badge.innerText = "Sukses";
+                badge.className = "bg-white text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            time += 0.01;
+
+            const midY = canvas.height / 2;
+            const waveAreaW = canvas.width * 0.6;
+            const phasorAreaW = canvas.width * 0.3;
+            
+            // 1. Gambar Grid Oskiloskop
+            ctx.strokeStyle = '#1E293B'; ctx.lineWidth = 1;
+            ctx.beginPath();
+            for(let i=0; i<waveAreaW; i+=40) { ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); }
+            for(let j=0; j<canvas.height; j+=40) { ctx.moveTo(0, j); ctx.lineTo(waveAreaW, j); }
+            ctx.stroke();
+
+            // 2. Plot Gelombang Sinusoidal (V & I)
+            ctx.lineWidth = 2.5;
+            
+            // Tegangan (V) - Kuning/Amber
+            ctx.strokeStyle = '#FBBF24';
+            ctx.beginPath();
+            for (let x = 0; x < waveAreaW; x++) {
+                const t = (x / waveAreaW) * 4 * Math.PI;
+                const y = midY - Math.sin(t - time * 5) * 80;
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Arus (I) - Cyan (Besar gelombang dikalikan faktor agar terlihat)
+            ctx.strokeStyle = '#22D3EE';
+            ctx.beginPath();
+            for (let x = 0; x < waveAreaW; x++) {
+                const t = (x / waveAreaW) * 4 * Math.PI;
+                // Arus memiliki fase bergeser sebesar phi
+                const y = midY - Math.sin(t - time * 5 - phi) * (I_max * 100);
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // 3. Diagram Fasor (Area Kanan Canvas)
+            const centerX = waveAreaW + phasorAreaW / 2;
+            const centerY = midY;
+
+            // Lingkaran Fasor
+            ctx.strokeStyle = '#334155'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.arc(centerX, centerY, 80, 0, Math.PI * 2); ctx.stroke();
+
+            // Vektor V (Ref: 0 derajat putar)
+            drawVector(centerX, centerY, 80, -time * 5, '#FBBF24', 'Vm');
+            // Vektor I (Bergeser sejauh phi)
+            drawVector(centerX, centerY, 60, -time * 5 - phi, '#22D3EE', 'Im');
+
+            requestAnimationFrame(animate);
+        }
+
+        function drawVector(x, y, len, angle, color, label) {
+            const targetX = x + Math.cos(angle) * len;
+            const targetY = y + Math.sin(angle) * len;
+            
+            ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(targetX, targetY); ctx.stroke();
+            
+            // Kepala Panah
+            ctx.beginPath();
+            ctx.arc(targetX, targetY, 4, 0, Math.PI * 2); ctx.fill();
+            
+            ctx.font = '10px font-mono'; ctx.fillText(label, targetX + 5, targetY);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = function() { resizeCanvas(); generateNewChallenge(); updateEnginePhysics(); animate(); };
+    </script>
+</body>
+</html>
