@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USM PhysX Lab - Rangkaian Arus DC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-8">
+            <div class="flex items-center space-x-3">
+                <a href="../../index.html" class="w-8 h-8 bg-[#6366F1] rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-indigo-200">
+                    ←
+                </a>
+                <span class="text-xl font-bold text-[#2E3A59] tracking-tight">
+                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                </span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="bg-emerald-50 text-emerald-600 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-100">
+                    Modul Listrik Dinamis (DC)
+                </span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <h2 class="text-lg font-bold text-[#2E3A59] mb-4 flex items-center gap-2">
+                        <span>🎛️</span> Parameter Sirkuit
+                    </h2>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-xs font-semibold text-slate-500">
+                            <span>Tegangan Sumber (V)</span>
+                            <span id="valVoltage" class="text-[#6366F1] font-bold">9.0 V</span>
+                        </div>
+                        <input type="range" id="slideVoltage" min="0" max="24" step="0.5" value="9" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#6366F1]">
+                    </div>
+
+                    <div class="space-y-2 mb-6">
+                        <div class="flex justify-between text-xs font-semibold text-slate-500">
+                            <span>Hambatan Total (R)</span>
+                            <span id="valResistance" class="text-[#6366F1] font-bold">10.0 Ω</span>
+                        </div>
+                        <input type="range" id="slideResistance" min="1" max="50" step="0.5" value="10" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#6366F1]">
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 mb-4">
+                        <span class="text-xs font-bold text-slate-600">Kondisi Saklar</span>
+                        <button id="btnSwitch" onclick="toggleSwitch()" class="px-4 py-1.5 bg-[#6366F1] text-white text-xs font-bold rounded-lg shadow-sm transition-all">
+                            TERTUTUP (ON)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                    <h2 class="text-md font-bold text-[#2E3A59] flex items-center gap-2">
+                        <span>📊</span> Hasil Analisis Hukum Ohm
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100/50">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block">Kuat Arus (I)</span>
+                            <span id="metricCurrent" class="text-2xl font-extrabold text-[#6366F1]">0.90 A</span>
+                        </div>
+                        <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block">Daya Lampu (P)</span>
+                            <span id="metricPower" class="text-2xl font-extrabold text-amber-600">8.10 W</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl text-center">
+                        <p id="statusAnalisis" class="text-xs font-medium text-slate-500 leading-relaxed">
+                            Arus listrik mengalir normal sesuai hukum dasar $I = \frac{V}{R}$.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8">
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center">
+                    <div class="w-full flex items-center justify-between mb-3 px-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="flex h-2 w-2 relative">
+                                <span id="pingSignal" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span id="dotSignal" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">Skema Rangkaian DC Elektron Hidup</span>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full bg-slate-900 rounded-xl overflow-hidden shadow-inner border border-slate-800">
+                        <canvas id="dcCanvas" width="750" height="400" class="w-full block"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="bg-[#E2E8F0] mt-16 py-6 border-t border-slate-200 text-center w-full">
+        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Educational Research Division. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('dcCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Parameter State Sirkuit
+        let voltage = 9.0;
+        let resistance = 10.0;
+        let isSwitchClosed = true;
+        let current = 0.9;
+        let electronOffset = 0;
+
+        // Input Event Listeners
+        const slideVoltage = document.getElementById('slideVoltage');
+        const slideResistance = document.getElementById('slideResistance');
+        const valVoltage = document.getElementById('valVoltage');
+        const valResistance = document.getElementById('valResistance');
+        const btnSwitch = document.getElementById('btnSwitch');
+        const metricCurrent = document.getElementById('metricCurrent');
+        const metricPower = document.getElementById('metricPower');
+        const statusAnalisis = document.getElementById('statusAnalisis');
+
+        slideVoltage.addEventListener('input', (e) => {
+            voltage = parseFloat(e.target.value);
+            valVoltage.innerText = voltage.toFixed(1) + ' V';
+            calculateOhm();
+        });
+
+        slideResistance.addEventListener('input', (e) => {
+            resistance = parseFloat(e.target.value);
+            valResistance.innerText = resistance.toFixed(1) + ' Ω';
+            calculateOhm();
+        });
+
+        function toggleSwitch() {
+            isSwitchClosed = !isSwitchClosed;
+            if(isSwitchClosed) {
+                btnSwitch.innerText = "TERTUTUP (ON)";
+                btnSwitch.className = "px-4 py-1.5 bg-[#6366F1] text-white text-xs font-bold rounded-lg shadow-sm transition-all";
+                document.getElementById('pingSignal').className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+                document.getElementById('dotSignal').className = "relative inline-flex rounded-full h-2 w-2 bg-emerald-500";
+            } else {
+                btnSwitch.innerText = "TERBUKA (OFF)";
+                btnSwitch.className = "px-4 py-1.5 bg-rose-500 text-white text-xs font-bold rounded-lg shadow-sm transition-all";
+                document.getElementById('pingSignal').className = "hidden";
+                document.getElementById('dotSignal').className = "relative inline-flex rounded-full h-2 w-2 bg-rose-500";
+            }
+            calculateOhm();
+        }
+
+        function calculateOhm() {
+            if (!isSwitchClosed) {
+                current = 0;
+            } else {
+                current = voltage / resistance;
+            }
+            let power = current * voltage;
+
+            metricCurrent.innerText = current.toFixed(2) + ' A';
+            metricPower.innerText = power.toFixed(2) + ' W';
+
+            // Update status text
+            if (!isSwitchClosed) {
+                statusAnalisis.innerText = "Saklar terbuka. Aliran listrik terputus total (I = 0).";
+            } else if (voltage === 0) {
+                statusAnalisis.innerText = "Tidak ada beda potensial sumber. Elektron dalam kondisi statis.";
+            } else {
+                statusAnalisis.innerText = `Arus mengalir sebesar ${current.toFixed(2)} A. Mengubah energi listrik menjadi daya cahaya sebesar ${power.toFixed(2)} Watt.`;
+            }
+        }
+
+        // Jalur Kabel Utama (Kotak Rangkaian)
+        const circuitPath = [
+            {x: 150, y: 100}, // Top-Left
+            {x: 600, y: 100}, // Top-Right (Lampu)
+            {x: 600, y: 300}, // Bottom-Right (Resistor)
+            {x: 150, y: 300}  // Bottom-Left (Baterai)
+        ];
+
+        function drawCircuit() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Gambar Garis Kabel Utama
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 4;
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(circuitPath[0].x, circuitPath[0].y);
+            ctx.lineTo(circuitPath[1].x, circuitPath[1].y);
+            ctx.lineTo(circuitPath[2].x, circuitPath[2].y);
+            ctx.lineTo(circuitPath[3].x, circuitPath[3].y);
+            ctx.closePath();
+            ctx.stroke();
+
+            // 2. KELOMPOK KOMPONEN - BATERAI (Sisi Kiri: 150, 200)
+            ctx.fillStyle = '#1E293B';
+            ctx.fillRect(130, 180, 40, 40);
+            // Kutub Positif (Kuning) & Negatif
+            ctx.fillStyle = '#F59E0B'; ctx.fillRect(140, 175, 20, 5);
+            ctx.fillStyle = '#EF4444'; ctx.fillRect(140, 220, 20, 5);
+            // Teks Label Baterai
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText("DC SOURCE", 118, 165);
+
+            // 3. KELOMPOK KOMPONEN - SAKLAR (Sisi Atas: 350, 100)
+            ctx.fillStyle = '#94A3B8';
+            ctx.beginPath(); ctx.arc(320, 100, 5, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(380, 100, 5, 0, Math.PI*2); ctx.fill();
+            
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(320, 100);
+            if (isSwitchClosed) {
+                ctx.lineTo(380, 100);
+            } else {
+                ctx.lineTo(370, 70); // Terangkat ke atas (OFF)
+            }
+            ctx.stroke();
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText("SWITCH", 332, 122);
+
+            // 4. KELOMPOK KOMPONEN - RESISTOR (Sisi Bawah: 375, 300)
+            ctx.fillStyle = '#E2E8F0';
+            ctx.fillRect(340, 285, 70, 30);
+            ctx.strokeStyle = '#64748B'; ctx.lineWidth = 2; ctx.strokeRect(340, 285, 70, 30);
+            // Pita warna resistor tipuan
+            ctx.fillStyle = '#B45309'; ctx.fillRect(350, 285, 6, 30);
+            ctx.fillStyle = '#10B981'; ctx.fillRect(365, 285, 6, 30);
+            ctx.fillStyle = '#4F46E5'; ctx.fillRect(380, 285, 6, 30);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(`R: ${resistance.toFixed(1)} Ω`, 345, 332);
+
+            // 5. KELOMPOK KOMPONEN - LAMPU PIJAR (Sisi Kanan: 600, 200)
+            let glowIntensity = (voltage / 24) * (isSwitchClosed ? 1 : 0);
+            if (glowIntensity > 0) {
+                // Gambar pendaran cahaya kuning radial
+                let gradient = ctx.createRadialGradient(600, 200, 5, 600, 200, 25 + glowIntensity * 40);
+                gradient.addColorStop(0, `rgba(253, 224, 71, ${0.4 + glowIntensity * 0.6})`);
+                gradient.addColorStop(1, 'rgba(253, 224, 71, 0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath(); ctx.arc(600, 200, 30 + glowIntensity * 40, 0, Math.PI*2); ctx.fill();
+            }
+            // Dudukan & Bohlam Lampu
+            ctx.fillStyle = glowIntensity > 0 ? '#FEF08A' : '#64748B';
+            ctx.beginPath(); ctx.arc(600, 200, 16, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 3; ctx.stroke();
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText("LOAD (LAMP)", 568, 165);
+
+            // 6. ANIMASI ALIRAN ARUS ELEKTRON (Bila Saklar ON)
+            if (isSwitchClosed && current > 0) {
+                electronOffset += (current * 4); // Kecepatan gerak proporsional dengan arus
+                if (electronOffset > 40) electronOffset = 0;
+
+                ctx.fillStyle = '#38BDF8'; // Warna biru terang elektron
+                // Menghitung titik-titik sepanjang perimeter perimeter keliling kabel kotak
+                let totalLength = 1400; // 450 + 200 + 450 + 200
+                for (let d = electronOffset; d < totalLength; d += 35) {
+                    let pt = getPointAlongRect(d);
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        // Fungsi bantu memetakan titik koordinat elektron keliling sirkuit persegi panjang
+        function getPointAlongRect(d) {
+            let topW = 450, rightH = 200, botW = 450;
+            if (d < topW) return { x: 150 + d, y: 100 }; // Atas ke kanan
+            d -= topW;
+            if (d < rightH) return { x: 600, y: 100 + d }; // Kanan ke bawah
+            d -= rightH;
+            if (d < botW) return { x: 600 - d, y: 300 }; // Bawah ke kiri
+            d -= botW;
+            return { x: 150, y: 300 - d }; // Kiri ke atas
+        }
+
+        function animate() {
+            drawCircuit();
+            requestAnimationFrame(animate);
+        }
+
+        // Inisialisasi awal
+        calculateOhm();
+        animate();
+    </script>
+</body>
+</html>
