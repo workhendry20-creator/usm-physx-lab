@@ -302,13 +302,13 @@
         // oleh listener DOMContentLoaded di dalam lang-loader.js.
 
         window.addEventListener('click', function(e) {
-            const btn = document.getElementById('langDropdownBtn');
-            const menu = document.getElementById('langDropdownMenu');
-            if (!btn.contains(e.target) && !menu.contains(e.target)) {
-                menu.classList.add('hidden');
-                document.getElementById('dropdownArrow').remove('rotate-180');
-            }
-        });
+    const btn = document.getElementById('langDropdownBtn');
+    const menu = document.getElementById('langDropdownMenu');
+    if (!btn.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.add('hidden');
+        document.getElementById('dropdownArrow').classList.remove('rotate-180');
+    }
+});
 
         // Fungsi Collapsible Expand
         async function toggleSeeMore() {
