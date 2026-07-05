@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USM PhysX Lab - Main Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta name="description" content="USM PhysX Lab - Laboratorium fisika virtual interaktif untuk siswa Kelas 10-12. Eksplorasi Gerak Parabola, Hukum Coulomb, Rangkaian Listrik, Optik, dan Termodinamika langsung dari browser.">
+<meta property="og:title" content="USM PhysX Lab - Laboratorium Virtual Fisika">
+<meta property="og:description" content="8 simulasi fisika interaktif: Mekanika, Listrik & Magnet, Gelombang & Optik, Termodinamika. Gratis dan langsung bisa diakses dari browser.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
+<script src="https://cdn.tailwindcss.com"></script>
     <script src="lang-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,14 +39,19 @@
 
             <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-500">
                 <a href="#" id="nav-home" class="i18n text-[#6366F1] border-b-2 border-[#6366F1] pb-1 font-semibold">Beranda</a>
-                <a href="#" id="nav-guide" class="i18n hover:text-slate-900 transition-colors">Panduan</a>
-                <a href="#" id="nav-research" class="i18n hover:text-slate-900 transition-colors">Tentang Riset</a>
+                <a href="panduan.html" id="nav-guide" class="i18n hover:text-slate-900 transition-colors">Panduan</a>
+                <a href="tentang-riset.html" id="nav-research" class="i18n hover:text-slate-900 transition-colors">Tentang Riset</a>
             </div>
 
             <div class="flex items-center space-x-4 relative">
-                <span id="badge-research" class="i18n hidden sm:inline-block bg-[#EEF2FF] text-[#6366F1] text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-100">
-                    Eksperimen Edukasi
-                </span>
+    <button onclick="toggleMobileMenu()" id="mobileMenuBtn" class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-slate-600 transition-all">
+        <svg id="mobileMenuIconOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <svg id="mobileMenuIconClose" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+
+    <span id="badge-research" class="i18n hidden sm:inline-block bg-[#EEF2FF] text-[#6366F1] text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-100">
+        Eksperimen Edukasi
+    </span>
                 
                 <div class="relative inline-block text-left z-50">
                     <button onclick="toggleLangDropdown()" id="langDropdownBtn" data-no-translate class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 rounded-xl text-xs font-bold text-slate-700 transition-all shadow-sm">
@@ -69,6 +79,12 @@
                 </div>
             </div>
         </nav>
+
+        <div id="mobileNavMenu" class="hidden md:hidden -mt-4 mb-8 bg-white rounded-2xl shadow-lg border border-slate-100 p-2 space-y-1">
+            <a href="#" class="i18n block px-4 py-2.5 rounded-xl text-sm font-semibold text-[#6366F1] bg-indigo-50">Beranda</a>
+            <a href="panduan.html" class="i18n block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50">Panduan</a>
+            <a href="tentang-riset.html" class="i18n block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50">Tentang Riset</a>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
             <div class="lg:col-span-7 flex flex-col justify-center">
@@ -268,9 +284,9 @@
         <div class="max-w-7xl mx-auto px-4 text-slate-600">
             <h4 class="text-md font-bold text-[#6366F1] mb-4">▲ USM PhysX Lab</h4>
             <div class="flex justify-center space-x-6 text-xs font-medium mb-6">
-                <a href="#" id="footer-privacy" class="i18n hover:text-slate-900">Kebijakan Privasi</a>
-                <a href="#" id="footer-contact" class="i18n hover:text-slate-900">Kontak Kami</a>
-                <a href="#" id="footer-sitemap" class="i18n hover:text-slate-900">Peta Situs</a>
+                <a href="kebijakan-privasi.html" id="footer-privacy" class="i18n hover:text-slate-900">Kebijakan Privasi</a>
+                <a href="kontak.html" id="footer-contact" class="i18n hover:text-slate-900">Kontak Kami</a>
+                <a href="peta-situs.html" id="footer-sitemap" class="i18n hover:text-slate-900">Peta Situs</a>
             </div>
             <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Educational Research Division. All rights reserved.</p>
         </div>
@@ -283,9 +299,15 @@
         // lang-loader.js (window.PhysXLang) - tidak ada lagi kamus manual di sini.
 
         function toggleLangDropdown() {
-            document.getElementById('langDropdownMenu').classList.toggle('hidden');
-            document.getElementById('dropdownArrow').classList.toggle('rotate-180');
-        }
+    document.getElementById('langDropdownMenu').classList.toggle('hidden');
+    document.getElementById('dropdownArrow').classList.toggle('rotate-180');
+}
+
+function toggleMobileMenu() {
+    document.getElementById('mobileNavMenu').classList.toggle('hidden');
+    document.getElementById('mobileMenuIconOpen').classList.toggle('hidden');
+    document.getElementById('mobileMenuIconClose').classList.toggle('hidden');
+}
 
         function changeLanguage(lang) {
             // Delegasikan seluruh proses terjemahan ke engine universal di lang-loader.js
@@ -307,6 +329,14 @@
     if (!btn.contains(e.target) && !menu.contains(e.target)) {
         menu.classList.add('hidden');
         document.getElementById('dropdownArrow').classList.remove('rotate-180');
+    }
+
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileNavMenu');
+    if (!mobileBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.add('hidden');
+        document.getElementById('mobileMenuIconOpen').classList.remove('hidden');
+        document.getElementById('mobileMenuIconClose').classList.add('hidden');
     }
 });
 
