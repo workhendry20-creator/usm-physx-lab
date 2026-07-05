@@ -1,25 +1,28 @@
 // ==========================================
-// USM PhysX Lab - Universal Auto-Translate Engine (v3)
+// USM PhysX Lab - Universal Auto-Translate Engine (v4)
 // Sumber bahasa: Indonesia (ID) -> diterjemahkan otomatis ke EN / MS
 // TANPA kamus manual - semua teks diterjemahkan live via Google Translate
 // Dipakai bersama di Dashboard (index.html) dan seluruh 8 modul simulasi
-// v3: menambahkan loading indicator (progress bar) saat proses terjemahan berjalan
+// v4: menambahkan komponen loading universal (progress bar + spinner "Loading")
+//     yang bisa dipakai ulang oleh proses async lain di masa depan
 // ==========================================
 (function () {
     // Hanya untuk label tombol dropdown bahasa (bukan konten, jadi bukan "kamus")
     const FLAG_LABEL = { id: '🇮🇩 ID', en: '🇬🇧 EN', ms: '🇲🇾 MS' };
 
     // Elemen teks statis yang aman diterjemahkan otomatis.
-    // Elemen ber-id SENGAJA di-skip (mayoritas id dipakai untuk readout dinamis
-    // seperti m-time, num-v0, status-label, dsb). Elemen statis yang kebetulan
-    // butuh id (nav, footer, hero-title) ditandai manual dengan class="i18n".
     const TARGET_SELECTOR = 'h1, h2, h3, h4, h5, p, label, a:not([id]), li, td, th, span:not([id]), .i18n';
 
-    // ---------- Loading Indicator (progress bar tipis di atas halaman) ----------
-    function injectLoadingBarStyles() {
-        if (document.getElementById('physx-lang-bar-style')) return;
+    // =====================================================================
+    // KOMPONEN LOADING UNIVERSAL (dipakai untuk translate & bisa dipakai
+    // ulang untuk proses loading lain di masa depan lewat window.PhysXLoading)
+    // =====================================================================
+    let activeLoadingCount = 0; // hitung berapa proses loading yg jalan bersamaan
+
+    function injectLoadingStyles() {
+        if (document.getElementById('physx-loading-style')) return;
         const style = document.createElement('style');
-        style.id = 'physx-lang-bar-style';
+        style.id = 'physx-loading-style';
         style.textContent = `
             #physx-lang-bar {
                 position: fixed;
@@ -33,12 +36,51 @@
                 pointer-events: none;
             }
             #physx-lang-bar.active { opacity: 1; }
+
+            #physx-loading-badge {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: #ffffff;
+                border: 1px solid #E2E8F0;
+                box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+                padding: 10px 16px;
+                border-radius: 9999px;
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                font-size: 13px;
+                font-weight: 600;
+                color: #2E3A59;
+                z-index: 9999;
+                opacity: 0;
+                transform: translateY(8px);
+                pointer-events: none;
+                transition: opacity 0.25s ease, transform 0.25s ease;
+            }
+            #physx-loading-badge.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .physx-spinner {
+                width: 16px;
+                height: 16px;
+                border: 2.5px solid #E2E8F0;
+                border-top-color: #6366F1;
+                border-radius: 50%;
+                animation: physx-spin 0.7s linear infinite;
+                flex-shrink: 0;
+            }
+            @keyframes physx-spin {
+                to { transform: rotate(360deg); }
+            }
         `;
         document.head.appendChild(style);
     }
 
     function ensureLoadingBar() {
-        injectLoadingBarStyles();
+        injectLoadingStyles();
         let bar = document.getElementById('physx-lang-bar');
         if (!bar) {
             bar = document.createElement('div');
@@ -48,26 +90,52 @@
         return bar;
     }
 
-    function showLoadingIndicator() {
+    function ensureLoadingBadge() {
+        injectLoadingStyles();
+        let badge = document.getElementById('physx-loading-badge');
+        if (!badge) {
+            badge = document.createElement('div');
+            badge.id = 'physx-loading-badge';
+            badge.innerHTML = `<div class="physx-spinner"></div><span id="physx-loading-text">Loading...</span>`;
+            document.body.appendChild(badge);
+        }
+        return badge;
+    }
+
+    // API publik: window.PhysXLoading.show("Teks opsional"), .hide()
+    // Reusable untuk proses async apapun di masa depan (bukan cuma translate).
+    function showLoading(text) {
+        activeLoadingCount++;
+
         const bar = ensureLoadingBar();
         bar.style.width = '0%';
         bar.classList.add('active');
-        // beri jeda 1 frame supaya transisi CSS "width" ke-trigger dengan benar
-        requestAnimationFrame(() => {
-            bar.style.width = '75%';
-        });
+        requestAnimationFrame(() => { bar.style.width = '75%'; });
+
+        const badge = ensureLoadingBadge();
+        document.getElementById('physx-loading-text').innerText = text || 'Loading...';
+        badge.classList.add('active');
     }
 
-    function hideLoadingIndicator() {
+    function hideLoading() {
+        activeLoadingCount = Math.max(0, activeLoadingCount - 1);
+        if (activeLoadingCount > 0) return; // masih ada proses loading lain yg jalan
+
         const bar = document.getElementById('physx-lang-bar');
-        if (!bar) return;
-        bar.style.width = '100%';
-        setTimeout(() => {
-            bar.classList.remove('active');
-            setTimeout(() => { bar.style.width = '0%'; }, 300);
-        }, 150);
+        if (bar) {
+            bar.style.width = '100%';
+            setTimeout(() => {
+                bar.classList.remove('active');
+                setTimeout(() => { bar.style.width = '0%'; }, 300);
+            }, 150);
+        }
+
+        const badge = document.getElementById('physx-loading-badge');
+        if (badge) badge.classList.remove('active');
     }
-    // -----------------------------------------------------------------------
+
+    window.PhysXLoading = { show: showLoading, hide: hideLoading };
+    // =====================================================================
 
     async function translateText(text, targetLang) {
         if (!text || text.trim().length < 2) return text;
@@ -91,7 +159,6 @@
 
     function isSkippableText(text) {
         if (!text || text.trim().length < 2) return true;
-        // Skip teks yang cuma berisi angka/rumus/satuan fisika (mis: "9.8", "Ω", "45°")
         if (/^[\d\s.,ΩHμF°+=\-·%πθ]*$/.test(text)) return true;
         return false;
     }
@@ -100,12 +167,10 @@
         localStorage.setItem('selectedLanguage', lang);
         document.documentElement.lang = lang;
 
-        // Kembali ke Bahasa Indonesia = instan (ambil dari cache), tidak perlu loading bar.
-        // Selain itu (EN/MS) = perlu panggil API, tampilkan loading bar sampai selesai.
+        // Kembali ke Bahasa Indonesia = instan (ambil dari cache), tidak perlu loading.
         const isTranslating = lang !== 'id';
-        if (isTranslating) showLoadingIndicator();
+        if (isTranslating) showLoading('Menerjemahkan...');
 
-        // 1. Update label dropdown bahasa (kalau halaman ini punya dropdown-nya, yaitu dashboard)
         const dropdownBtn = document.getElementById('langDropdownBtn');
         if (dropdownBtn) {
             const span = dropdownBtn.querySelector('span');
@@ -114,7 +179,6 @@
 
         const pendingTasks = [];
 
-        // 2. Judul tab browser
         const titleEl = document.querySelector('title');
         if (titleEl) {
             if (titleEl.dataset.original === undefined) titleEl.dataset.original = titleEl.textContent;
@@ -125,7 +189,6 @@
             })());
         }
 
-        // 3. Placeholder search bar (khusus dashboard)
         const searchInput = document.getElementById('searchBar');
         if (searchInput) {
             if (searchInput.dataset.original === undefined) searchInput.dataset.original = searchInput.placeholder;
@@ -136,15 +199,10 @@
             })());
         }
 
-        // 4. Semua elemen teks umum di halaman (dashboard + 8 modul simulasi)
         const elements = document.querySelectorAll(TARGET_SELECTOR);
         elements.forEach((el) => {
             if (isProtectedElement(el)) return;
-
-            // Simpan teks asli Bahasa Indonesia HANYA sekali (jadi sumber kebenaran)
-            if (el.dataset.original === undefined) {
-                el.dataset.original = el.innerText;
-            }
+            if (el.dataset.original === undefined) el.dataset.original = el.innerText;
 
             const original = el.dataset.original;
             if (isSkippableText(original)) return;
@@ -154,14 +212,11 @@
             })());
         });
 
-        // Tunggu SEMUA proses translate selesai baru sembunyikan loading bar
         await Promise.all(pendingTasks);
 
-        if (isTranslating) hideLoadingIndicator();
+        if (isTranslating) hideLoading();
     }
 
-    // Expose ke global scope supaya bisa dipanggil dari dashboard (dropdown bahasa)
-    // maupun function lain seperti toggleSeeMore()
     window.PhysXLang = { applyLanguage, translateText };
 
     document.addEventListener('DOMContentLoaded', () => {
