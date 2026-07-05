@@ -96,6 +96,29 @@
                     </div>
                 </div>
             </div>
+            <div class="mt-10 bg-emerald-600 rounded-2xl border border-emerald-500 shadow-lg overflow-hidden transition-all text-white">
+            <div class="px-6 py-4 flex justify-between items-center border-b border-emerald-500/50 bg-emerald-700/30">
+                <h2 class="font-bold flex items-center gap-2">
+                    <span>🎯</span> Tantangan Hukum Ohm
+                </h2>
+                <span id="challengeStatus" class="bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Mencari</span>
+            </div>
+            
+            <div class="p-8 text-center max-w-2xl mx-auto">
+                <p class="text-emerald-100 text-sm font-medium mb-4">
+                    Atur nilai Tegangan ($V$) atau Hambatan ($R$) melalui slider di atas agar **Kuat Arus ($I_{total}$)** rangkaian tepat pada angka target:
+                </p>
+                
+                <div class="bg-emerald-800/40 border border-emerald-500/40 p-6 rounded-2xl mb-6 shadow-inner">
+                    <span class="text-xs uppercase font-bold tracking-widest text-emerald-300 block mb-1">Target Kuat Arus ($I$)</span>
+                    <span id="targetCurrentDisplay" class="text-4xl font-black tracking-tight">1.50 A</span>
+                </div>
+
+                <button onclick="generateNewTarget()" class="w-full sm:w-auto px-8 py-3 bg-white text-emerald-700 font-bold rounded-xl shadow-md hover:bg-emerald-50 transition-all text-sm">
+                    Acak Target Baru
+                </button>
+            </div>
+        </div>
 
             <div class="lg:col-span-8">
                 <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center">
@@ -412,6 +435,51 @@
 
         calculateOhm();
         animate();
+        // LOGIKA TANTANGAN GAMIFIKASI DC
+        let targetCurrent = 1.50;
+        const challengeStatus = document.getElementById('challengeStatus');
+        const targetCurrentDisplay = document.getElementById('targetCurrentDisplay');
+
+        // Fungsi mengacak target baru (antara 0.3A sampai 4.5A)
+        function generateNewTarget() {
+            const randomTargets = [0.30, 0.50, 0.60, 0.90, 1.00, 1.20, 1.50, 2.00, 2.40, 3.00, 4.00];
+            const currentIndex = Math.floor(Math.random() * randomTargets.length);
+            targetCurrent = randomTargets[currentIndex];
+            targetCurrentDisplay.innerText = targetCurrent.toFixed(2) + ' A';
+            
+            challengeStatus.innerText = "Mencari";
+            challengeStatus.className = "bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider";
+            
+            checkChallengeMatch();
+        }
+
+        // Fungsi mengecek apakah kombinasi V dan R milik user sudah cocok dengan target
+        function checkChallengeMatch() {
+            // Toleransi presisi kecil 0.02A agar user tidak terlalu kesusahan ngepasin slider
+            if (Math.abs(current - targetCurrent) < 0.02) {
+                challengeStatus.innerText = "MATCH! 🎉";
+                challengeStatus.className = "bg-amber-400 text-emerald-950 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider animate-bounce";
+            } else {
+                // Jika sedang OFF atau tidak pas, kembalikan ke status mencari
+                if (challengeStatus.innerText === "MATCH! 🎉") {
+                    challengeStatus.innerText = "Mencari";
+                    challengeStatus.className = "bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider";
+                }
+            }
+        }
+
+        // SUNTIKKAN FUNGSI PENGECEK KE LOGIKA HITUNGAN UTAMA KAMU
+        // Modifikasi fungsi calculateOhm() bawaan agar memanggil checkChallengeMatch() di baris paling bawahnya:
+        const originalCalculateOhm = calculateOhm;
+        calculateOhm = function() {
+            originalCalculateOhm(); // Jalankan hitungan rumus bawaan dulu
+            if(typeof checkChallengeMatch === 'function') {
+                checkChallengeMatch(); // Validasi kecocokan target gamifikasi
+            }
+        };
+
+        // Inisialisasi target acak saat halaman pertama kali dibuka
+        generateNewTarget();
     </script>
 </body>
 </html>
