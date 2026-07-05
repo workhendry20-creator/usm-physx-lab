@@ -15,127 +15,118 @@
 <body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
-        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-8">
+        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-6">
             <div class="flex items-center space-x-3">
-                <a href="../../index.html" class="w-8 h-8 bg-[#6366F1] rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-indigo-200">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 border border-slate-200 rounded-lg flex items-center justify-center text-slate-600 font-bold text-sm shadow-sm hover:bg-slate-200 transition-all">
                     ←
                 </a>
-                <span class="text-xl font-bold text-[#2E3A59] tracking-tight">
-                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                <span class="text-md font-bold text-[#2E3A59] tracking-tight">
+                    USM PhysX Lab <span class="text-slate-300 mx-2">/</span> <span class="text-slate-400 font-medium">Elektromagnetik</span>
                 </span>
             </div>
             <div class="flex items-center space-x-2">
-                <span class="bg-indigo-50 text-indigo-600 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-100">
-                    Modul Listrik Dinamis (DC Upgrade v2.0)
+                <span class="text-slate-700 text-xs font-bold mr-2">Rangkaian Arus Searah (DC)</span>
+                <span class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-100 uppercase">
+                    Kelas 12
                 </span>
             </div>
         </nav>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
+            <div class="lg:col-span-8 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
+                
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4 px-2 pb-2 border-b border-slate-50 text-xs">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2 w-2 relative">
+                            <span id="pingSignal" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span id="dotSignal" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span class="font-bold text-slate-700 uppercase tracking-wider">Sirkuit Lab & Live Graph</span>
+                    </div>
+                    <div class="flex items-center space-x-6 font-semibold">
+                        <div>Hambatan Pengganti (<span class="text-indigo-600">R_total</span>): <span id="metricResistance" class="font-bold text-indigo-600">10.0 Ω</span></div>
+                        <div>Arus (<span class="text-rose-500">I</span>): <span id="metricCurrent" class="font-bold text-rose-500">0.90 A</span></div>
+                        <div>Daya Total (<span class="text-amber-500">P</span>): <span id="metricPower" class="font-bold text-amber-500">8.10 W</span></div>
+                    </div>
+                </div>
+                
+                <div class="w-full bg-slate-900 rounded-xl overflow-hidden shadow-inner border border-slate-800">
+                    <canvas id="dcCanvas" width="750" height="380" class="w-full block"></canvas>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold px-2">
+                    <div class="text-slate-500">
+                        Persamaan: <span class="text-indigo-600 font-bold">V = I × R</span>
+                    </div>
+                    <div class="text-slate-500">
+                        Status Rangkaian: <span id="statusAnalisis" class="text-emerald-500 font-bold">Aman</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="lg:col-span-4 space-y-6">
                 
                 <div class="bg-emerald-600 rounded-2xl border border-emerald-500 shadow-sm overflow-hidden text-white">
                     <div class="px-5 py-3 flex justify-between items-center border-b border-emerald-500/50 bg-emerald-700/30">
-                        <h2 class="font-bold text-sm flex items-center gap-2">
-                            <span>🎯</span> Tantangan Hukum Ohm
+                        <h2 class="font-bold text-xs flex items-center gap-2">
+                            🎯 Tantangan Hukum Ohm
                         </h2>
                         <span id="challengeStatus" class="bg-emerald-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Mencari</span>
                     </div>
-                    
                     <div class="p-5 text-center">
                         <p class="text-emerald-100 text-xs font-medium mb-3">
-                            Atur nilai Tegangan (V) atau Hambatan (R) agar **Kuat Arus ($I$)** tepat pada target:
+                            Atur nilai V atau R agar kuat arus rangkaian tepat pada angka target:
                         </p>
-                        
                         <div class="bg-emerald-800/40 border border-emerald-500/40 py-3 px-4 rounded-xl mb-3 shadow-inner">
-                            <span class="text-[9px] uppercase font-bold tracking-widest text-emerald-300 block mb-0.5">Target Kuat Arus</span>
+                            <span class="text-[9px] uppercase font-bold tracking-widest text-emerald-300 block mb-0.5">Target Kuat Arus (I)</span>
                             <span id="targetCurrentDisplay" class="text-2xl font-black tracking-tight">1.50 A</span>
                         </div>
-
                         <button onclick="generateNewTarget()" class="w-full py-2 bg-white text-emerald-700 text-xs font-bold rounded-lg shadow-sm hover:bg-emerald-50 transition-all">
                             Acak Target Baru
                         </button>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <h2 class="text-lg font-bold text-[#2E3A59] mb-4 flex items-center gap-2">
-                        <span>🎛️</span> Konfigurasi Sirkuit
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                        🎛️ Parameter Komponen RLC & Sumber
                     </h2>
                     
-                    <div class="mb-5">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Tipe Rangkaian Hambatan</label>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Tipe Rangkaian Hambatan</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="setCircuitMode('tunggal')" id="btnTunggal" class="py-2 text-xs font-bold rounded-xl border transition-all bg-[#6366F1] text-white border-[#6366F1]">Tunggal</button>
-                            <button onclick="setCircuitMode('seri')" id="btnSeri" class="py-2 text-xs font-bold rounded-xl border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50">Seri</button>
-                            <button onclick="setCircuitMode('paralel')" id="btnParalel" class="py-2 text-xs font-bold rounded-xl border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50">Paralel</button>
+                            <button onclick="setCircuitMode('tunggal')" id="btnTunggal" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#6366F1] text-white border-[#6366F1]">Tunggal</button>
+                            <button onclick="setCircuitMode('seri')" id="btnSeri" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50">Seri</button>
+                            <button onclick="setCircuitMode('paralel')" id="btnParalel" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50">Paralel</button>
                         </div>
                     </div>
                     
-                    <div class="space-y-2 mb-4">
+                    <div class="space-y-1">
                         <div class="flex justify-between text-xs font-semibold text-slate-500">
-                            <span>Tegangan Sumber ($V$)</span>
-                            <span id="valVoltage" class="text-[#6366F1] font-bold">9.0 V</span>
+                            <span>Tegangan Sumber (V)</span>
+                            <span id="valVoltage" class="text-indigo-600 font-bold">9.0 V</span>
                         </div>
-                        <input type="range" id="slideVoltage" min="0" max="24" step="0.5" value="9" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#6366F1]">
+                        <input type="range" id="slideVoltage" min="0" max="24" step="0.5" value="9" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#6366F1]">
                     </div>
 
-                    <div class="space-y-2 mb-6">
+                    <div class="space-y-1">
                         <div class="flex justify-between text-xs font-semibold text-slate-500">
-                            <span id="labelHambatan">Hambatan Beban ($R$)</span>
-                            <span id="valResistance" class="text-[#6366F1] font-bold">10.0 Ω</span>
+                            <span id="labelHambatan">Hambatan Beban (R)</span>
+                            <span id="valResistance" class="text-indigo-600 font-bold">10.0 Ω</span>
                         </div>
-                        <input type="range" id="slideResistance" min="0.5" max="50" step="0.5" value="10" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#6366F1]">
+                        <input type="range" id="slideResistance" min="0.5" max="50" step="0.5" value="10" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#6366F1]">
                     </div>
 
-                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                        <span class="text-xs font-bold text-slate-600">Kondisi Saklar</span>
-                        <button id="btnSwitch" onclick="toggleSwitch()" class="px-4 py-1.5 bg-[#6366F1] text-white text-xs font-bold rounded-lg shadow-sm transition-all">
+                    <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+                        <span class="font-bold text-slate-600">Kondisi Saklar</span>
+                        <button id="btnSwitch" onclick="toggleSwitch()" class="px-3 py-1 bg-[#6366F1] text-white font-bold rounded-md shadow-sm transition-all text-[11px]">
                             TERTUTUP (ON)
                         </button>
                     </div>
-                </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-                    <h2 class="text-md font-bold text-[#2E3A59] flex items-center gap-2">
-                        <span>📊</span> Analisis Sistem
-                    </h2>
-                    
-                    <div id="shortCircuitAlert" class="hidden p-3 bg-rose-50 border border-rose-200 text-rose-600 text-xs rounded-xl font-bold flex items-center gap-2 animate-pulse">
-                        <span>⚠️</span> KORSLETING! Hambatan terlalu rendah, arus kritis!
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100/50">
-                            <span class="text-[10px] uppercase font-bold text-slate-400 block">Total Arus ($I_{total}$)</span>
-                            <span id="metricCurrent" class="text-2xl font-extrabold text-[#6366F1]">0.90 A</span>
-                        </div>
-                        <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
-                            <span class="text-[10px] uppercase font-bold text-slate-400 block">Daya Total ($P$)</span>
-                            <span id="metricPower" class="text-2xl font-extrabold text-amber-600">8.10 W</span>
-                        </div>
-                    </div>
-                    <div class="p-3 bg-slate-50 rounded-xl text-center">
-                        <p id="statusAnalisis" class="text-xs font-medium text-slate-500 leading-relaxed"></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-8">
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center">
-                    <div class="w-full flex items-center justify-between mb-3 px-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="flex h-2 w-2 relative">
-                                <span id="pingSignal" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span id="dotSignal" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                            </span>
-                            <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">Laboratorium DC Dinamis & Real-time Graph</span>
-                        </div>
-                    </div>
-                    
-                    <div class="w-full bg-slate-900 rounded-xl overflow-hidden shadow-inner border border-slate-800">
-                        <canvas id="dcCanvas" width="750" height="420" class="w-full block"></canvas>
+                    <div id="shortCircuitAlert" class="hidden p-2.5 bg-rose-50 border border-rose-100 text-rose-600 text-[11px] rounded-xl font-bold text-center animate-pulse">
+                        ⚠️ KORSLETING! Hambatan kritis!
                     </div>
                 </div>
             </div>
@@ -155,11 +146,12 @@
         let voltage = 9.0;
         let baseResistance = 10.0;
         let effectiveResistance = 10.0;
-        let circuitMode = 'tunggal'; // 'tunggal', 'seri', 'paralel'
+        let circuitMode = 'tunggal';
         let isSwitchClosed = true;
         let current = 0.9;
         let electronOffset = 0;
         let isShortCircuit = false;
+        let targetCurrent = 1.50;
 
         // Dom Elements
         const slideVoltage = document.getElementById('slideVoltage');
@@ -168,26 +160,30 @@
         const valResistance = document.getElementById('valResistance');
         const labelHambatan = document.getElementById('labelHambatan');
         const btnSwitch = document.getElementById('btnSwitch');
+        
+        const metricResistance = document.getElementById('metricResistance');
         const metricCurrent = document.getElementById('metricCurrent');
         const metricPower = document.getElementById('metricPower');
+        
         const statusAnalisis = document.getElementById('statusAnalisis');
         const shortCircuitAlert = document.getElementById('shortCircuitAlert');
+        const challengeStatus = document.getElementById('challengeStatus');
+        const targetCurrentDisplay = document.getElementById('targetCurrentDisplay');
 
-        // Set Mode Rangkaian
         function setCircuitMode(mode) {
             circuitMode = mode;
             ['tunggal', 'seri', 'paralel'].forEach(m => {
                 const btn = document.getElementById('btn' + m.charAt(0).toUpperCase() + m.slice(1));
                 if(m === mode) {
-                    btn.className = "py-2 text-xs font-bold rounded-xl border transition-all bg-[#6366F1] text-white border-[#6366F1]";
+                    btn.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#6366F1] text-white border-[#6366F1]";
                 } else {
-                    btn.className = "py-2 text-xs font-bold rounded-xl border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+                    btn.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
                 }
             });
             
             if(mode === 'tunggal') labelHambatan.innerText = "Hambatan Beban (R)";
-            if(mode === 'seri') labelHambatan.innerText = "Hambatan per Resistor (R₁ = R₂)";
-            if(mode === 'paralel') labelHambatan.innerText = "Hambatan per Resistor (R₁ = R₂)";
+            if(mode === 'seri') labelHambatan.innerText = "Hambatan (R₁ = R₂)";
+            if(mode === 'paralel') labelHambatan.innerText = "Hambatan (R₁ = R₂)";
             
             calculateOhm();
         }
@@ -207,32 +203,34 @@
             isSwitchClosed = !isSwitchClosed;
             if(isSwitchClosed) {
                 btnSwitch.innerText = "TERTUTUP (ON)";
-                btnSwitch.className = "px-4 py-1.5 bg-[#6366F1] text-white text-xs font-bold rounded-lg shadow-sm transition-all";
+                btnSwitch.className = "px-3 py-1 bg-[#6366F1] text-white font-bold rounded-md shadow-sm transition-all text-[11px]";
             } else {
                 btnSwitch.innerText = "TERBUKA (OFF)";
-                btnSwitch.className = "px-4 py-1.5 bg-rose-500 text-white text-xs font-bold rounded-lg shadow-sm transition-all";
+                btnSwitch.className = "px-3 py-1 bg-rose-500 text-white font-bold rounded-md shadow-sm transition-all text-[11px]";
             }
             calculateOhm();
         }
 
         function calculateOhm() {
-            // Hitung hambatan efektif berdasarkan tipe rangkaian
             if (circuitMode === 'tunggal') {
                 effectiveResistance = baseResistance;
                 valResistance.innerText = baseResistance.toFixed(1) + ' Ω';
             } else if (circuitMode === 'seri') {
                 effectiveResistance = baseResistance * 2;
-                valResistance.innerText = `${baseResistance.toFixed(1)} Ω + ${baseResistance.toFixed(1)} Ω = ${effectiveResistance.toFixed(1)} Ω`;
+                valResistance.innerText = `${effectiveResistance.toFixed(1)} Ω (Seri)`;
             } else if (circuitMode === 'paralel') {
                 effectiveResistance = baseResistance / 2;
-                valResistance.innerText = `(${baseResistance.toFixed(1)} Ω // ${baseResistance.toFixed(1)} Ω) = ${effectiveResistance.toFixed(1)} Ω`;
+                valResistance.innerText = `${effectiveResistance.toFixed(1)} Ω (Paralel)`;
             }
 
-            // Deteksi batas kritis korsleting
+            metricResistance.innerText = effectiveResistance.toFixed(1) + ' Ω';
+
             if (effectiveResistance < 1.5 && voltage > 0 && isSwitchClosed) {
                 isShortCircuit = true;
                 shortCircuitAlert.classList.remove('hidden');
-                current = voltage / effectiveResistance; // Arus melonjak tinggi
+                current = voltage / effectiveResistance;
+                statusAnalisis.innerText = "💥 KORSLETING!";
+                statusAnalisis.className = "text-rose-500 font-bold";
                 document.getElementById('pingSignal').className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75";
                 document.getElementById('dotSignal').className = "relative inline-flex rounded-full h-2 w-2 bg-rose-500";
             } else {
@@ -240,10 +238,14 @@
                 shortCircuitAlert.classList.add('hidden');
                 if (isSwitchClosed) {
                     current = voltage / effectiveResistance;
+                    statusAnalisis.innerText = "Normal / Aman";
+                    statusAnalisis.className = "text-emerald-500 font-bold";
                     document.getElementById('pingSignal').className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
                     document.getElementById('dotSignal').className = "relative inline-flex rounded-full h-2 w-2 bg-emerald-500";
                 } else {
                     current = 0;
+                    statusAnalisis.innerText = "Saklar Terbuka (OFF)";
+                    statusAnalisis.className = "text-amber-500 font-bold";
                     document.getElementById('pingSignal').className = "hidden";
                     document.getElementById('dotSignal').className = "relative inline-flex rounded-full h-2 w-2 bg-rose-500";
                 }
@@ -253,22 +255,34 @@
             metricCurrent.innerText = current.toFixed(2) + ' A';
             metricPower.innerText = power.toFixed(2) + ' W';
 
-            // Narasi Analisis
-            if (isShortCircuit) {
-                statusAnalisis.innerHTML = "<span class='text-rose-600 font-bold'>DANGER: Korsleting terjadi! Kuat arus melampaui batas aman sirkuit.</span>";
-            } else if (!isSwitchClosed) {
-                statusAnalisis.innerText = "Saklar terbuka. Aliran elektron terputus total.";
-            } else {
-                statusAnalisis.innerText = `Rangkaian ${circuitMode} aman. Arus mengalir total sebesar ${current.toFixed(2)} A sesuai regulasi Hukum Ohm.`;
+            checkChallengeMatch();
+        }
+
+        function generateNewTarget() {
+            const randomTargets = [0.30, 0.50, 0.60, 0.90, 1.00, 1.20, 1.50, 2.00, 2.40, 3.00, 4.00];
+            targetCurrent = randomTargets[Math.floor(Math.random() * randomTargets.length)];
+            targetCurrentDisplay.innerText = targetCurrent.toFixed(2) + ' A';
+            challengeStatus.innerText = "Mencari";
+            challengeStatus.className = "bg-emerald-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider";
+            checkChallengeMatch();
+        }
+
+        function checkChallengeMatch() {
+            if (Math.abs(current - targetCurrent) < 0.02 && isSwitchClosed && !isShortCircuit) {
+                challengeStatus.innerText = "MATCH! 🎉";
+                challengeStatus.className = "bg-amber-400 text-emerald-950 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-bounce";
+            } else if (challengeStatus.innerText === "MATCH! 🎉") {
+                challengeStatus.innerText = "Mencari";
+                challengeStatus.className = "bg-emerald-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider";
             }
         }
 
-        const circuitPath = [{x: 100, y: 80}, {x: 450, y: 80}, {x: 450, y: 280}, {x: 100, y: 280}];
+        const circuitPath = [{x: 80, y: 60}, {x: 420, y: 60}, {x: 420, y: 240}, {x: 80, y: 240}];
 
         function drawCircuit() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 1. GAMBAR KABEL UTAMA
+            // 1. KABEL UTAMA
             ctx.strokeStyle = '#475569'; ctx.lineWidth = 4; ctx.lineJoin = 'round';
             ctx.beginPath();
             ctx.moveTo(circuitPath[0].x, circuitPath[0].y);
@@ -277,157 +291,117 @@
             ctx.lineTo(circuitPath[3].x, circuitPath[3].y);
             ctx.closePath(); ctx.stroke();
 
-            // 2. SAKLAR (Top Path)
+            // 2. SAKLAR
             ctx.fillStyle = '#94A3B8';
-            ctx.beginPath(); ctx.arc(240, 80, 5, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(300, 80, 5, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(220, 60, 5, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(280, 60, 5, 0, Math.PI*2); ctx.fill();
             ctx.strokeStyle = isShortCircuit ? '#EF4444' : '#F59E0B'; ctx.lineWidth = 5;
-            ctx.beginPath(); ctx.moveTo(240, 80);
-            if (isSwitchClosed) ctx.lineTo(300, 80);
-            else ctx.lineTo(290, 55);
+            ctx.beginPath(); ctx.moveTo(220, 60);
+            if (isSwitchClosed) ctx.lineTo(280, 60);
+            else ctx.lineTo(270, 35);
             ctx.stroke();
 
-            // 3. SUMBER BATERAI (Left Path)
-            ctx.fillStyle = isShortCircuit ? '#EF4444' : '#1E293B'; ctx.fillRect(80, 160, 40, 40);
-            ctx.fillStyle = '#F59E0B'; ctx.fillRect(90, 155, 20, 5); // +
-            ctx.fillStyle = '#EF4444'; ctx.fillRect(90, 200, 20, 5); // -
-            ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 10px sans-serif'; ctx.fillText("BATTERY", 76, 145);
+            // 3. BATERAI
+            ctx.fillStyle = isShortCircuit ? '#EF4444' : '#1E293B'; ctx.fillRect(60, 120, 40, 40);
+            ctx.fillStyle = '#F59E0B'; ctx.fillRect(70, 115, 20, 5);
+            ctx.fillStyle = '#EF4444'; ctx.fillRect(70, 160, 20, 5);
+            ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 9px sans-serif'; ctx.fillText("BATERAI", 62, 143);
 
-            // 4. BEBAN LAMPU UTAMA (Right Path)
+            // 4. LAMPU UTAMA
             let glowIntensity = (voltage / 24) * (isSwitchClosed ? 1 : 0);
-            if (isShortCircuit) glowIntensity = 0; // Lampu mati total kalau korslet karena energi terbakar di kabel
-            
+            if (isShortCircuit) glowIntensity = 0;
             if (glowIntensity > 0) {
-                let grad = ctx.createRadialGradient(450, 180, 5, 450, 180, 20 + glowIntensity * 35);
+                let grad = ctx.createRadialGradient(420, 140, 5, 420, 140, 15 + glowIntensity * 30);
                 grad.addColorStop(0, `rgba(253, 224, 71, ${0.4 + glowIntensity * 0.6})`);
                 grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
-                ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(450, 180, 25 + glowIntensity * 35, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(420, 140, 15 + glowIntensity * 30, 0, Math.PI*2); ctx.fill();
             }
             ctx.fillStyle = glowIntensity > 0 ? '#FEF08A' : '#64748B';
-            ctx.beginPath(); ctx.arc(450, 180, 15, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(420, 140, 12, 0, Math.PI*2); ctx.fill();
             ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 2; ctx.stroke();
 
-            // 5. AREA RENDERING MULTI-MODE RESISTOR (Bottom Path)
+            // 5. RESISTOR MULTI-MODE
             if (circuitMode === 'tunggal') {
-                drawResistorComponent(245, 265, baseResistance, "R");
+                drawResistorComponent(225, 225, baseResistance, "R");
             } else if (circuitMode === 'seri') {
-                drawResistorComponent(180, 265, baseResistance, "R₁");
-                drawResistorComponent(310, 265, baseResistance, "R₂");
+                drawResistorComponent(160, 225, baseResistance, "R₁");
+                drawResistorComponent(290, 225, baseResistance, "R₂");
             } else if (circuitMode === 'paralel') {
-                // Gambar cabang paralel tambahan
                 ctx.strokeStyle = '#475569'; ctx.lineWidth = 4;
-                ctx.beginPath(); ctx.moveTo(220, 280); ctx.lineTo(220, 330); ctx.lineTo(330, 330); ctx.lineTo(330, 280); ctx.stroke();
-                drawResistorComponent(245, 265, baseResistance, "R₁");
-                drawResistorComponent(245, 315, baseResistance, "R₂");
+                ctx.beginPath(); ctx.moveTo(200, 240); ctx.lineTo(200, 285); ctx.lineTo(310, 285); ctx.lineTo(310, 240); ctx.stroke();
+                drawResistorComponent(225, 225, baseResistance, "R₁");
+                drawResistorComponent(225, 270, baseResistance, "R₂");
             }
 
-            // 6. EFEK KORSLETING (API/PERCIKAN)
+            // 6. ANIMASI KORSLETING
             if (isShortCircuit) {
-                ctx.fillStyle = '#EF4444'; ctx.font = 'bold 16px sans-serif';
-                ctx.fillText("💥 SHORT CIRCUIT!!", 180, 150);
-                // Percikan api acak di dekat baterai
-                for (let i = 0; i < 5; i++) {
+                ctx.fillStyle = '#EF4444'; ctx.font = 'bold 13px sans-serif';
+                ctx.fillText("💥 KORSLETING DETEKSI!", 160, 120);
+                for (let i = 0; i < 4; i++) {
                     ctx.fillStyle = Math.random() > 0.5 ? '#F59E0B' : '#EF4444';
-                    ctx.beginPath(); ctx.arc(100 + (Math.random()-0.5)*40, 180 + (Math.random()-0.5)*40, Math.random()*6, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(80 + (Math.random()-0.5)*30, 140 + (Math.random()-0.5)*30, Math.random()*5, 0, Math.PI*2); ctx.fill();
                 }
             }
 
-            // 7. GERAKAN ANIMASI ELEKTRON (PERBAIKAN PERCABANGAN & KEBOCORAN JALUR)
+            // 7. PERCAKAPAN ELEKTRON SINKRON
             if (isSwitchClosed && current > 0) {
-                electronOffset += isShortCircuit ? 15 : (current * 4); 
+                electronOffset += isShortCircuit ? 15 : (current * 4);
                 if (electronOffset > 40) electronOffset = 0;
-                
                 ctx.fillStyle = isShortCircuit ? '#EF4444' : '#38BDF8';
-                let totalLength = 1100; // Total keliling perimeter kotak (350+200+350+200)
+                let totalLength = 1000;
                 
                 for (let d = electronOffset; d < totalLength; d += 40) {
                     let pt = getPointAlongRect(d);
-                    
-                    // JIKA MODE PARALEL: Belokkan sebagian elektron ke cabang bawah
-                    if (circuitMode === 'paralel' && pt.y === 280 && pt.x >= 220 && pt.x <= 330) {
-                        // Jalur Atas (Resistor 1)
-                        ctx.beginPath(); ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2); ctx.fill();
-                        
-                        // Jalur Bawah (Resistor 2) - Ikut mengalir di y = 330
-                        ctx.beginPath(); ctx.arc(pt.x, 330, 4, 0, Math.PI * 2); ctx.fill();
-                        
-                        // Gambar kabel vertikal penghubung muatan biar sinkron
-                        if (pt.x === 330 || pt.x === 320) { // Elektron turun di kanan
-                            ctx.beginPath(); ctx.arc(330, 305, 4, 0, Math.PI * 2); ctx.fill();
-                        }
-                        if (pt.x === 220 || pt.x === 230) { // Elektron naik di kiri
-                            ctx.beginPath(); ctx.arc(220, 305, 4, 0, Math.PI * 2); ctx.fill();
-                        }
+                    if (circuitMode === 'paralel' && pt.y === 240 && pt.x >= 200 && pt.x <= 310) {
+                        ctx.beginPath(); ctx.arc(pt.x, pt.y, 3.5, 0, Math.PI * 2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(pt.x, 285, 3.5, 0, Math.PI * 2); ctx.fill();
                     } else {
-                        // Untuk mode tunggal, seri, atau bagian kabel normal lainnya
-                        ctx.beginPath(); ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(pt.x, pt.y, 3.5, 0, Math.PI * 2); ctx.fill();
                     }
                 }
             }
 
-            // 8. LIVE GRAPHICS: DRAW GRAPH V-I (Hukum Ohm Chart)
             drawLiveGraph();
         }
 
         function drawResistorComponent(x, y, val, label) {
-            ctx.fillStyle = '#E2E8F0'; ctx.fillRect(x, y, 60, 30);
-            ctx.strokeStyle = '#64748B'; ctx.lineWidth = 2; ctx.strokeRect(x, y, 60, 30);
-            ctx.fillStyle = '#B45309'; ctx.fillRect(x+10, y, 5, 30);
-            ctx.fillStyle = '#4F46E5'; ctx.fillRect(x+25, y, 5, 30);
-            ctx.fillStyle = '#10B981'; ctx.fillRect(x+40, y, 5, 30);
-            ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 10px sans-serif';
-            ctx.fillText(`${label}: ${val.toFixed(1)}Ω`, x+5, y-6);
+            ctx.fillStyle = '#E2E8F0'; ctx.fillRect(x, y, 50, 25);
+            ctx.strokeStyle = '#64748B'; ctx.lineWidth = 2; ctx.strokeRect(x, y, 50, 25);
+            ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 9px sans-serif';
+            ctx.fillText(`${label}:${val.toFixed(0)}Ω`, x+6, y-5);
         }
 
         function getPointAlongRect(d) {
-            let w = 350, h = 200;
-            if (d < w) return { x: 100 + d, y: 80 }; // Kabel atas (kiri ke kanan)
+            let w = 340, h = 180;
+            if (d < w) return { x: 80 + d, y: 60 };
             d -= w;
-            if (d < h) return { x: 450, y: 80 + d }; // Kabel kanan (atas ke bawah)
+            if (d < h) return { x: 420, y: 60 + d };
             d -= h;
-            if (d < w) return { x: 450 - d, y: 280 }; // Kabel bawah (kanan ke kiri)
-            d -= w; // SANGAT PENTING: kurangi sesuai lebar w, bukan h!
-            
-            // Kabel kiri (bawah ke atas kembali ke awal)
-            let finalY = 280 - d;
-            if (finalY < 80) finalY = 80; // Kunci agar tidak melompati kabel atas!
-            return { x: 100, y: finalY };
+            if (d < w) return { x: 420 - d, y: 240 };
+            d -= w;
+            let finalY = 240 - d;
+            if (finalY < 60) finalY = 60;
+            return { x: 80, y: finalY };
         }
 
         function drawLiveGraph() {
-            let gx = 520, gy = 330, gw = 180, gh = 120;
-            
-            // Background Mini-Chart
-            ctx.fillStyle = '#1E293B'; ctx.fillRect(gx - 10, gy - gh - 10, gw + 20, gh + 30);
-            ctx.strokeStyle = '#475569'; ctx.lineWidth = 1; ctx.strokeRect(gx - 10, gy - gh - 10, gw + 20, gh + 30);
-
-            // Garis Sumbu X & Y
-            ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 2;
+            let gx = 520, gy = 300, gw = 160, gh = 100;
+            ctx.fillStyle = '#1E293B'; ctx.fillRect(gx - 10, gy - gh - 10, gw + 20, gh + 25);
+            ctx.strokeStyle = '#475569'; ctx.lineWidth = 1; ctx.strokeRect(gx - 10, gy - gh - 10, gw + 20, gh + 25);
+            ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 1.5;
             ctx.beginPath(); ctx.moveTo(gx, gy - gh); ctx.lineTo(gx, gy); ctx.lineTo(gx + gw, gy); ctx.stroke();
-
-            // Label Sumbu
-            ctx.fillStyle = '#94A3B8'; ctx.font = '9px sans-serif';
+            ctx.fillStyle = '#94A3B8'; ctx.font = '8px sans-serif';
             ctx.fillText("V (Volt)", gx - 5, gy - gh - 15);
-            ctx.fillText("I (Ampere)", gx + gw - 20, gy + 15);
+            ctx.fillText("I (Arus)", gx + gw - 15, gy + 12);
 
-            // Plot Garis Karakteristik Hukum Ohm Linear V = I * R
             ctx.strokeStyle = isShortCircuit ? '#EF4444' : '#6366F1'; ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(gx, gy);
-            
-            // Cari slope titik ujung atas berdasarkan hambatan efektif saat ini
-            let maxIOnGraph = 5.0; 
-            let plotX = gx + (current / maxIOnGraph) * gw;
+            ctx.beginPath(); ctx.moveTo(gx, gy);
+            let plotX = gx + (current / 5.0) * gw;
             let plotY = gy - (voltage / 24.0) * gh;
-            
-            // Batasi visualisasi agar garis tidak keluar dari kotak chart
             if (plotX > gx + gw) plotX = gx + gw;
             if (plotY < gy - gh) plotY = gy - gh;
-
             ctx.lineTo(plotX, plotY); ctx.stroke();
-
-            // Titik Koordinat Posisi Live Terkini
-            ctx.fillStyle = '#F59E0B'; ctx.beginPath(); ctx.arc(plotX, plotY, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#F59E0B'; ctx.beginPath(); ctx.arc(plotX, plotY, 4, 0, Math.PI * 2); ctx.fill();
         }
 
         function animate() {
@@ -436,52 +410,8 @@
         }
 
         calculateOhm();
-        animate();
-        // LOGIKA TANTANGAN GAMIFIKASI DC
-        let targetCurrent = 1.50;
-        const challengeStatus = document.getElementById('challengeStatus');
-        const targetCurrentDisplay = document.getElementById('targetCurrentDisplay');
-
-        // Fungsi mengacak target baru (antara 0.3A sampai 4.5A)
-        function generateNewTarget() {
-            const randomTargets = [0.30, 0.50, 0.60, 0.90, 1.00, 1.20, 1.50, 2.00, 2.40, 3.00, 4.00];
-            const currentIndex = Math.floor(Math.random() * randomTargets.length);
-            targetCurrent = randomTargets[currentIndex];
-            targetCurrentDisplay.innerText = targetCurrent.toFixed(2) + ' A';
-            
-            challengeStatus.innerText = "Mencari";
-            challengeStatus.className = "bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider";
-            
-            checkChallengeMatch();
-        }
-
-        // Fungsi mengecek apakah kombinasi V dan R milik user sudah cocok dengan target
-        function checkChallengeMatch() {
-            // Toleransi presisi kecil 0.02A agar user tidak terlalu kesusahan ngepasin slider
-            if (Math.abs(current - targetCurrent) < 0.02) {
-                challengeStatus.innerText = "MATCH! 🎉";
-                challengeStatus.className = "bg-amber-400 text-emerald-950 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider animate-bounce";
-            } else {
-                // Jika sedang OFF atau tidak pas, kembalikan ke status mencari
-                if (challengeStatus.innerText === "MATCH! 🎉") {
-                    challengeStatus.innerText = "Mencari";
-                    challengeStatus.className = "bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider";
-                }
-            }
-        }
-
-        // SUNTIKKAN FUNGSI PENGECEK KE LOGIKA HITUNGAN UTAMA KAMU
-        // Modifikasi fungsi calculateOhm() bawaan agar memanggil checkChallengeMatch() di baris paling bawahnya:
-        const originalCalculateOhm = calculateOhm;
-        calculateOhm = function() {
-            originalCalculateOhm(); // Jalankan hitungan rumus bawaan dulu
-            if(typeof checkChallengeMatch === 'function') {
-                checkChallengeMatch(); // Validasi kecocokan target gamifikasi
-            }
-        };
-
-        // Inisialisasi target acak saat halaman pertama kali dibuka
         generateNewTarget();
+        animate();
     </script>
 </body>
 </html>
