@@ -295,6 +295,12 @@
     <script>
         let currentFilter = 'all';
 
+// Fallback kalau gambar dari Unsplash CDN gagal dimuat (offline/rate-limit/diblokir)
+function handleImgError(img) {
+    img.onerror = null; // cegah infinite loop kalau fallback juga gagal
+    img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='225' viewBox='0 0 300 225'%3E%3Crect width='300' height='225' fill='%23EEF2FF'/%3E%3Ctext x='150' y='128' font-size='48' text-anchor='middle' font-family='Arial,sans-serif'%3E🔬%3C/text%3E%3C/svg%3E";
+}
+
         // Bahasa dashboard & seluruh modul kini diterjemahkan otomatis oleh
         // lang-loader.js (window.PhysXLang) - tidak ada lagi kamus manual di sini.
 

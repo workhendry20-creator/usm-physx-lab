@@ -1,0 +1,23 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Environment / secrets (jaga-jaga kalau nanti ada API key project)
+.env
+.env.local
+
+# Dependency folder (jaga-jaga kalau nanti project ini pakai npm)
+node_modules/
+
+# Build output (jaga-jaga kalau nanti ada build step)
+dist/
+build/
+
+# Log files
+*.log
