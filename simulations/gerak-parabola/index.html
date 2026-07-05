@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulasi Gerak Parabola - USM PhysX Lab</title>
+    <meta name="description" content="Simulasi Gerak Parabola interaktif - pelajari lintasan proyektil dengan gravitasi dan hambatan udara - USM PhysX Lab.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <script src="../../lang-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,41 +32,41 @@
         }
     </style>
 </head>
-<body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
 
-        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-6">
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-6">
             <div class="flex items-center space-x-3">
-                <a href="../../index.html" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center text-slate-600 font-bold text-sm transition-colors cursor-pointer">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-sm transition-colors cursor-pointer">
                     ←
                 </a>
-                <span class="text-md font-bold text-[#2E3A59] tracking-tight">
+                <span class="text-md font-bold text-[#2E3A59] dark:text-white tracking-tight">
                     USM <span class="text-[#6366F1]">PhysX Lab</span>
                 </span>
-                <span class="text-slate-300">/</span>
-                <span class="text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">Mekanika</span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-600">Mekanika</span>
             </div>
 
             <div class="flex items-center space-x-4">
-                <span class="text-sm font-bold text-[#2E3A59] hidden sm:inline-block">Gerak Parabola (Projectile Motion)</span>
+                <span class="text-sm font-bold text-[#2E3A59] dark:text-white hidden sm:inline-block">Gerak Parabola (Projectile Motion)</span>
                 <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
             </div>
         </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
-            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col justify-between min-h-[500px]">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+            <div class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 flex flex-col justify-between min-h-[500px]">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
                     <div class="flex items-center space-x-2">
                         <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
-                        <h2 class="text-sm font-bold text-slate-700 tracking-wide uppercase">Area Grafis Eksperimen</h2>
+                        <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Area Grafis Eksperimen</h2>
                     </div>
-                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
                         <div>Waktu: <span id="m-time" class="text-indigo-600 font-bold">0.00</span>s</div>
                         <div>Jarak (X): <span id="m-posX" class="text-cyan-600 font-bold">0.00</span>m</div>
                         <div>Tinggi (Y): <span id="m-posY" class="text-emerald-600 font-bold">0.00</span>m</div>
-                        <div class="hidden sm:block text-slate-400">| Zoom: <span id="m-zoom" class="font-bold text-amber-600">100%</span></div>
+                        <div class="hidden sm:block text-slate-400 dark:text-slate-500">| Zoom: <span id="m-zoom" class="font-bold text-amber-600">100%</span></div>
                     </div>
                 </div>
 
@@ -66,32 +74,32 @@
                     <canvas id="physicsCanvas" class="w-full h-full block"></canvas>
                 </div>
 
-                <div class="flex items-center justify-between mt-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600">
                     <div class="flex items-center space-x-2">
                         <button onclick="startSimulation()" id="btn-play" class="px-5 py-2 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-bold rounded-lg flex items-center space-x-1.5 shadow-sm transition-all cursor-pointer">
                             <span>▶</span> <span>Mulai</span>
                         </button>
-                        <button onclick="pauseSimulation()" id="btn-pause" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold rounded-lg transition-all cursor-pointer">
+                        <button onclick="pauseSimulation()" id="btn-pause" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 text-xs font-bold rounded-lg transition-all cursor-pointer">
                             <span>⏸</span> <span>Jeda</span>
                         </button>
-                        <button onclick="resetSimulation()" id="btn-reset" class="px-4 py-2 bg-white border border-slate-200 text-red-500 hover:bg-red-50 text-xs font-bold rounded-lg transition-all cursor-pointer">
+                        <button onclick="resetSimulation()" id="btn-reset" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 text-xs font-bold rounded-lg transition-all cursor-pointer">
                             <span>🔄</span> <span>Reset</span>
                         </button>
                     </div>
-                    <div class="text-[11px] text-slate-400 font-medium">Engine status: <span id="status-label" class="text-slate-500 font-bold">Ready</span></div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Engine status: <span id="status-label" class="text-slate-500 dark:text-slate-400 font-bold">Ready</span></div>
                 </div>
             </div>
 
             <div class="lg:col-span-4 flex flex-col space-y-6">
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-                    <h3 class="text-sm font-bold text-[#2E3A59] border-b border-slate-100 pb-3 mb-4 flex items-center space-x-2">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 mb-4 flex items-center space-x-2">
                         <span>🎛️</span> <span>Modifikasi Parameter</span>
                     </h3>
                     
                     <div class="mb-5">
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600">Kecepatan Awal ($v_0$)</label>
-                            <div class="flex items-center space-x-1 bg-indigo-50 border border-indigo-100 rounded px-1.5 py-0.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Awal ($v_0$)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-v0" min="5" max="60" value="25" class="w-8 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('v0', 'num')">
                                 <span class="text-[10px] font-bold text-indigo-400 font-mono">m/s</span>
                             </div>
@@ -101,8 +109,8 @@
 
                     <div class="mb-5">
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600">Sudut Elevasi ($\theta$)</label>
-                            <div class="flex items-center space-x-1 bg-cyan-50 border border-cyan-100 rounded px-1.5 py-0.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Sudut Elevasi ($\theta$)</label>
+                            <div class="flex items-center space-x-1 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-angle" min="0" max="90" value="45" class="w-8 bg-transparent text-xs font-bold font-mono text-cyan-600 focus:outline-none text-right" oninput="syncInputs('angle', 'num')">
                                 <span class="text-[10px] font-bold text-cyan-400 font-mono">°</span>
                             </div>
@@ -112,8 +120,8 @@
 
                     <div class="mb-5">
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600">Percepatan Gravitasi ($g$)</label>
-                            <div class="flex items-center space-x-1 bg-amber-50 border border-amber-100 rounded px-1.5 py-0.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Percepatan Gravitasi ($g$)</label>
+                            <div class="flex items-center space-x-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-800 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-g" min="5" max="20" step="0.1" value="9.8" class="w-10 bg-transparent text-xs font-bold font-mono text-amber-600 focus:outline-none text-right" oninput="syncInputs('g', 'num')">
                                 <span class="text-[10px] font-bold text-amber-400 font-mono">m/s²</span>
                             </div>
@@ -123,10 +131,10 @@
 
                     <div class="mb-2">
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1">
                                 <span>💨</span> Hambatan Udara ($C_d$)
                             </label>
-                            <div class="flex items-center bg-rose-50 border border-rose-100 rounded px-1.5 py-0.5">
+                            <div class="flex items-center bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-800 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-drag" min="0" max="1" step="0.01" value="0.20" class="w-10 bg-transparent text-xs font-bold font-mono text-rose-600 focus:outline-none text-right" oninput="syncInputs('drag', 'num')">
                             </div>
                         </div>
@@ -134,32 +142,32 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex-grow">
-                    <h3 class="text-sm font-bold text-[#2E3A59] border-b border-slate-100 pb-3 mb-4 flex items-center space-x-2">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5 flex-grow">
+                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 mb-4 flex items-center space-x-2">
                         <span>📊</span> <span>Hasil Analisis Numerik Lintasan</span>
                     </h3>
                     
                     <div class="space-y-4">
-                        <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-xl flex justify-between items-center">
                             <div>
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tinggi Maksimum ($H_{max}$)</div>
-                                <div class="text-xs text-slate-500 font-medium">Puncak kurva asimetris</div>
+                                <div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Tinggi Maksimum ($H_{max}$)</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Puncak kurva asimetris</div>
                             </div>
                             <div class="text-lg font-extrabold text-emerald-600 font-mono"><span id="calc-hmax">0.00</span> <span class="text-xs font-semibold">m</span></div>
                         </div>
 
-                        <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-xl flex justify-between items-center">
                             <div>
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jarak Terjauh ($R_{max}$)</div>
-                                <div class="text-xs text-slate-500 font-medium">Titik pendaratan tanah</div>
+                                <div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Jarak Terjauh ($R_{max}$)</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Titik pendaratan tanah</div>
                             </div>
                             <div class="text-lg font-extrabold text-cyan-600 font-mono"><span id="calc-rmax">0.00</span> <span class="text-xs font-semibold">m</span></div>
                         </div>
 
-                        <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-xl flex justify-between items-center">
                             <div>
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Waktu Udara ($T_{total}$)</div>
-                                <div class="text-xs text-slate-500 font-medium">Durasi melayang di atmosfer</div>
+                                <div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Total Waktu Udara ($T_{total}$)</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Durasi melayang di atmosfer</div>
                             </div>
                             <div class="text-lg font-extrabold text-indigo-600 font-mono"><span id="calc-ttotal">0.00</span> <span class="text-xs font-semibold">s</span></div>
                         </div>
@@ -171,8 +179,8 @@
 
     </div>
 
-    <footer class="bg-[#E2E8F0] mt-12 py-8 border-t border-slate-200 text-center w-full">
-        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.2. All rights reserved.</p>
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-12 py-8 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Workspace Engine V1.2. All rights reserved.</p>
     </footer>
 
     <script>
@@ -418,7 +426,7 @@
             currentY = 0;
             pathTrajectory = [];
             document.getElementById('status-label').innerText = 'Ready';
-            document.getElementById('status-label').className = 'text-slate-500 font-bold';
+            document.getElementById('status-label').className = 'text-slate-500 dark:text-slate-400 font-bold';
             updateDashboardLabels();
             updateEngineValues();
         }
