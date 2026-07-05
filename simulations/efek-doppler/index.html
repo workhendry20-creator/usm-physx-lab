@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulasi Efek Doppler - USM PhysX Lab</title>
+    <meta name="description" content="Simulasi Efek Doppler interaktif - amati perubahan frekuensi gelombang bunyi dari sumber bergerak - USM PhysX Lab.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <script src="../../lang-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,37 +24,37 @@
         input[type=number] { -moz-appearance: textfield; }
     </style>
 </head>
-<body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
 
-        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-6">
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-6">
             <div class="flex items-center space-x-3">
-                <a href="../../index.html" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center text-slate-600 font-bold text-sm transition-colors cursor-pointer">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-sm transition-colors cursor-pointer">
                     ←
                 </a>
-                <span class="text-md font-bold text-[#2E3A59] tracking-tight">
+                <span class="text-md font-bold text-[#2E3A59] dark:text-white tracking-tight">
                     USM <span class="text-[#6366F1]">PhysX Lab</span>
                 </span>
-                <span class="text-slate-300">/</span>
-                <span class="text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">Gelombang &amp; Optik</span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-600">Gelombang &amp; Optik</span>
             </div>
 
             <div class="flex items-center space-x-4">
-                <span class="text-sm font-bold text-[#2E3A59] hidden sm:inline-block">Akustik & Efek Doppler V2</span>
+                <span class="text-sm font-bold text-[#2E3A59] dark:text-white hidden sm:inline-block">Akustik & Efek Doppler V2</span>
                 <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
             </div>
         </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
-            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col justify-between min-h-[520px]">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+            <div class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 flex flex-col justify-between min-h-[520px]">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
                     <div class="flex items-center space-x-2">
                         <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
-                        <h2 class="text-sm font-bold text-slate-700 tracking-wide uppercase">Laboratorium Akustik Doppler</h2>
+                        <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Laboratorium Akustik Doppler</h2>
                     </div>
-                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
                         <div>Frek. Sumber (f_s): <span id="m-fs" class="text-indigo-600 font-bold">400</span> Hz</div>
                         <div>Frek. Pendengar (f_p): <span id="m-fp" class="text-rose-600 font-bold">400</span> Hz</div>
                     </div>
@@ -69,9 +77,9 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between mt-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-500">
+                <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
                     <div>Persamaan Doppler Penuh: <span class="font-mono font-bold text-indigo-600">f_p = f_s · (v ± v_p) / (v ± v_s)</span></div>
-                    <div class="text-[11px] text-slate-400 font-medium">Status Gelombang: <span id="wave-status" class="text-emerald-500 font-bold">Konsetris (Statis)</span></div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Status Gelombang: <span id="wave-status" class="text-emerald-500 font-bold">Konsetris (Statis)</span></div>
                 </div>
             </div>
 
@@ -93,21 +101,21 @@
                     </button>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col space-y-5">
-                    <h3 class="text-sm font-bold text-[#2E3A59] border-b border-slate-100 pb-3 flex items-center space-x-2">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center space-x-2">
                         <span>🎛️</span> <span>Pengatur Parameter Akustik</span>
                     </h3>
                     
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600">Kecepatan Sumber ($v_s$)</label>
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Sumber ($v_s$)</label>
                             <div class="flex items-center space-x-1 bg-indigo-50 border border-indigo-100 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-vs" min="-400" max="400" value="40" class="w-12 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('vs', 'num')">
                                 <span class="text-[10px] font-bold text-indigo-400 font-mono">m/s</span>
                             </div>
                         </div>
                         <input type="range" id="param-vs" min="-400" max="400" value="40" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('vs', 'range')">
-                        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                        <div class="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1">
                             <span>← Mundur</span>
                             <span>Diam</span>
                             <span>Super-sonik (340+) →</span>
@@ -116,14 +124,14 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600">Kecepatan Pendengar ($v_p$)</label>
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Pendengar ($v_p$)</label>
                             <div class="flex items-center space-x-1 bg-emerald-50 border border-emerald-100 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-vp" min="-150" max="150" value="0" class="w-12 bg-transparent text-xs font-bold font-mono text-emerald-600 focus:outline-none text-right" oninput="syncInputs('vp', 'num')">
                                 <span class="text-[10px] font-bold text-emerald-400 font-mono">m/s</span>
                             </div>
                         </div>
                         <input type="range" id="param-vp" min="-150" max="150" value="0" class="w-full accent-emerald-500 cursor-pointer" oninput="syncInputs('vp', 'range')">
-                        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                        <div class="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1">
                             <span>← Ke Kiri</span>
                             <span>Diam (0)</span>
                             <span>Ke Kanan →</span>
@@ -132,7 +140,7 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600">Frekuensi Dasar ($f_s$)</label>
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Frekuensi Dasar ($f_s$)</label>
                             <div class="flex items-center space-x-1 bg-rose-50 border border-rose-100 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-fs" min="300" max="600" step="10" value="400" class="w-12 bg-transparent text-xs font-bold font-mono text-rose-600 focus:outline-none text-right" oninput="syncInputs('fs', 'num')">
                                 <span class="text-[10px] font-bold text-rose-400 font-mono">Hz</span>
@@ -147,8 +155,8 @@
 
     </div>
 
-    <footer class="bg-[#E2E8F0] mt-12 py-8 border-t border-slate-200 text-center w-full">
-        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V2.0. All rights reserved.</p>
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-12 py-8 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Workspace Engine V2.0. All rights reserved.</p>
     </footer>
 
     <script>
