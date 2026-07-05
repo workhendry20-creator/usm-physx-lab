@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USM PhysX Lab - Main Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="lang-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,23 +33,23 @@
             </div>
 
             <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-500">
-                <a href="#" id="nav-home" data-key="home" class="text-[#6366F1] border-b-2 border-[#6366F1] pb-1 font-semibold">Beranda</a>
-                <a href="#" id="nav-guide" data-key="guide" class="hover:text-slate-900 transition-colors">Panduan</a>
-                <a href="#" id="nav-research" data-key="research" class="hover:text-slate-900 transition-colors">Tentang Riset</a>
+                <a href="#" id="nav-home" class="i18n text-[#6366F1] border-b-2 border-[#6366F1] pb-1 font-semibold">Beranda</a>
+                <a href="#" id="nav-guide" class="i18n hover:text-slate-900 transition-colors">Panduan</a>
+                <a href="#" id="nav-research" class="i18n hover:text-slate-900 transition-colors">Tentang Riset</a>
             </div>
 
             <div class="flex items-center space-x-4 relative">
-                <span id="badge-research" data-key="badge" class="hidden sm:inline-block bg-[#EEF2FF] text-[#6366F1] text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-100">
+                <span id="badge-research" class="i18n hidden sm:inline-block bg-[#EEF2FF] text-[#6366F1] text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-100">
                     Eksperimen Edukasi
                 </span>
                 
                 <div class="relative inline-block text-left z-50">
-                    <button onclick="toggleLangDropdown()" id="langDropdownBtn" class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 rounded-xl text-xs font-bold text-slate-700 transition-all shadow-sm">
+                    <button onclick="toggleLangDropdown()" id="langDropdownBtn" data-no-translate class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 rounded-xl text-xs font-bold text-slate-700 transition-all shadow-sm">
                         <span>🇮🇩 ID</span>
                         <svg class="w-3 h-3 text-slate-400 transition-transform duration-200" id="dropdownArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
 
-                    <div id="langDropdownMenu" class="hidden absolute right-0 mt-2 w-32 bg-white border border-slate-100 rounded-xl shadow-xl p-1 space-y-0.5">
+                    <div id="langDropdownMenu" data-no-translate class="hidden absolute right-0 mt-2 w-32 bg-white border border-slate-100 rounded-xl shadow-xl p-1 space-y-0.5">
                         <button onclick="changeLanguage('id')" class="w-full flex items-center space-x-2 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-lg text-left transition-colors">
                             <span>🇮🇩</span> <span>Indonesia</span>
                         </button>
@@ -71,7 +72,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
             <div class="lg:col-span-7 flex flex-col justify-center">
-                <h1 id="hero-title" class="text-4xl sm:text-5xl font-extrabold text-[#2E3A59] tracking-tight leading-[1.15] mb-6">
+                <h1 id="hero-title" class="i18n text-4xl sm:text-5xl font-extrabold text-[#2E3A59] tracking-tight leading-[1.15] mb-6">
                     Selamat datang di <br class="hidden sm:inline">
                     <span class="text-[#6366F1]">Laboratorium Virtual</span> USM! <br>
                     Eksperimen fisika <br class="hidden sm:inline">
@@ -95,7 +96,7 @@
                         <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&w=600&q=80" alt="Physics Engine Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity">
                         <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center space-x-2 shadow-lg">
                             <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>
-                            <span id="live-sim-tag" data-key="liveSim" class="text-[10px] font-bold text-slate-800 tracking-wider uppercase">Simulasi Live</span>
+                            <span id="live-sim-tag" class="i18n text-[10px] font-bold text-slate-800 tracking-wider uppercase">Simulasi Live</span>
                         </div>
                     </div>
                 </div>
@@ -171,7 +172,7 @@
                     </div>
                 </div>
 
-                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="termodinamika">
+                <div class="sim-card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="termo">
                     <div class="p-5 flex-grow">
                         <div class="bg-slate-50 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 overflow-hidden">
                             <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=300&q=80" alt="Hukum Gas Ideal" class="w-full h-full object-cover">
@@ -267,9 +268,9 @@
         <div class="max-w-7xl mx-auto px-4 text-slate-600">
             <h4 class="text-md font-bold text-[#6366F1] mb-4">▲ USM PhysX Lab</h4>
             <div class="flex justify-center space-x-6 text-xs font-medium mb-6">
-                <a href="#" id="footer-privacy" data-key="footPriv" class="hover:text-slate-900">Kebijakan Privasi</a>
-                <a href="#" id="footer-contact" data-key="footCont" class="hover:text-slate-900">Kontak Kami</a>
-                <a href="#" id="footer-sitemap" data-key="footSite" class="hover:text-slate-900">Peta Situs</a>
+                <a href="#" id="footer-privacy" class="i18n hover:text-slate-900">Kebijakan Privasi</a>
+                <a href="#" id="footer-contact" class="i18n hover:text-slate-900">Kontak Kami</a>
+                <a href="#" id="footer-sitemap" class="i18n hover:text-slate-900">Peta Situs</a>
             </div>
             <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Educational Research Division. All rights reserved.</p>
         </div>
@@ -278,57 +279,8 @@
     <script>
         let currentFilter = 'all';
 
-        // KAMUS BAHASA MASTER UNTUK SEISI DASHBOARD
-        const translations = {
-            id: {
-                btnText: "🇮🇩 ID", home: "Beranda", guide: "Panduan", research: "Tentang Riset", badge: "Eksperimen Edukasi",
-                heroTitle: "Selamat datang di \nLaboratorium Virtual USM! \nEksperimen fisika \napa hari ini?",
-                liveSim: "Simulasi Live", btnSeeMore: "Lihat Semua Simulasi", btnSeeLess: "Sembunyikan Sebagian",
-                catAll: "Semua", catMekanika: "Mekanika", catListrik: "Listrik & Magnet", catGelombang: "Gelombang & Optik", catTermo: "Termodinamika",
-                class10: "Kelas 10", class11: "Kelas 11", class12: "Kelas 12", btnExp: "Mulai Eksperimen",
-                footPriv: "Kebijakan Privasi", footCont: "Kontak Kami", footSite: "Peta Situs",
-                titleParabola: "Gerak Parabola", descParabola: "Pelajari lintasan benda yang dipengaruhi gravitasi dan kecepatan awal.",
-                titleCoulomb: "Hukum Coulomb", descCoulomb: "Eksperimen interaksi antara muatan listrik statis dalam ruang hampa.",
-                titlePembiasan: "Pembiasan Cahaya", descPembiasan: "Analisis perubahan arah rambat cahaya saat melewati dua medium berbeda.",
-                titleGas: "Hukum Gas Ideal", descGas: "Hubungan antara tekanan, volume, dan suhu pada sistem gas tertutup.",
-                titleHooke: "Hukum Hooke", descHooke: "Eksplorasi elastisitas, gaya regang, dan konstanta pertambahan panjang pegas.",
-                titleDoppler: "Efek Doppler", descDoppler: "Amati perubahan frekuensi gelombang bunyi dari sumber yang bergerak.",
-                titleAC: "Rangkaian Arus AC", descAC: "Simulasi sircuit bolak-balik terpadu menggunakan pembacaan grafik osiloskop live.",
-                titleDC: "Rangkaian Arus DC", descDC: "Simulasi sirkuit searah dinamis sandbox dengan visualisasi aliran elektron."
-            },
-            en: {
-                btnText: "🇬🇧 EN", home: "Home", guide: "Guide", research: "Research", badge: "Educational Research",
-                heroTitle: "Welcome to \nUSM Virtual Laboratory! \nWhat physics experiment \nshall we do today?",
-                liveSim: "Live Simulation", btnSeeMore: "View All Simulations", btnSeeLess: "Hide Section",
-                catAll: "All", catMekanika: "Mechanics", catListrik: "Electricity & Magnet", catGelombang: "Waves & Optics", catTermo: "Thermodynamics",
-                class10: "Grade 10", class11: "Grade 11", class12: "Grade 12", btnExp: "Start Experiment",
-                footPriv: "Privacy Policy", footCont: "Contact Us", footSite: "Sitemap",
-                titleParabola: "Projectile Motion", descParabola: "Study the trajectory of objects influenced by gravity and initial velocity.",
-                titleCoulomb: "Coulomb's Law", descCoulomb: "Experiment with the interaction between static electric charges in a vacuum.",
-                titlePembiasan: "Light Refraction", descPembiasan: "Analyze the change in direction of light propagation through two different media.",
-                titleGas: "Ideal Gas Law", descGas: "Relationship between pressure, volume, and temperature in a closed gas system.",
-                titleHooke: "Hooke's Law", descHooke: "Exploration of elasticity, tensile force, and spring extension constant.",
-                titleDoppler: "Doppler Effect", descDoppler: "Observe changes in sound wave frequency from a moving source.",
-                titleAC: "AC Circuit", descAC: "Integrated alternating current circuit simulation using live oscilloscope readouts.",
-                titleDC: "DC Circuit", descDC: "Sandbox direct current circuit simulation with electron flow visualization."
-            },
-            ms: {
-                btnText: "🇲🇾 MS", home: "Utama", guide: "Panduan", research: "Penyelidikan", badge: "Penyelidikan Pendidikan",
-                heroTitle: "Selamat datang ke \nMakmal Virtual USM! \nEksperimen fizik \napa hari ini?",
-                liveSim: "Simulasi Langsung", btnSeeMore: "Lihat Semua Simulasi", btnSeeLess: "Sembunyikan Sebahagian",
-                catAll: "Semua", catMekanika: "Mekanik", catListrik: "Elektrik & Magnet", catGelombang: "Gelombang & Optik", catTermo: "Termodinamik",
-                class10: "Tingkatan 10", class11: "Tingkatan 11", class12: "Tingkatan 12", btnExp: "Mula Eksperimen",
-                footPriv: "Dasar Privasi", footCont: "Hubungi Kami", footSite: "Peta Laman",
-                titleParabola: "Gerakan Parabola", descParabola: "Pelajari lintasan objek yang dipengaruhi oleh graviti dan halaju awal.",
-                titleCoulomb: "Hukum Coulomb", descCoulomb: "Eksperimen interaksi antara cas elektrik statik dalam ruang hampa.",
-                titlePembiasan: "Pembiasan Cahaya", descPembiasan: "Analisis perubahan arah rambat cahaya apabila melalui dua medium berbeza.",
-                titleGas: "Hukum Gas Ideal", descGas: "Hubungan antara tekanan, isi padu, dan suhu pada sistem gas tertutup.",
-                titleHooke: "Hukum Hooke", descHooke: "Eksplorasi keanjalan, daya regangan, dan pemalar pertambahan panjang spring.",
-                titleDoppler: "Kesan Doppler", descDoppler: "Perhatikan perubahan frekuensi gelombang bunyi daripada sumber yang bergerak.",
-                titleAC: "Litar Arus AC", descAC: "Simulasi litar arus ulang-alik bersepadu menggunakan pembacaan grafik osiloskop langsung.",
-                titleDC: "Litar Arus DC", descDC: "Simulasi litar arus terus dinamik secara sandbox dengan visualisasi aliran elektron."
-            }
-        };
+        // Bahasa dashboard & seluruh modul kini diterjemahkan otomatis oleh
+        // lang-loader.js (window.PhysXLang) - tidak ada lagi kamus manual di sini.
 
         function toggleLangDropdown() {
             document.getElementById('langDropdownMenu').classList.toggle('hidden');
@@ -336,33 +288,18 @@
         }
 
         function changeLanguage(lang) {
-            // 1. Simpan bahasa terpilih ke memori browser (Kunci Utama)
-            localStorage.setItem('selectedLanguage', lang);
+            // Delegasikan seluruh proses terjemahan ke engine universal di lang-loader.js
+            if (window.PhysXLang) {
+                window.PhysXLang.applyLanguage(lang);
+            }
 
-            // 2. Update Teks Dropdown Utama
-            document.getElementById('langDropdownBtn').querySelector('span').innerText = translations[lang].btnText;
-            
-            // 3. Update Judul Hero Khusus (Mendukung Newline \n)
-            document.getElementById('hero-title').innerText = translations[lang].heroTitle;
-
-            // 4. Update Semua Elemen Ber-Atribut data-key
-            document.querySelectorAll('[data-key]').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (translations[lang][key]) {
-                    element.innerText = translations[lang][key];
-                }
-            });
-            
             // Tutup dropdown
             document.getElementById('langDropdownMenu').classList.add('hidden');
             document.getElementById('dropdownArrow').classList.remove('rotate-180');
         }
 
-        // KETIKA HALAMAN DI-LOAD: Baca memori untuk mengeset bahasa terakhir
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('selectedLanguage') || 'id';
-            changeLanguage(savedLang);
-        });
+        // Catatan: inisialisasi bahasa saat halaman dimuat sudah otomatis ditangani
+        // oleh listener DOMContentLoaded di dalam lang-loader.js.
 
         window.addEventListener('click', function(e) {
             const btn = document.getElementById('langDropdownBtn');
@@ -374,27 +311,32 @@
         });
 
         // Fungsi Collapsible Expand
-        function toggleSeeMore() {
+        async function toggleSeeMore() {
             const grid = document.getElementById('simulationGrid');
             const overlay = document.getElementById('gradientOverlay');
             const btnText = document.getElementById('btnText');
             const btnIcon = document.getElementById('btnIcon');
             const currentLang = localStorage.getItem('selectedLanguage') || 'id';
+            let labelID; // label sumber Bahasa Indonesia, diterjemahkan otomatis di bawah
 
             if (grid.style.maxHeight === 'none') {
                 grid.style.maxHeight = '460px';
                 overlay.classList.add('absolute', 'bottom-0', 'h-40', 'bg-gradient-to-t');
                 overlay.classList.remove('relative', 'pt-6', 'pb-0');
-                btnText.innerText = translations[currentLang].btnSeeMore;
+                labelID = 'Lihat Semua Simulasi';
                 btnIcon.style.transform = 'rotate(0deg)';
                 window.scrollTo({ top: grid.offsetTop - 100, behavior: 'smooth' });
             } else {
                 grid.style.maxHeight = 'none';
                 overlay.classList.remove('absolute', 'bottom-0', 'h-40', 'bg-gradient-to-t');
                 overlay.classList.add('relative', 'pt-6', 'pb-0');
-                btnText.innerText = translations[currentLang].btnSeeLess;
+                labelID = 'Sembunyikan Sebagian';
                 btnIcon.style.transform = 'rotate(180deg)';
             }
+
+            btnText.innerText = (currentLang === 'id' || !window.PhysXLang)
+                ? labelID
+                : await window.PhysXLang.translateText(labelID, currentLang);
         }
 
         // Fungsi Filter Kategori
