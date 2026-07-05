@@ -34,6 +34,31 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
             <div class="lg:col-span-4 space-y-6">
+                
+                <div class="bg-emerald-600 rounded-2xl border border-emerald-500 shadow-sm overflow-hidden text-white">
+                    <div class="px-5 py-3 flex justify-between items-center border-b border-emerald-500/50 bg-emerald-700/30">
+                        <h2 class="font-bold text-sm flex items-center gap-2">
+                            <span>🎯</span> Tantangan Hukum Ohm
+                        </h2>
+                        <span id="challengeStatus" class="bg-emerald-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Mencari</span>
+                    </div>
+                    
+                    <div class="p-5 text-center">
+                        <p class="text-emerald-100 text-xs font-medium mb-3">
+                            Atur nilai Tegangan (V) atau Hambatan (R) agar **Kuat Arus ($I$)** tepat pada target:
+                        </p>
+                        
+                        <div class="bg-emerald-800/40 border border-emerald-500/40 py-3 px-4 rounded-xl mb-3 shadow-inner">
+                            <span class="text-[9px] uppercase font-bold tracking-widest text-emerald-300 block mb-0.5">Target Kuat Arus</span>
+                            <span id="targetCurrentDisplay" class="text-2xl font-black tracking-tight">1.50 A</span>
+                        </div>
+
+                        <button onclick="generateNewTarget()" class="w-full py-2 bg-white text-emerald-700 text-xs font-bold rounded-lg shadow-sm hover:bg-emerald-50 transition-all">
+                            Acak Target Baru
+                        </button>
+                    </div>
+                </div>
+
                 <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                     <h2 class="text-lg font-bold text-[#2E3A59] mb-4 flex items-center gap-2">
                         <span>🎛️</span> Konfigurasi Sirkuit
@@ -96,29 +121,6 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-10 bg-emerald-600 rounded-2xl border border-emerald-500 shadow-lg overflow-hidden transition-all text-white">
-            <div class="px-6 py-4 flex justify-between items-center border-b border-emerald-500/50 bg-emerald-700/30">
-                <h2 class="font-bold flex items-center gap-2">
-                    <span>🎯</span> Tantangan Hukum Ohm
-                </h2>
-                <span id="challengeStatus" class="bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Mencari</span>
-            </div>
-            
-            <div class="p-8 text-center max-w-2xl mx-auto">
-                <p class="text-emerald-100 text-sm font-medium mb-4">
-                    Atur nilai Tegangan ($V$) atau Hambatan ($R$) melalui slider di atas agar **Kuat Arus ($I_{total}$)** rangkaian tepat pada angka target:
-                </p>
-                
-                <div class="bg-emerald-800/40 border border-emerald-500/40 p-6 rounded-2xl mb-6 shadow-inner">
-                    <span class="text-xs uppercase font-bold tracking-widest text-emerald-300 block mb-1">Target Kuat Arus ($I$)</span>
-                    <span id="targetCurrentDisplay" class="text-4xl font-black tracking-tight">1.50 A</span>
-                </div>
-
-                <button onclick="generateNewTarget()" class="w-full sm:w-auto px-8 py-3 bg-white text-emerald-700 font-bold rounded-xl shadow-md hover:bg-emerald-50 transition-all text-sm">
-                    Acak Target Baru
-                </button>
-            </div>
-        </div>
 
             <div class="lg:col-span-8">
                 <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center">
