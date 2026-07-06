@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulasi Hukum Hooke - USM PhysX Lab</title>
+    <meta name="description" content="Simulasi Hukum Hooke interaktif - eksplorasi elastisitas dan konstanta pegas - USM PhysX Lab.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <script src="../../lang-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,37 +24,37 @@
         input[type=number] { -moz-appearance: textfield; }
     </style>
 </head>
-<body class="bg-[#F8FAFC] min-h-screen text-slate-800 flex flex-col justify-between">
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
 
-        <nav class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center justify-between mb-6">
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-6">
             <div class="flex items-center space-x-3">
-                <a href="../../index.html" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center text-slate-600 font-bold text-sm transition-colors cursor-pointer">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-sm transition-colors cursor-pointer">
                     ←
                 </a>
-                <span class="text-md font-bold text-[#2E3A59] tracking-tight">
+                <span class="text-md font-bold text-[#2E3A59] dark:text-white tracking-tight">
                     USM <span class="text-[#6366F1]">PhysX Lab</span>
                 </span>
-                <span class="text-slate-300">/</span>
-                <span class="text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">Mekanika</span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-600">Mekanika</span>
             </div>
 
             <div class="flex items-center space-x-4">
-                <span class="text-sm font-bold text-[#2E3A59] hidden sm:inline-block">Elastisitas & Hukum Hooke</span>
+                <span class="text-sm font-bold text-[#2E3A59] dark:text-white hidden sm:inline-block">Elastisitas & Hukum Hooke</span>
                 <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
             </div>
         </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
-            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col justify-between min-h-[520px]">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+            <div class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 flex flex-col justify-between min-h-[520px]">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
                     <div class="flex items-center space-x-2">
                         <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
-                        <h2 class="text-sm font-bold text-slate-700 tracking-wide uppercase">Laboratorium Statis Pegas</h2>
+                        <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Laboratorium Statis Pegas</h2>
                     </div>
-                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
                         <div>Gaya (F): <span id="m-force" class="text-rose-600 font-bold">0.00</span> N</div>
                         <div>Konstanta (k): <span id="m-k" class="text-indigo-600 font-bold">200</span> N/m</div>
                         <div>Pertambahan Δx: <span id="m-dx" class="text-amber-600 font-bold">0.00</span> m</div>
@@ -70,9 +78,9 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between mt-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-500">
+                <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
                     <div>Persamaan Hooke: <span class="font-mono font-bold">F = k · Δx</span></div>
-                    <div class="text-[11px] text-slate-400 font-medium">Status Pegas: <span id="spring-status" class="text-emerald-500 font-bold">Aman (Elastis)</span></div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Status Pegas: <span id="spring-status" class="text-emerald-500 font-bold">Aman (Elastis)</span></div>
                 </div>
             </div>
 
@@ -94,21 +102,21 @@
                     </button>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col space-y-5">
-                    <h3 class="text-sm font-bold text-[#2E3A59] border-b border-slate-100 pb-3 flex items-center space-x-2">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center space-x-2">
                         <span>🎛️</span> <span>Pengatur Parameter Pegas</span>
                     </h3>
                     
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600">Konstanta Pegas (k)</label>
-                            <div class="flex items-center space-x-1 bg-indigo-50 border border-indigo-100 rounded px-1.5 py-0.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Konstanta Pegas (k)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-k" min="100" max="500" value="200" class="w-12 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('k', 'num')">
                                 <span class="text-[10px] font-bold text-indigo-400 font-mono">N/m</span>
                             </div>
                         </div>
                         <input type="range" id="param-k" min="100" max="500" value="200" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('k', 'range')">
-                        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                        <div class="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1">
                             <span>Lunak (100 N/m)</span>
                             <span>Kaku (500 N/m)</span>
                         </div>
@@ -116,14 +124,14 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600">Massa Beban (m)</label>
-                            <div class="flex items-center space-x-1 bg-rose-50 border border-rose-100 rounded px-1.5 py-0.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Beban (m)</label>
+                            <div class="flex items-center space-x-1 bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-800 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-mass" min="0" max="5" step="0.1" value="2.0" class="w-10 bg-transparent text-xs font-bold font-mono text-rose-600 focus:outline-none text-right" oninput="syncInputs('mass', 'num')">
                                 <span class="text-[10px] font-bold text-rose-400 font-mono">kg</span>
                             </div>
                         </div>
                         <input type="range" id="param-mass" min="0" max="5" step="0.1" value="2.0" class="w-full accent-rose-500 cursor-pointer" oninput="syncInputs('mass', 'range')">
-                        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                        <div class="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1">
                             <span>0 kg (Tanpa Beban)</span>
                             <span>5 kg (Maksimum)</span>
                         </div>
@@ -135,8 +143,8 @@
 
     </div>
 
-    <footer class="bg-[#E2E8F0] mt-12 py-8 border-t border-slate-200 text-center w-full">
-        <p class="text-xs text-slate-400">© 2026 USM PhysX Lab - Workspace Engine V1.6. All rights reserved.</p>
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-12 py-8 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Workspace Engine V1.6. All rights reserved.</p>
     </footer>
 
     <script>
@@ -166,15 +174,10 @@
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
             
-            // DYNAMIC SCALE ENGINE: Mengatur batas regangan maksimum agar pas dengan tinggi canvas
-            restLength = canvas.height * 0.25; // Panjang normal selalu 25% dari tinggi canvas
-            
-            // Regangan maksimum (saat F=50N & K=100N/m -> dx = 0.5m) tidak boleh melebihi 45% tinggi canvas
-            // Maka scaleFactor dihitung otomatis: (canvas.height * 0.45) / 0.5 meter
+            restLength = canvas.height * 0.25;
             scaleFactor = (canvas.height * 0.45) / 0.5;
         }
 
-        // Triple-Sync Control Binder
         function syncInputs(id, origin) {
             if (isBroken) return;
             const rangeInput = document.getElementById(`param-${id}`);
@@ -217,17 +220,14 @@
         function updateEnginePhysics() {
             if (isBroken) return;
 
-            // Hitung Pertambahan Panjang: Δx = F / k
             deltaX = force / k_constant;
 
-            // Tampilkan Data ke Dashboard Panel
             document.getElementById('m-force').innerText = force.toFixed(2);
             document.getElementById('m-k').innerText = k_constant;
             document.getElementById('m-dx').innerText = deltaX.toFixed(3);
 
             const statusLabel = document.getElementById('spring-status');
 
-            // LOGIKA 3 TINGKAT STATUS MATERIAL
             if (force > 45.0) {
                 triggerBreakage();
                 return;
@@ -241,7 +241,6 @@
                 statusLabel.className = "text-emerald-500 font-bold";
             }
 
-            // Validasi Tantangan Lab
             const badge = document.getElementById('challenge-status');
             if (targetDx !== null && Math.abs(deltaX - targetDx) < 0.01) {
                 challengeCompleted = true;
@@ -279,18 +278,15 @@
             updateEnginePhysics();
         }
 
-        // Animasi Loop Render Pegas Kinetik
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             const startX = canvas.width / 2;
-            const startY = 30; // Atap penggantung pegas
+            const startY = 30;
             
-            // Total panjang visual pegas di layar
             const currentSpringLength = restLength + (deltaX * scaleFactor);
             const endSpringY = startY + currentSpringLength;
 
-            // 1. Gambar Atap Penyangga
             ctx.strokeStyle = '#64748B'; ctx.lineWidth = 4;
             ctx.beginPath();
             ctx.moveTo(startX - 60, startY); ctx.lineTo(startX + 60, startY);
@@ -300,7 +296,6 @@
             }
 
             if (!isBroken) {
-                // 2. Gambar Struktur Ulir Kumparan Pegas Dinamis
                 if (isWarning) {
                     warningPulse += 0.1;
                     const alpha = 0.5 + Math.sin(warningPulse) * 0.4;
@@ -331,38 +326,30 @@
                 ctx.stroke();
                 ctx.shadowBlur = 0; 
 
-                // 3. Gambar Balok Beban Menggantung (Ukuran disesuaikan responsif)
                 const boxSize = Math.min(canvas.height * 0.12, 60) + (mass * 2); 
                 ctx.fillStyle = isWarning ? '#F59E0B' : '#6366F1';
                 ctx.fillRect(startX - boxSize/2, endSpringY, boxSize, boxSize);
                 
-                // Label Teks Massa di Tengah Balok
                 ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
                 ctx.fillText(`${mass.toFixed(1)} kg`, startX, endSpringY + (boxSize/2) + 4);
 
-                // 4. Gambar Panah Indikator Gaya Vektor
                 if (mass > 0) {
-                    // Gaya Berat (F = m.g) - Panah Merah ke Bawah
                     ctx.strokeStyle = '#EF4444'; ctx.fillStyle = '#EF4444'; ctx.lineWidth = 3;
                     ctx.beginPath(); ctx.moveTo(startX, endSpringY + boxSize);
                     ctx.lineTo(startX, endSpringY + boxSize + 35); ctx.stroke();
-                    // Kepala Panah Bawah
                     ctx.beginPath(); ctx.moveTo(startX - 5, endSpringY + boxSize + 30);
                     ctx.lineTo(startX, endSpringY + boxSize + 37);
                     ctx.lineTo(startX + 5, endSpringY + boxSize + 30); ctx.fill();
 
-                    // Gaya Pemulih Pegas (Fs) - Panah Hijau ke Atas
                     ctx.strokeStyle = '#10B981'; ctx.fillStyle = '#10B981'; ctx.lineWidth = 3;
                     ctx.beginPath(); ctx.moveTo(startX - (boxSize/2) - 15, endSpringY + (boxSize/2));
                     ctx.lineTo(startX - (boxSize/2) - 15, endSpringY + (boxSize/2) - 35); ctx.stroke();
-                    // Kepala Panah Atas
                     ctx.beginPath(); ctx.moveTo(startX - (boxSize/2) - 20, endSpringY + (boxSize/2) - 30);
                     ctx.lineTo(startX - (boxSize/2) - 15, endSpringY + (boxSize/2) - 37);
                     ctx.lineTo(startX - (boxSize/2) - 10, endSpringY + (boxSize/2) - 30); ctx.fill();
                 }
 
             } else {
-                // Gambar Pegas Putus Terkulai jika Rusak
                 ctx.strokeStyle = '#EF4444'; ctx.lineWidth = 4;
                 ctx.beginPath(); ctx.moveTo(startX, startY);
                 ctx.lineTo(startX - 20, startY + restLength * 0.4); ctx.stroke();
@@ -371,7 +358,6 @@
             requestAnimationFrame(animate);
         }
 
-        // Logic Drag Balok Beban Vertikal Secara Langsung
         function handleWeightDrag(clientY) {
             const rect = canvas.getBoundingClientRect();
             const mouseY = clientY - rect.top;
@@ -413,7 +399,6 @@
         });
         window.addEventListener('mouseup', () => { isDraggingWeight = false; });
 
-        // Touch Mobile Support
         canvas.addEventListener('touchstart', (e) => {
             if (isBroken || e.touches.length === 0) return;
             const rect = canvas.getBoundingClientRect();
