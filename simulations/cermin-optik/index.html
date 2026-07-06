@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Cermin Cekung & Cembung - USM PhysX Lab</title>
+    <meta name="description" content="Simulasi pembentukan bayangan pada cermin cekung dan cembung interaktif - USM PhysX Lab.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <script src="../../lang-loader.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-sm transition-colors cursor-pointer">
+                    ←
+                </a>
+                <span class="text-md font-bold text-[#2E3A59] dark:text-white tracking-tight">
+                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                </span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-600">Gelombang & Optik</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-bold text-[#2E3A59] dark:text-white hidden sm:inline-block">Cermin Cekung & Cembung</span>
+                <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+            <div class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 flex flex-col justify-between min-h-[500px]">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span></span>
+                        <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Diagram Sinar Istimewa</h2>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                        <div>Jarak Bayangan (s'): <span id="m-si" class="text-indigo-600 font-bold">0.0</span> cm</div>
+                        <div>Perbesaran (M): <span id="m-mag" class="text-cyan-600 font-bold">0.0</span>×</div>
+                    </div>
+                </div>
+
+                <div class="relative w-full bg-slate-950 rounded-xl overflow-hidden flex-grow shadow-inner border border-slate-800 aspect-[16/9]">
+                    <canvas id="physicsCanvas" class="w-full h-full block"></canvas>
+                    <div class="absolute bottom-3 left-3 bg-black/40 backdrop-blur-sm text-[10px] text-slate-400 p-2 rounded border border-slate-800">
+                        * Garis kuning = sinar datang, garis cyan putus-putus = perpanjangan bayangan maya.
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
+                    <div>Persamaan Cermin: <span class="font-mono font-bold">1/f = 1/s + 1/s'</span></div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Sifat Bayangan: <span id="image-status" class="text-emerald-500 font-bold">-</span></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col space-y-6">
+                <div class="bg-gradient-to-br from-cyan-600 to-indigo-600 bg-[#06B6D4] rounded-2xl shadow-sm p-5 text-white">
+                    <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-3">
+                        <h3 class="text-sm font-bold flex items-center space-x-2">
+                            <span>🎯</span> <span>Tantangan Perbesaran</span>
+                        </h3>
+                        <span id="challenge-status" class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Mulai</span>
+                    </div>
+                    <p class="text-xs text-cyan-100 leading-relaxed mb-3">Atur jarak benda atau jenis cermin agar perbesaran bayangan (M) tepat pada angka target:</p>
+                    <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
+                        <span class="text-[10px] block text-cyan-200 uppercase font-bold tracking-wider">Target Perbesaran (M)</span>
+                        <span class="text-2xl font-black font-mono tracking-tight"><span id="target-mag-display">---</span>×</span>
+                    </div>
+                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-cyan-50 text-[#06B6D4] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                        Acak Target Baru
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center space-x-2">
+                        <span>🎛️</span> <span>Parameter Cermin & Benda</span>
+                    </h3>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1.5">Jenis Cermin</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setMirrorType('cekung')" id="btnCekung" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#06B6D4] text-white border-[#06B6D4]">Cekung (+)</button>
+                            <button onclick="setMirrorType('cembung')" id="btnCembung" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600">Cembung (-)</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Fokus Cermin (f)</label>
+                            <div class="flex items-center space-x-1 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-f" min="5" max="40" value="15" class="w-10 bg-transparent text-xs font-bold font-mono text-cyan-600 focus:outline-none text-right" oninput="syncInputs('f', 'num')">
+                                <span class="text-[10px] font-bold text-cyan-400 font-mono">cm</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-f" min="5" max="40" value="15" class="w-full accent-cyan-500 cursor-pointer" oninput="syncInputs('f', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Jarak Benda (s)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-s" min="5" max="80" value="30" class="w-10 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('s', 'num')">
+                                <span class="text-[10px] font-bold text-indigo-400 font-mono">cm</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-s" min="5" max="80" value="30" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('s', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Tinggi Benda (h)</label>
+                            <div class="flex items-center space-x-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-h" min="5" max="25" value="12" class="w-10 bg-transparent text-xs font-bold font-mono text-amber-600 focus:outline-none text-right" oninput="syncInputs('h', 'num')">
+                                <span class="text-[10px] font-bold text-amber-400 font-mono">cm</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-h" min="5" max="25" value="12" class="w-full accent-amber-500 cursor-pointer" oninput="syncInputs('h', 'range')">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-12 py-8 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Workspace Engine V1.0. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let mirrorType = 'cekung'; // cekung (+) atau cembung (-)
+        let f = 15, s = 30, h = 12;
+        let sPrime = 0, magnification = 0;
+
+        let targetMag = null;
+        let challengeCompleted = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            updateEngineValues();
+        }
+
+        function setMirrorType(type) {
+            mirrorType = type;
+            const btnC = document.getElementById('btnCekung');
+            const btnV = document.getElementById('btnCembung');
+            if (type === 'cekung') {
+                btnC.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#06B6D4] text-white border-[#06B6D4]";
+                btnV.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600";
+            } else {
+                btnV.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#06B6D4] text-white border-[#06B6D4]";
+                btnC.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600";
+            }
+            updateEngineValues();
+        }
+
+        function syncInputs(id, origin) {
+            const rangeInput = document.getElementById(`param-${id}`);
+            const numInput = document.getElementById(`num-${id}`);
+            if (origin === 'range') {
+                numInput.value = rangeInput.value;
+            } else {
+                let val = parseFloat(numInput.value);
+                if (isNaN(val)) return;
+                let min = parseFloat(numInput.min), max = parseFloat(numInput.max);
+                if (val < min) val = min;
+                if (val > max) val = max;
+                rangeInput.value = val;
+            }
+            if (id === 'f') f = parseFloat(rangeInput.value);
+            if (id === 's') s = parseFloat(rangeInput.value);
+            if (id === 'h') h = parseFloat(rangeInput.value);
+            updateEngineValues();
+        }
+
+        function generateNewChallenge() {
+            const targets = [-2.0, -1.0, -0.5, 0.5, 1.0, 1.5, 2.5];
+            targetMag = targets[Math.floor(Math.random() * targets.length)];
+            challengeCompleted = false;
+            document.getElementById('target-mag-display').innerText = targetMag.toFixed(1);
+            const badge = document.getElementById('challenge-status');
+            badge.innerText = "Mencari";
+            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            updateEngineValues();
+        }
+
+        function updateEngineValues() {
+            const fSigned = mirrorType === 'cekung' ? f : -f;
+            // 1/f = 1/s + 1/s'  =>  s' = (f*s)/(s-f)
+            const denom = (s - fSigned);
+            sPrime = Math.abs(denom) < 0.01 ? 9999 : (fSigned * s) / denom;
+            magnification = -sPrime / s;
+
+            document.getElementById('m-si').innerText = sPrime.toFixed(1);
+            document.getElementById('m-mag').innerText = magnification.toFixed(2);
+
+            const statusLabel = document.getElementById('image-status');
+            const nyataMaya = sPrime > 0 ? "Nyata" : "Maya";
+            const tegakTerbalik = magnification > 0 ? "Tegak" : "Terbalik";
+            const ukuran = Math.abs(magnification) > 1 ? "Diperbesar" : "Diperkecil";
+            statusLabel.innerText = `${nyataMaya}, ${tegakTerbalik}, ${ukuran}`;
+            statusLabel.className = sPrime > 0 ? "text-emerald-500 font-bold" : "text-amber-500 font-bold";
+
+            const badge = document.getElementById('challenge-status');
+            if (targetMag !== null && Math.abs(magnification - targetMag) < 0.15) {
+                challengeCompleted = true;
+                badge.innerText = "Sukses";
+                badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+            } else if (targetMag !== null) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
+
+            drawScene();
+        }
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const midY = canvas.height / 2;
+            const scale = Math.min(canvas.width / 140, canvas.height / 80);
+            const mirrorX = canvas.width * 0.35;
+
+            // Sumbu utama
+            ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; ctx.setLineDash([5, 5]);
+            ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Cermin (kurva sederhana)
+            ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            const curveDir = mirrorType === 'cekung' ? 1 : -1;
+            ctx.moveTo(mirrorX, midY - 100);
+            ctx.quadraticCurveTo(mirrorX + (25 * curveDir), midY, mirrorX, midY + 100);
+            ctx.stroke();
+
+            // Titik Fokus (F) dan Pusat Kelengkungan (C)
+            const focusX = mirrorType === 'cekung' ? mirrorX - f * scale : mirrorX + f * scale;
+            const centerX = mirrorType === 'cekung' ? mirrorX - 2 * f * scale : mirrorX + 2 * f * scale;
+            ctx.fillStyle = '#F59E0B';
+            ctx.beginPath(); ctx.arc(focusX, midY, 3, 0, Math.PI * 2); ctx.fill();
+            ctx.fillText('F', focusX - 3, midY + 15);
+            ctx.beginPath(); ctx.arc(centerX, midY, 3, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#94A3B8'; ctx.font = '10px sans-serif';
+            ctx.fillText('C', centerX - 3, midY + 15);
+
+            // Benda (panah kuning)
+            const objX = mirrorX - s * scale;
+            const objTopY = midY - h * scale;
+            ctx.strokeStyle = '#FBBF24'; ctx.fillStyle = '#FBBF24'; ctx.lineWidth = 2.5;
+            drawArrowLine(objX, midY, objX, objTopY);
+
+            // Bayangan (panah cyan, bisa di depan/belakang cermin)
+            const imgX = mirrorX - sPrime * scale;
+            const imgTopY = midY - (h * magnification) * scale;
+            const isVirtual = sPrime <= 0;
+            ctx.strokeStyle = '#22D3EE'; ctx.fillStyle = '#22D3EE'; ctx.lineWidth = 2.5;
+            if (isVirtual) ctx.setLineDash([4, 4]);
+            drawArrowLine(imgX, midY, imgX, imgTopY);
+            ctx.setLineDash([]);
+
+            // Sinar istimewa: sejajar sumbu -> lewat F ; lewat F -> sejajar sumbu
+            ctx.strokeStyle = '#FBBF24'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(objX, objTopY); ctx.lineTo(mirrorX, objTopY); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(mirrorX, objTopY); ctx.lineTo(imgX, imgTopY); ctx.stroke();
+            if (isVirtual) {
+                ctx.strokeStyle = 'rgba(251,191,36,0.35)'; ctx.setLineDash([3, 3]);
+                ctx.beginPath(); ctx.moveTo(mirrorX, objTopY); ctx.lineTo(imgX, imgTopY); ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            ctx.fillStyle = '#94A3B8'; ctx.font = '10px sans-serif';
+            ctx.fillText('Benda', objX - 10, midY + 20);
+            ctx.fillText('Bayangan', imgX - 15, midY + 35);
+        }
+
+        function drawArrowLine(x1, y1, x2, y2) {
+            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - 6 * Math.cos(angle - Math.PI / 6), y2 - 6 * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(x2 - 6 * Math.cos(angle + Math.PI / 6), y2 - 6 * Math.sin(angle + Math.PI / 6));
+            ctx.closePath(); ctx.fill();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = function() { resizeCanvas(); generateNewChallenge(); };
+    </script>
+</body>
+</html>
