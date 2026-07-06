@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Tumbukan Momentum - USM PhysX Lab</title>
+    <meta name="description" content="Simulasi tumbukan lenting dan tidak lenting sempurna berdasarkan Hukum Kekekalan Momentum - USM PhysX Lab.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <script src="../../lang-loader.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-sm transition-colors cursor-pointer">
+                    ←
+                </a>
+                <span class="text-md font-bold text-[#2E3A59] dark:text-white tracking-tight">
+                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                </span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-600">Mekanika</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-bold text-[#2E3A59] dark:text-white hidden sm:inline-block">Tumbukan & Momentum</span>
+                <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+            <div class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 flex flex-col justify-between min-h-[500px]">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
+                        <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Simulasi Tumbukan 1D</h2>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                        <div>v₁' : <span id="m-v1f" class="text-indigo-600 font-bold">0.00</span> m/s</div>
+                        <div>v₂' : <span id="m-v2f" class="text-rose-600 font-bold">0.00</span> m/s</div>
+                    </div>
+                </div>
+
+                <div class="relative w-full bg-slate-950 rounded-xl overflow-hidden flex-grow shadow-inner border border-slate-800 aspect-[16/9]">
+                    <canvas id="physicsCanvas" class="w-full h-full block"></canvas>
+                </div>
+
+                <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600">
+                    <div class="flex items-center space-x-2">
+                        <button onclick="startSimulation()" id="btn-play" class="px-5 py-2 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-bold rounded-lg flex items-center space-x-1.5 shadow-sm transition-all cursor-pointer">
+                            <span>▶</span> <span>Tumbukkan</span>
+                        </button>
+                        <button onclick="resetSimulation()" id="btn-reset" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 text-xs font-bold rounded-lg transition-all cursor-pointer">
+                            <span>🔄</span> <span>Reset</span>
+                        </button>
+                    </div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Momentum Total: <span id="momentum-status" class="text-emerald-500 font-bold">0.00 kg·m/s</span></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col space-y-6">
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-600 bg-[#6366F1] rounded-2xl shadow-sm p-5 text-white">
+                    <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-3">
+                        <h3 class="text-sm font-bold flex items-center space-x-2">
+                            <span>🎯</span> <span>Tantangan Kecepatan Akhir</span>
+                        </h3>
+                        <span id="challenge-status" class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Mulai</span>
+                    </div>
+                    <p class="text-xs text-indigo-100 leading-relaxed mb-3">Atur massa atau kecepatan awal Bola 1 agar kecepatan akhirnya (v₁') tepat pada target:</p>
+                    <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
+                        <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Kecepatan Akhir Bola 1</span>
+                        <span class="text-2xl font-black font-mono tracking-tight"><span id="target-v-display">---</span> m/s</span>
+                    </div>
+                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                        Acak Target Baru
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center space-x-2">
+                        <span>🎛️</span> <span>Parameter Tumbukan</span>
+                    </h3>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1.5">Jenis Tumbukan</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setCollisionType('lenting')" id="btnLenting" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#6366F1] text-white border-[#6366F1]">Lenting Sempurna</button>
+                            <button onclick="setCollisionType('tidak-lenting')" id="btnTidakLenting" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600">Tidak Lenting</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Bola 1 (m₁)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-m1" min="1" max="20" value="4" class="w-10 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('m1', 'num')">
+                                <span class="text-[10px] font-bold text-indigo-400 font-mono">kg</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-m1" min="1" max="20" value="4" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('m1', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Bola 1 (v₁)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-v1" min="0" max="15" value="6" class="w-10 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('v1', 'num')">
+                                <span class="text-[10px] font-bold text-indigo-400 font-mono">m/s</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-v1" min="0" max="15" value="6" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('v1', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Bola 2 (m₂)</label>
+                            <div class="flex items-center space-x-1 bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-m2" min="1" max="20" value="6" class="w-10 bg-transparent text-xs font-bold font-mono text-rose-600 focus:outline-none text-right" oninput="syncInputs('m2', 'num')">
+                                <span class="text-[10px] font-bold text-rose-400 font-mono">kg</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-m2" min="1" max="20" value="6" class="w-full accent-rose-500 cursor-pointer" oninput="syncInputs('m2', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Bola 2 (v₂)</label>
+                            <div class="flex items-center space-x-1 bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-v2" min="-15" max="0" value="-2" class="w-10 bg-transparent text-xs font-bold font-mono text-rose-600 focus:outline-none text-right" oninput="syncInputs('v2', 'num')">
+                                <span class="text-[10px] font-bold text-rose-400 font-mono">m/s</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-v2" min="-15" max="0" value="-2" class="w-full accent-rose-500 cursor-pointer" oninput="syncInputs('v2', 'range')">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-12 py-8 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Workspace Engine V1.0. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let collisionType = 'lenting';
+        let m1 = 4, v1 = 6, m2 = 6, v2 = -2;
+        let v1f = 0, v2f = 0;
+        let isRunning = false;
+        let x1 = 0, x2 = 0;
+        let animationId;
+        let hasCollided = false;
+
+        let targetV = null;
+        let challengeCompleted = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            resetSimulation();
+        }
+
+        function setCollisionType(type) {
+            collisionType = type;
+            const btnL = document.getElementById('btnLenting');
+            const btnT = document.getElementById('btnTidakLenting');
+            if (type === 'lenting') {
+                btnL.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#6366F1] text-white border-[#6366F1]";
+                btnT.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600";
+            } else {
+                btnT.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#6366F1] text-white border-[#6366F1]";
+                btnL.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600";
+            }
+            calculateCollision();
+            resetSimulation();
+        }
+
+        function syncInputs(id, origin) {
+            const rangeInput = document.getElementById(`param-${id}`);
+            const numInput = document.getElementById(`num-${id}`);
+            if (origin === 'range') {
+                numInput.value = rangeInput.value;
+            } else {
+                let val = parseFloat(numInput.value);
+                if (isNaN(val)) return;
+                let min = parseFloat(numInput.min), max = parseFloat(numInput.max);
+                if (val < min) val = min;
+                if (val > max) val = max;
+                rangeInput.value = val;
+            }
+            if (id === 'm1') m1 = parseFloat(rangeInput.value);
+            if (id === 'v1') v1 = parseFloat(rangeInput.value);
+            if (id === 'm2') m2 = parseFloat(rangeInput.value);
+            if (id === 'v2') v2 = parseFloat(rangeInput.value);
+            calculateCollision();
+            if (!isRunning) resetSimulation();
+        }
+
+        function generateNewChallenge() {
+            const targets = [-3.0, -1.5, 0.0, 1.5, 3.0, 4.5];
+            targetV = targets[Math.floor(Math.random() * targets.length)];
+            challengeCompleted = false;
+            document.getElementById('target-v-display').innerText = targetV.toFixed(1);
+            const badge = document.getElementById('challenge-status');
+            badge.innerText = "Mencari";
+            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            calculateCollision();
+        }
+
+        function calculateCollision() {
+            if (collisionType === 'lenting') {
+                v1f = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2);
+                v2f = ((m2 - m1) * v2 + 2 * m1 * v1) / (m1 + m2);
+            } else {
+                const vCommon = (m1 * v1 + m2 * v2) / (m1 + m2);
+                v1f = vCommon;
+                v2f = vCommon;
+            }
+
+            document.getElementById('m-v1f').innerText = v1f.toFixed(2);
+            document.getElementById('m-v2f').innerText = v2f.toFixed(2);
+
+            const totalMomentum = m1 * v1 + m2 * v2;
+            document.getElementById('momentum-status').innerText = totalMomentum.toFixed(2) + ' kg·m/s';
+
+            const badge = document.getElementById('challenge-status');
+            if (targetV !== null && Math.abs(v1f - targetV) < 0.3) {
+                challengeCompleted = true;
+                badge.innerText = "Sukses";
+                badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+            } else if (targetV !== null) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
+        }
+
+        function startSimulation() {
+            if (isRunning) return;
+            isRunning = true;
+            hasCollided = false;
+            x1 = canvas.width * 0.2;
+            x2 = canvas.width * 0.8;
+            animate();
+        }
+
+        function resetSimulation() {
+            isRunning = false;
+            hasCollided = false;
+            cancelAnimationFrame(animationId);
+            x1 = canvas.width * 0.2;
+            x2 = canvas.width * 0.8;
+            drawScene(v1, v2);
+        }
+
+        function animate() {
+            if (!isRunning) return;
+            const r1 = 10 + m1 * 1.5, r2 = 10 + m2 * 1.5;
+
+            if (!hasCollided) {
+                x1 += v1 * 1.2;
+                x2 += v2 * 1.2;
+                if (x1 + r1 >= x2 - r2) {
+                    hasCollided = true;
+                }
+                drawScene(v1, v2);
+            } else {
+                x1 += v1f * 1.2;
+                x2 += v2f * 1.2;
+                drawScene(v1f, v2f);
+                if (x1 < -50 || x1 > canvas.width + 50) { isRunning = false; return; }
+                if (x2 < -50 || x2 > canvas.width + 50) { isRunning = false; return; }
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function drawScene(currentV1, currentV2) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const midY = canvas.height / 2;
+            const r1 = 10 + m1 * 1.5, r2 = 10 + m2 * 1.5;
+
+            ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; ctx.setLineDash([6, 4]);
+            ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#6366F1';
+            ctx.beginPath(); ctx.arc(x1, midY, r1, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('m₁', x1, midY + 4);
+
+            ctx.fillStyle = '#F43F5E';
+            ctx.beginPath(); ctx.arc(x2, midY, r2, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText('m₂', x2, midY + 4);
+
+            ctx.fillStyle = '#94A3B8'; ctx.font = '10px monospace';
+            ctx.fillText(`${currentV1.toFixed(1)} m/s`, x1, midY - r1 - 10);
+            ctx.fillText(`${currentV2.toFixed(1)} m/s`, x2, midY - r2 - 10);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = function() { resizeCanvas(); generateNewChallenge(); };
+    </script>
+</body>
+</html>
