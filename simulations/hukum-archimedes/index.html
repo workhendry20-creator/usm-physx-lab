@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Hukum Archimedes - USM PhysX Lab</title>
+    <meta name="description" content="Simulasi gaya apung dan Hukum Archimedes pada benda terapung, melayang, dan tenggelam - USM PhysX Lab.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <script src="../../lang-loader.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-sm transition-colors cursor-pointer">
+                    ←
+                </a>
+                <span class="text-md font-bold text-[#2E3A59] dark:text-white tracking-tight">
+                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                </span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-600">Fluida</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-bold text-[#2E3A59] dark:text-white hidden sm:inline-block">Hukum Archimedes</span>
+                <span class="bg-[#F59E0B]/10 text-[#F59E0B] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+            <div class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 flex flex-col justify-between min-h-[500px]">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span></span>
+                        <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Bejana Fluida & Benda Uji</h2>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                        <div>Gaya Apung (F_a): <span id="m-fa" class="text-cyan-600 font-bold">0.00</span> N</div>
+                        <div>Terendam: <span id="m-submerged" class="text-indigo-600 font-bold">0</span>%</div>
+                    </div>
+                </div>
+
+                <div class="relative w-full bg-slate-950 rounded-xl overflow-hidden flex-grow shadow-inner border border-slate-800 aspect-[16/9]">
+                    <canvas id="physicsCanvas" class="w-full h-full block"></canvas>
+                </div>
+
+                <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
+                    <div>Persamaan: <span class="font-mono font-bold">F_a = ρ_fluida · g · V_terendam</span></div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Kondisi: <span id="float-status" class="text-emerald-500 font-bold">Terapung</span></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col space-y-6">
+                <div class="bg-gradient-to-br from-cyan-600 to-indigo-600 bg-[#06B6D4] rounded-2xl shadow-sm p-5 text-white">
+                    <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-3">
+                        <h3 class="text-sm font-bold flex items-center space-x-2">
+                            <span>🎯</span> <span>Tantangan Fraksi Terendam</span>
+                        </h3>
+                        <span id="challenge-status" class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Mulai</span>
+                    </div>
+                    <p class="text-xs text-cyan-100 leading-relaxed mb-3">Atur massa jenis benda atau fluida agar persentase bagian benda yang terendam tepat pada target:</p>
+                    <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
+                        <span class="text-[10px] block text-cyan-200 uppercase font-bold tracking-wider">Target Persentase Terendam</span>
+                        <span class="text-2xl font-black font-mono tracking-tight"><span id="target-display">---</span>%</span>
+                    </div>
+                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-cyan-50 text-[#06B6D4] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                        Acak Target Baru
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center space-x-2">
+                        <span>🎛️</span> <span>Parameter Benda & Fluida</span>
+                    </h3>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Jenis Benda (ρ_b)</label>
+                            <div class="flex items-center space-x-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-rhoB" min="100" max="2000" step="10" value="600" class="w-14 bg-transparent text-xs font-bold font-mono text-amber-600 focus:outline-none text-right" oninput="syncInputs('rhoB', 'num')">
+                                <span class="text-[10px] font-bold text-amber-400 font-mono">kg/m³</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-rhoB" min="100" max="2000" step="10" value="600" class="w-full accent-amber-500 cursor-pointer" oninput="syncInputs('rhoB', 'range')">
+                        <div class="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1">
+                            <span>Kayu Ringan</span>
+                            <span>Logam Padat</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Jenis Fluida (ρ_f)</label>
+                            <div class="flex items-center space-x-1 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-rhoF" min="800" max="1200" step="10" value="1000" class="w-14 bg-transparent text-xs font-bold font-mono text-cyan-600 focus:outline-none text-right" oninput="syncInputs('rhoF', 'num')">
+                                <span class="text-[10px] font-bold text-cyan-400 font-mono">kg/m³</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-rhoF" min="800" max="1200" step="10" value="1000" class="w-full accent-cyan-500 cursor-pointer" oninput="syncInputs('rhoF', 'range')">
+                        <div class="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1">
+                            <span>Minyak (~900)</span>
+                            <span>Air Garam (~1200)</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Volume Benda (V)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-vol" min="0.001" max="0.01" step="0.0005" value="0.004" class="w-16 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('vol', 'num')">
+                                <span class="text-[10px] font-bold text-indigo-400 font-mono">m³</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-vol" min="0.001" max="0.01" step="0.0005" value="0.004" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('vol', 'range')">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-12 py-8 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Workspace Engine V1.0. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const g = 9.8;
+        let rhoB = 600, rhoF = 1000, vol = 0.004;
+        let submergedFraction = 0;
+        let buoyantForce = 0;
+
+        let targetFraction = null;
+        let challengeCompleted = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            updateEngineValues();
+        }
+
+        function syncInputs(id, origin) {
+            const rangeInput = document.getElementById(`param-${id}`);
+            const numInput = document.getElementById(`num-${id}`);
+            if (origin === 'range') {
+                numInput.value = rangeInput.value;
+            } else {
+                let val = parseFloat(numInput.value);
+                if (isNaN(val)) return;
+                let min = parseFloat(numInput.min), max = parseFloat(numInput.max);
+                if (val < min) val = min;
+                if (val > max) val = max;
+                rangeInput.value = val;
+            }
+            if (id === 'rhoB') rhoB = parseFloat(rangeInput.value);
+            if (id === 'rhoF') rhoF = parseFloat(rangeInput.value);
+            if (id === 'vol') vol = parseFloat(rangeInput.value);
+            updateEngineValues();
+        }
+
+        function generateNewChallenge() {
+            const targets = [30, 45, 55, 65, 75, 90, 100];
+            targetFraction = targets[Math.floor(Math.random() * targets.length)];
+            challengeCompleted = false;
+            document.getElementById('target-display').innerText = targetFraction;
+            const badge = document.getElementById('challenge-status');
+            badge.innerText = "Mencari";
+            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            updateEngineValues();
+        }
+
+        function updateEngineValues() {
+            submergedFraction = Math.min(1, rhoB / rhoF);
+            const weight = rhoB * vol * g;
+            buoyantForce = rhoF * g * (vol * submergedFraction);
+
+            document.getElementById('m-fa').innerText = buoyantForce.toFixed(2);
+            document.getElementById('m-submerged').innerText = Math.round(submergedFraction * 100);
+
+            const statusLabel = document.getElementById('float-status');
+            if (rhoB < rhoF) {
+                statusLabel.innerText = "Terapung";
+                statusLabel.className = "text-emerald-500 font-bold";
+            } else if (Math.abs(rhoB - rhoF) < 5) {
+                statusLabel.innerText = "Melayang";
+                statusLabel.className = "text-amber-500 font-bold";
+            } else {
+                statusLabel.innerText = "Tenggelam";
+                statusLabel.className = "text-rose-500 font-bold";
+            }
+
+            const badge = document.getElementById('challenge-status');
+            const currentPercent = Math.round(submergedFraction * 100);
+            if (targetFraction !== null && Math.abs(currentPercent - targetFraction) <= 2) {
+                challengeCompleted = true;
+                badge.innerText = "Sukses";
+                badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+            } else if (targetFraction !== null) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
+
+            drawScene();
+        }
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const waterLevel = canvas.height * 0.35;
+
+            ctx.fillStyle = 'rgba(6, 182, 212, 0.25)';
+            ctx.fillRect(0, waterLevel, canvas.width, canvas.height - waterLevel);
+            ctx.strokeStyle = '#06B6D4'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0, waterLevel); ctx.lineTo(canvas.width, waterLevel); ctx.stroke();
+
+            ctx.strokeStyle = '#475569'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(40, 30); ctx.lineTo(40, canvas.height - 20);
+            ctx.lineTo(canvas.width - 40, canvas.height - 20); ctx.lineTo(canvas.width - 40, 30);
+            ctx.stroke();
+
+            const boxSize = 70;
+            const midX = canvas.width / 2;
+            const submergedHeight = boxSize * submergedFraction;
+            const boxTopY = waterLevel - (boxSize - submergedHeight);
+
+            ctx.fillStyle = '#F59E0B';
+            ctx.fillRect(midX - boxSize / 2, boxTopY, boxSize, boxSize);
+            ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2;
+            ctx.strokeRect(midX - boxSize / 2, boxTopY, boxSize, boxSize);
+
+            ctx.fillStyle = '#1E293B'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('BENDA', midX, boxTopY + boxSize / 2 + 4);
+
+            ctx.strokeStyle = '#EF4444'; ctx.fillStyle = '#EF4444'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(midX, boxTopY + boxSize); ctx.lineTo(midX, boxTopY + boxSize + 30); ctx.stroke();
+            ctx.fillText('W', midX + 12, boxTopY + boxSize + 25);
+
+            ctx.strokeStyle = '#22D3EE'; ctx.fillStyle = '#22D3EE';
+            ctx.beginPath(); ctx.moveTo(midX, boxTopY); ctx.lineTo(midX, boxTopY - 30); ctx.stroke();
+            ctx.fillText('Fa', midX + 12, boxTopY - 20);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = function() { resizeCanvas(); generateNewChallenge(); };
+    </script>
+</body>
+</html>
