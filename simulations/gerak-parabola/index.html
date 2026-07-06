@@ -91,10 +91,27 @@
             </div>
 
             <div class="lg:col-span-4 flex flex-col space-y-6">
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5">
-                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 mb-4 flex items-center space-x-2">
-                        <span>🎛️</span> <span>Modifikasi Parameter</span>
-                    </h3>
+    <div class="bg-gradient-to-br from-indigo-600 to-purple-600 bg-[#6366F1] rounded-2xl shadow-sm p-5 text-white">
+        <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-3">
+            <h3 class="text-sm font-bold flex items-center space-x-2">
+                <span>🎯</span> <span>Tantangan Jarak Tembak</span>
+            </h3>
+            <span id="challenge-status" class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Mulai</span>
+        </div>
+        <p class="text-xs text-indigo-100 leading-relaxed mb-3">Atur kecepatan awal, sudut elevasi, atau hambatan udara agar jarak terjauh (R_max) proyektil tepat pada angka target:</p>
+        <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
+            <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Jarak Terjauh (R_max)</span>
+            <span class="text-2xl font-black font-mono tracking-tight"><span id="target-rmax-display">---</span> m</span>
+        </div>
+        <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+            Acak Target Baru
+        </button>
+    </div>
+
+    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5">
+        <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 mb-4 flex items-center space-x-2">
+            <span>🎛️</span> <span>Modifikasi Parameter</span>
+        </h3>
                     
                     <div class="mb-5">
                         <div class="flex justify-between items-center mb-1.5">
@@ -205,6 +222,10 @@
         let maxSimX = 100;
         let maxSimY = 50;
 
+        // Challenge State
+        let targetRmax = null;
+        let challengeCompleted = false;
+
         function resizeCanvas() {
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
@@ -233,7 +254,18 @@
             
             updateEngineValues();
         }
+        function generateNewChallenge() {
+    const randomTargets = [25, 35, 48, 60, 75, 90, 110];
+    targetRmax = randomTargets[Math.floor(Math.random() * randomTargets.length)];
+    challengeCompleted = false;
 
+    document.getElementById('target-rmax-display').innerText = targetRmax;
+    const badge = document.getElementById('challenge-status');
+    badge.innerText = "Mencari";
+    badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+
+    updateEngineValues();
+}
         // Ambil data ter-update dari element input untuk kalkulasi mesin fisika
         function updateEngineValues() {
             v0 = parseFloat(document.getElementById('param-v0').value);
@@ -278,6 +310,16 @@
             document.getElementById('calc-hmax').innerText = localHMax.toFixed(2);
             document.getElementById('calc-rmax').innerText = localRMax.toFixed(2);
             document.getElementById('calc-ttotal').innerText = tempT.toFixed(2);
+
+            const badge = document.getElementById('challenge-status');
+if (targetRmax !== null && Math.abs(localRMax - targetRmax) < 2) {
+    challengeCompleted = true;
+    badge.innerText = "Sukses";
+    badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+} else if (targetRmax !== null) {
+    badge.innerText = "Mencari";
+    badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+}
 
             maxSimX = Math.max(localRMax, 20); 
             maxSimY = Math.max(localHMax, 10);
@@ -433,9 +475,9 @@
 
         window.addEventListener('resize', resizeCanvas);
         window.onload = function() {
-            resizeCanvas();
-            updateEngineValues();
-        };
+    resizeCanvas();
+    generateNewChallenge();
+};
     </script>
 </body>
 </html>
