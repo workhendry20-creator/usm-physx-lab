@@ -23,13 +23,41 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .sim-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-    </style>
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .sim-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Kategori pill: pakai class custom (bukan utility Tailwind langsung)
+       supaya toggle aktif/nonaktif via JS tidak bentrok dengan dark: variant */
+    .category-pill.pill-active {
+        background-color: var(--pill-color, #6366F1);
+        border-color: var(--pill-color, #6366F1);
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    .category-pill.pill-inactive {
+        background-color: #ffffff;
+        color: #475569;
+        border-color: #e2e8f0;
+        font-weight: 500;
+    }
+    .category-pill.pill-inactive:hover {
+        color: #0f172a;
+        background-color: #f8fafc;
+    }
+    .dark .category-pill.pill-inactive {
+        background-color: #1e293b;
+        color: #cbd5e1;
+        border-color: #334155;
+    }
+    .dark .category-pill.pill-inactive:hover {
+        color: #ffffff;
+        background-color: #334155;
+    }
+</style>
 </head>
 <body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
 
@@ -133,22 +161,22 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-3 mb-8">
-            <button onclick="filterCategory('all', this)" class="category-pill px-5 py-2.5 bg-[#6366F1] text-white text-sm font-semibold rounded-full border border-[#6366F1] shadow-sm flex items-center space-x-2 transition-all cursor-pointer">
-                <span>🌐</span> <span data-key="catAll">Semua</span>
-            </button>
-            <button onclick="filterCategory('mekanika', this)" class="category-pill px-5 py-2.5 bg-white text-slate-600 hover:text-slate-950 hover:bg-slate-50 text-sm font-medium rounded-full border border-slate-200 flex items-center space-x-2 transition-all cursor-pointer">
-                <span>🌌</span> <span data-key="catMekanika">Mekanika</span>
-            </button>
-            <button onclick="filterCategory('listrik', this)" class="category-pill px-5 py-2.5 bg-white text-slate-600 hover:text-slate-950 hover:bg-slate-50 text-sm font-medium rounded-full border border-slate-200 flex items-center space-x-2 transition-all cursor-pointer">
-                <span>⚡</span> <span data-key="catListrik">Listrik & Magnet</span>
-            </button>
-            <button onclick="filterCategory('gelombang', this)" class="category-pill px-5 py-2.5 bg-white text-slate-600 hover:text-slate-950 hover:bg-slate-50 text-sm font-medium rounded-full border border-slate-200 flex items-center space-x-2 transition-all cursor-pointer">
-                <span>🔬</span> <span data-key="catGelombang">Gelombang & Optik</span>
-            </button>
-            <button onclick="filterCategory('termo', this)" class="category-pill px-5 py-2.5 bg-white text-slate-600 hover:text-slate-950 hover:bg-slate-50 text-sm font-medium rounded-full border border-slate-200 flex items-center space-x-2 transition-all cursor-pointer">
-                <span>🌡️</span> <span data-key="catTermo">Termodinamika</span>
-            </button>
-        </div>
+    <button onclick="filterCategory('all', this)" class="category-pill pill-active px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #6366F1;">
+        <span>🌐</span> <span data-key="catAll">Semua</span>
+    </button>
+    <button onclick="filterCategory('mekanika', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #06B6D4;">
+        <span>🌌</span> <span data-key="catMekanika">Mekanika</span>
+    </button>
+    <button onclick="filterCategory('listrik', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F59E0B;">
+        <span>⚡</span> <span data-key="catListrik">Listrik & Magnet</span>
+    </button>
+    <button onclick="filterCategory('gelombang', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #8B5CF6;">
+        <span>🔬</span> <span data-key="catGelombang">Gelombang & Optik</span>
+    </button>
+    <button onclick="filterCategory('termo', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F43F5E;">
+        <span>🌡️</span> <span data-key="catTermo">Termodinamika</span>
+    </button>
+</div>
 
         <div class="relative">
             <div id="simulationGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-500 max-h-[460px] overflow-hidden">
@@ -412,13 +440,11 @@
             const overlay = document.getElementById('gradientOverlay');
 
             document.querySelectorAll('.category-pill').forEach(pill => {
-                pill.classList.remove('bg-[#6366F1]', 'text-white', 'font-semibold', 'shadow-sm');
-                pill.classList.add('bg-white', 'text-slate-600', 'font-medium', 'border-slate-200');
-            });
-
-            activePill.classList.remove('bg-white', 'text-slate-600', 'font-medium', 'border-slate-200');
-            activePill.classList.add('bg-[#6366F1]', 'text-white', 'font-semibold', 'shadow-sm');
-
+    pill.classList.remove('pill-active');
+    pill.classList.add('pill-inactive');
+});
+activePill.classList.remove('pill-inactive');
+activePill.classList.add('pill-active');
             let visibleCount = 0;
             cards.forEach(card => {
                 const cardCat = card.getAttribute('data-category');
@@ -440,19 +466,21 @@
         }
 
         // Live Search
-        document.getElementById('searchBar').addEventListener('input', function(e) {
-            const keyword = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.sim-card');
-            cards.forEach(card => {
-                const title = card.querySelector('h3').innerText.toLowerCase();
-                const desc = card.querySelector('p').innerText.toLowerCase();
-                const cardCat = card.getAttribute('data-category');
-                const matchesSearch = title.includes(keyword) || desc.includes(keyword);
-                const matchesCategory = currentFilter === 'all' || cardCat === currentFilter;
+        function performSearch() {
+    const keyword = document.getElementById('searchBar').value.toLowerCase();
+    const cards = document.querySelectorAll('.sim-card');
+    cards.forEach(card => {
+        const title = card.querySelector('h3').innerText.toLowerCase();
+        const desc = card.querySelector('p').innerText.toLowerCase();
+        const cardCat = card.getAttribute('data-category');
+        const matchesSearch = title.includes(keyword) || desc.includes(keyword);
+        const matchesCategory = currentFilter === 'all' || cardCat === currentFilter;
+        card.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
+    });
+}
 
-                card.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
-            });
-        });
+document.getElementById('searchBar').addEventListener('input', performSearch);
+window.addEventListener('physx:languageChanged', performSearch);
     </script>
 </body>
 </html>
