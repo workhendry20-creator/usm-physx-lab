@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Gaya Lorentz - USM PhysX Lab</title>
+    <meta name="description" content="Simulasi gerak melingkar partikel bermuatan dalam medan magnet akibat Gaya Lorentz - USM PhysX Lab.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <script src="../../lang-loader.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="../../index.html" class="w-8 h-8 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-sm transition-colors cursor-pointer">
+                    ←
+                </a>
+                <span class="text-md font-bold text-[#2E3A59] dark:text-white tracking-tight">
+                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                </span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-600">Listrik & Magnet</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-bold text-[#2E3A59] dark:text-white hidden sm:inline-block">Gaya Lorentz</span>
+                <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 12</span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+            <div class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 flex flex-col justify-between min-h-[500px]">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
+                        <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Medan Magnet Homogen (⊗ Masuk Bidang)</h2>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                        <div>Jari-jari (r): <span id="m-r" class="text-indigo-600 font-bold">0.00</span> m</div>
+                        <div>Periode (T): <span id="m-t" class="text-cyan-600 font-bold">0.00</span> s</div>
+                    </div>
+                </div>
+
+                <div class="relative w-full bg-slate-950 rounded-xl overflow-hidden flex-grow shadow-inner border border-slate-800 aspect-[16/9]">
+                    <canvas id="physicsCanvas" class="w-full h-full block"></canvas>
+                    <div class="absolute bottom-3 left-3 bg-black/40 backdrop-blur-sm text-[10px] text-slate-400 p-2 rounded border border-slate-800">
+                        * Tanda ⊗ menandakan medan magnet (B) masuk tegak lurus ke dalam bidang canvas.
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
+                    <div>Persamaan: <span class="font-mono font-bold">r = m·v / (q·B)</span></div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Arah Gaya: <span id="force-status" class="text-emerald-500 font-bold">Melingkar (Sentripetal)</span></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col space-y-6">
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-600 bg-[#6366F1] rounded-2xl shadow-sm p-5 text-white">
+                    <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-3">
+                        <h3 class="text-sm font-bold flex items-center space-x-2">
+                            <span>🎯</span> <span>Tantangan Jari-Jari Lintasan</span>
+                        </h3>
+                        <span id="challenge-status" class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Mulai</span>
+                    </div>
+                    <p class="text-xs text-indigo-100 leading-relaxed mb-3">Atur kecepatan partikel atau kuat medan magnet agar jari-jari lintasan melingkar (r) tepat pada target:</p>
+                    <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
+                        <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Jari-Jari (r)</span>
+                        <span class="text-2xl font-black font-mono tracking-tight"><span id="target-r-display">---</span> m</span>
+                    </div>
+                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                        Acak Target Baru
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-5 flex flex-col space-y-5">
+                    <h3 class="text-sm font-bold text-[#2E3A59] dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center space-x-2">
+                        <span>🎛️</span> <span>Parameter Partikel & Medan</span>
+                    </h3>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Partikel (v)</label>
+                            <div class="flex items-center space-x-1 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-v" min="1" max="20" value="8" class="w-10 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('v', 'num')">
+                                <span class="text-[10px] font-bold text-indigo-400 font-mono">×10⁶ m/s</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-v" min="1" max="20" value="8" class="w-full accent-indigo-500 cursor-pointer" oninput="syncInputs('v', 'range')">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kuat Medan Magnet (B)</label>
+                            <div class="flex items-center space-x-1 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800 rounded px-1.5 py-0.5">
+                                <input type="number" id="num-B" min="1" max="20" step="0.5" value="5" class="w-10 bg-transparent text-xs font-bold font-mono text-cyan-600 focus:outline-none text-right" oninput="syncInputs('B', 'num')">
+                                <span class="text-[10px] font-bold text-cyan-400 font-mono">×10⁻³ T</span>
+                            </div>
+                        </div>
+                        <input type="range" id="param-B" min="1" max="20" step="0.5" value="5" class="w-full accent-cyan-500 cursor-pointer" oninput="syncInputs('B', 'range')">
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1.5">Jenis Muatan</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setChargeType('positif')" id="btnPositif" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#6366F1] text-white border-[#6366F1]">Positif (+)</button>
+                            <button onclick="setChargeType('negatif')" id="btnNegatif" class="py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600">Negatif (-)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-12 py-8 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Workspace Engine V1.0. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const qMagnitude = 1.6e-19;
+        const massParticle = 9.11e-31;
+        let vInput = 8, bInput = 5, chargeSign = 1;
+        let radius = 0, period = 0;
+        let angle = 0;
+
+        let targetRadius = null;
+        let challengeCompleted = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            updateEngineValues();
+        }
+
+        function setChargeType(type) {
+            chargeSign = type === 'positif' ? 1 : -1;
+            const btnP = document.getElementById('btnPositif');
+            const btnN = document.getElementById('btnNegatif');
+            if (type === 'positif') {
+                btnP.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#6366F1] text-white border-[#6366F1]";
+                btnN.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600";
+            } else {
+                btnN.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-[#6366F1] text-white border-[#6366F1]";
+                btnP.className = "py-1.5 text-xs font-bold rounded-lg border transition-all bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600";
+            }
+            updateEngineValues();
+        }
+
+        function syncInputs(id, origin) {
+            const rangeInput = document.getElementById(`param-${id}`);
+            const numInput = document.getElementById(`num-${id}`);
+            if (origin === 'range') {
+                numInput.value = rangeInput.value;
+            } else {
+                let val = parseFloat(numInput.value);
+                if (isNaN(val)) return;
+                let min = parseFloat(numInput.min), max = parseFloat(numInput.max);
+                if (val < min) val = min;
+                if (val > max) val = max;
+                rangeInput.value = val;
+            }
+            if (id === 'v') vInput = parseFloat(rangeInput.value);
+            if (id === 'B') bInput = parseFloat(rangeInput.value);
+            updateEngineValues();
+        }
+
+        function generateNewChallenge() {
+            const targets = [4.5, 6.0, 7.5, 9.0, 11.0, 13.5];
+            targetRadius = targets[Math.floor(Math.random() * targets.length)];
+            challengeCompleted = false;
+            document.getElementById('target-r-display').innerText = targetRadius.toFixed(1);
+            const badge = document.getElementById('challenge-status');
+            badge.innerText = "Mencari";
+            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            updateEngineValues();
+        }
+
+        function updateEngineValues() {
+            const vReal = vInput * 1e6;
+            const bReal = bInput * 1e-3;
+            radius = (massParticle * vReal) / (qMagnitude * bReal) * 1e6;
+            period = (2 * Math.PI * massParticle) / (qMagnitude * bReal) * 1e9;
+
+            document.getElementById('m-r').innerText = radius.toFixed(2);
+            document.getElementById('m-t').innerText = period.toFixed(2);
+
+            const badge = document.getElementById('challenge-status');
+            if (targetRadius !== null && Math.abs(radius - targetRadius) < 0.4) {
+                challengeCompleted = true;
+                badge.innerText = "Sukses";
+                badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+            } else if (targetRadius !== null) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
+        }
+
+        function drawFieldSymbols() {
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.4)';
+            ctx.font = '14px sans-serif';
+            for (let x = 20; x < canvas.width; x += 45) {
+                for (let y = 20; y < canvas.height; y += 45) {
+                    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(x - 3, y - 3); ctx.lineTo(x + 3, y + 3); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(x + 3, y - 3); ctx.lineTo(x - 3, y + 3); ctx.stroke();
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)'; ctx.lineWidth = 1;
+            drawFieldSymbols();
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const pxRadius = Math.min(radius * 8, Math.min(canvas.width, canvas.height) / 2 - 30);
+
+            ctx.strokeStyle = '#6366F1'; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+            ctx.beginPath(); ctx.arc(centerX, centerY, pxRadius, 0, Math.PI * 2); ctx.stroke();
+            ctx.setLineDash([]);
+
+            angle += 0.02 * chargeSign;
+            const px = centerX + pxRadius * Math.cos(angle);
+            const py = centerY + pxRadius * Math.sin(angle);
+
+            ctx.fillStyle = chargeSign > 0 ? '#EF4444' : '#22D3EE';
+            ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(chargeSign > 0 ? '+' : '-', px, py + 3);
+
+            const vx = -Math.sin(angle) * chargeSign * 25;
+            const vy = Math.cos(angle) * chargeSign * 25;
+            ctx.strokeStyle = '#FBBF24'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + vx, py + vy); ctx.stroke();
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = function() { resizeCanvas(); generateNewChallenge(); animate(); };
+    </script>
+</body>
+</html>
