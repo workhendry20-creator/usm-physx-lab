@@ -11,7 +11,7 @@
     const FLAG_LABEL = { id: '🇮🇩 ID', en: '🇬🇧 EN', ms: '🇲🇾 MS' };
 
     // Elemen teks statis yang aman diterjemahkan otomatis.
-    const TARGET_SELECTOR = 'h1, h2, h3, h4, h5, p, label, a:not([id]), li, td, th, span:not([id]), .i18n';
+    const TARGET_SELECTOR = 'h1, h2, h3, h4, h5, p, label, a, li, td, th, span, button:not([data-no-translate]), [data-key], .i18n';
 
     // =====================================================================
     // KOMPONEN LOADING UNIVERSAL (dipakai untuk translate & bisa dipakai
@@ -154,6 +154,7 @@
         if (el.tagName === 'CANVAS' || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return true;
         if (el.querySelector('canvas')) return true;
         if (el.closest('[data-no-translate]')) return true;
+        if (el.closest('#langDropdownMenu') || el.closest('#langDropdownBtn')) return true;
         return false;
     }
 

@@ -681,7 +681,7 @@
                 class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#F8FAFC] dark:from-slate-950 via-[#F8FAFC]/80 dark:via-slate-950/80 to-transparent flex items-end justify-center pb-2 z-10">
                 <button onclick="toggleSeeMore()" id="btnSeeMore"
                     class="px-6 py-3 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 text-[#6366F1] dark:text-indigo-400 border border-slate-200 dark:border-slate-700/80 hover:border-[#6366F1] font-bold text-xs rounded-full shadow-lg hover:shadow-indigo-500/10 flex items-center space-x-2 transition-all cursor-pointer">
-                    <span id="btnText" data-key="btnSeeMore">Lihat Semua Simulasi</span>
+                    <span id="btnText" class="i18n" data-key="btnSeeMore">Lihat Semua Simulasi</span>
                     <svg id="btnIcon" class="w-4 h-4 transition-transform duration-300" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7">
@@ -805,6 +805,7 @@
                 btnIcon.style.transform = 'rotate(180deg)';
             }
 
+            btnText.dataset.original = labelID;
             btnText.innerText = (currentLang === 'id' || !window.PhysXLang)
                 ? labelID
                 : await window.PhysXLang.translateText(labelID, currentLang);
