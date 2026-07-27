@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USM PhysX Lab - Laboratorium Fisika Virtual Interaktif</title>
-    <meta name="description" content="USM PhysX Lab - Laboratorium fisika virtual interaktif untuk siswa Kelas 10-12. Eksplorasi Gerak Parabola, Hukum Coulomb, Rangkaian Listrik, Optik, dan Termodinamika langsung dari browser.">
+    <meta name="description" content="USM PhysX Lab - Laboratorium fisika virtual interaktif tingkat SMA (Kelas 10-12). Eksplorasi 13 simulasi Mekanika, Listrik, Magnet, Optik, Termodinamika, dan Fluida langsung dari browser.">
     <meta property="og:title" content="USM PhysX Lab - Laboratorium Virtual Fisika">
-    <meta property="og:description" content="8 simulasi fisika interaktif: Mekanika, Listrik & Magnet, Gelombang & Optik, Termodinamika. Gratis dan langsung bisa diakses dari browser.">
+    <meta property="og:description" content="13 simulasi fisika interaktif 60 FPS: Mekanika, Listrik & Magnet, Gelombang & Optik, Termodinamika, Fluida. Gratis dan tanpa instalasi.">
     <meta property="og:type" content="website">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { darkMode: 'class' };
-        // Terapkan tema gelap SEBELUM halaman dirender, supaya tidak ada "kedipan"
-        // (flash) dari tema terang ke gelap saat halaman pertama kali dibuka.
         if (localStorage.getItem('darkMode') === '1') {
             document.documentElement.classList.add('dark');
         }
@@ -21,409 +19,452 @@
     <script src="lang-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
-    body {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .sim-card {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    /* Kategori pill: pakai class custom (bukan utility Tailwind langsung)
-       supaya toggle aktif/nonaktif via JS tidak bentrok dengan dark: variant */
-    .category-pill.pill-active {
-        background-color: var(--pill-color, #6366F1);
-        border-color: var(--pill-color, #6366F1);
-        color: #ffffff;
-        font-weight: 600;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    }
-    .category-pill.pill-inactive {
-        background-color: #ffffff;
-        color: #475569;
-        border-color: #e2e8f0;
-        font-weight: 500;
-    }
-    .category-pill.pill-inactive:hover {
-        color: #0f172a;
-        background-color: #f8fafc;
-    }
-    .dark .category-pill.pill-inactive {
-        background-color: #1e293b;
-        color: #cbd5e1;
-        border-color: #334155;
-    }
-    .dark .category-pill.pill-inactive:hover {
-        color: #ffffff;
-        background-color: #334155;
-    }
-</style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .sim-card {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sim-card:hover {
+            transform: translateY(-4px);
+        }
+        /* Custom Category Pills */
+        .category-pill.pill-active {
+            background-color: var(--pill-color, #6366F1);
+            border-color: var(--pill-color, #6366F1);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.35);
+        }
+        .category-pill.pill-inactive {
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #475569;
+            border-color: #e2e8f0;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+        }
+        .category-pill.pill-inactive:hover {
+            color: #0f172a;
+            background-color: #ffffff;
+            border-color: #cbd5e1;
+        }
+        .dark .category-pill.pill-inactive {
+            background-color: rgba(30, 41, 59, 0.6);
+            color: #cbd5e1;
+            border-color: #334155;
+        }
+        .dark .category-pill.pill-inactive:hover {
+            color: #ffffff;
+            background-color: #1e293b;
+            border-color: #475569;
+        }
+    </style>
 </head>
-<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
+<body class="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300 relative overflow-x-hidden">
+
+    <!-- Ambient Mesh Glow Background -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-indigo-500/15 dark:bg-indigo-600/15 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+    <div class="fixed top-1/3 right-10 w-96 h-96 bg-cyan-500/10 dark:bg-cyan-500/15 rounded-full blur-[130px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-10 left-1/3 w-[30rem] h-[30rem] bg-purple-500/10 dark:bg-purple-600/15 rounded-full blur-[140px] pointer-events-none -z-10"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
 
-        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-8 relative">
+        <!-- Glassmorphism Floating Navbar -->
+        <nav class="backdrop-blur-xl bg-white/75 dark:bg-slate-900/75 rounded-2xl shadow-xl shadow-indigo-500/5 border border-white/80 dark:border-slate-800/80 px-6 py-4 flex items-center justify-between mb-8 relative z-40 transition-all">
             <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-[#6366F1] rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-indigo-200">
+                <div class="w-9 h-9 bg-gradient-to-tr from-[#6366F1] to-cyan-400 rounded-xl flex items-center justify-center text-white font-black text-base shadow-md shadow-indigo-500/30">
                     U
                 </div>
-                <span class="text-xl font-bold text-[#2E3A59] dark:text-white tracking-tight">
-                    USM <span class="text-[#6366F1]">PhysX Lab</span>
+                <span class="text-xl font-extrabold text-[#2E3A59] dark:text-white tracking-tight">
+                    USM <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-cyan-400">PhysX Lab</span>
                 </span>
             </div>
 
             <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-500 dark:text-slate-400">
-                <a href="#" id="nav-home" class="i18n text-[#6366F1] border-b-2 border-[#6366F1] pb-1 font-semibold">Beranda</a>
+                <a href="#" id="nav-home" class="i18n text-[#6366F1] dark:text-indigo-400 border-b-2 border-[#6366F1] dark:border-indigo-400 pb-1 font-bold">Beranda</a>
                 <a href="panduan.html" id="nav-guide" class="i18n hover:text-slate-900 dark:hover:text-white transition-colors">Panduan</a>
                 <a href="tentang-riset.html" id="nav-research" class="i18n hover:text-slate-900 dark:hover:text-white transition-colors">Tentang Riset</a>
+                <a href="peta-situs.html" id="nav-sitemap" class="i18n hover:text-slate-900 dark:hover:text-white transition-colors">Peta Situs</a>
             </div>
 
             <div class="flex items-center space-x-4 relative">
-                <button onclick="toggleMobileMenu()" id="mobileMenuBtn" class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200/70 dark:border-slate-600 text-slate-600 dark:text-slate-300 transition-all">
+                <button onclick="toggleMobileMenu()" id="mobileMenuBtn" class="md:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/70 dark:border-slate-700 text-slate-600 dark:text-slate-300 transition-all">
                     <svg id="mobileMenuIconOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     <svg id="mobileMenuIconClose" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
 
-                <span id="badge-research" class="i18n hidden sm:inline-block bg-[#EEF2FF] dark:bg-indigo-950 text-[#6366F1] dark:text-indigo-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-100 dark:border-indigo-800">
-                    Eksperimen Edukasi
+                <span id="badge-research" class="i18n hidden sm:inline-flex items-center gap-1.5 bg-indigo-50/80 dark:bg-indigo-950/80 text-[#6366F1] dark:text-indigo-300 text-xs font-bold px-3.5 py-1.5 rounded-full border border-indigo-100 dark:border-indigo-800/60 shadow-sm backdrop-blur-sm">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> Eksperimen Edukasi
                 </span>
                 
-                <button onclick="toggleDarkMode()" id="darkModeBtn" class="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200/70 dark:border-slate-600 text-slate-600 dark:text-slate-200 transition-all">
+                <button onclick="toggleDarkMode()" id="darkModeBtn" aria-label="Toggle Dark Mode" class="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/70 dark:border-slate-700 text-slate-600 dark:text-slate-200 transition-all">
                     <svg id="darkModeIconSun" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     <svg id="darkModeIconMoon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
 
                 <div class="relative inline-block text-left z-50">
-                    <button onclick="toggleLangDropdown()" id="langDropdownBtn" data-no-translate class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200/70 dark:border-slate-600 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 transition-all shadow-sm">
+                    <button onclick="toggleLangDropdown()" id="langDropdownBtn" data-no-translate class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/70 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 transition-all shadow-sm">
                         <span>🇮🇩 ID</span>
                         <svg class="w-3 h-3 text-slate-400 transition-transform duration-200" id="dropdownArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
 
-                    <div id="langDropdownMenu" data-no-translate class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl p-1 space-y-0.5">
-                        <button onclick="changeLanguage('id')" class="w-full flex items-center space-x-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg text-left transition-colors">
+                    <div id="langDropdownMenu" data-no-translate class="hidden absolute right-0 mt-2 w-36 backdrop-blur-xl bg-white/90 dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700 rounded-xl shadow-2xl p-1 space-y-0.5 z-50">
+                        <button onclick="changeLanguage('id')" class="w-full flex items-center space-x-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700/80 rounded-lg text-left transition-colors">
                             <span>🇮🇩</span> <span>Indonesia</span>
                         </button>
-                        <button onclick="changeLanguage('en')" class="w-full flex items-center space-x-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg text-left transition-colors">
+                        <button onclick="changeLanguage('en')" class="w-full flex items-center space-x-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700/80 rounded-lg text-left transition-colors">
                             <span>🇬🇧</span> <span>English</span>
                         </button>
-                        <button onclick="changeLanguage('ms')" class="w-full flex items-center space-x-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg text-left transition-colors">
+                        <button onclick="changeLanguage('ms')" class="w-full flex items-center space-x-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700/80 rounded-lg text-left transition-colors">
                             <span>🇲🇾</span> <span>Malaysia</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="flex items-center space-x-2 border-l border-slate-200 dark:border-slate-700 pl-4">
-                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 border-2 border-white dark:border-slate-800 shadow-sm overflow-hidden">
-                        <img src="assets/img/profile.jpg" alt="Student Profile" class="w-full h-full object-cover" onerror="handleImgError(this)">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-indigo-400 dark:border-indigo-500 shadow-sm overflow-hidden flex items-center justify-center font-bold text-xs text-indigo-600 dark:text-indigo-300">
+                        USM
                     </div>
                 </div>
             </div>
         </nav>
 
-        <div id="mobileNavMenu" class="hidden md:hidden -mt-4 mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 p-2 space-y-1">
-            <a href="#" class="i18n block px-4 py-2.5 rounded-xl text-sm font-semibold text-[#6366F1] dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950">Beranda</a>
-            <a href="panduan.html" class="i18n block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Panduan</a>
-            <a href="tentang-riset.html" class="i18n block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Tentang Riset</a>
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileNavMenu" class="hidden md:hidden -mt-4 mb-8 backdrop-blur-xl bg-white/90 dark:bg-slate-800/90 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-2 space-y-1 relative z-30">
+            <a href="#" class="i18n block px-4 py-2.5 rounded-xl text-sm font-semibold text-[#6366F1] dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60">Beranda</a>
+            <a href="panduan.html" class="i18n block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/80">Panduan</a>
+            <a href="tentang-riset.html" class="i18n block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/80">Tentang Riset</a>
+            <a href="peta-situs.html" class="i18n block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/80">Peta Situs</a>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
+        <!-- Hero Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-12">
             <div class="lg:col-span-7 flex flex-col justify-center">
-                <h1 id="hero-title" class="i18n text-4xl sm:text-5xl font-extrabold text-[#2E3A59] dark:text-white tracking-tight leading-[1.15] mb-6">
-                    Selamat datang di <br class="hidden sm:inline">
-                    <span class="text-[#6366F1]">Laboratorium Virtual</span> USM! <br>
-                    Eksperimen fisika <br class="hidden sm:inline">
-                    apa hari ini?
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-extrabold w-fit mb-4">
+                    <span>⚡</span> <span>Physics Interactive Engine 60 FPS</span>
+                </div>
+
+                <h1 id="hero-title" class="i18n text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15] mb-6">
+                    Laboratorium Virtual <br class="hidden sm:inline">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-500 dark:from-indigo-400 dark:via-purple-400 dark:to-cyan-400">Fisika Interaktif</span> USM!
                 </h1>
+                <p class="i18n text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-8 max-w-xl">
+                    Eksplorasi 13 modul simulasi visual fisika SMA (Kelas 10-12). Ubah variabel parameter secara real-time dan amati perubahan konsep fisikanya secara langsung dari browser.
+                </p>
                 
-                <div class="relative max-w-xl shadow-sm rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1.5 flex items-center justify-between focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-indigo-100 dark:focus-within:ring-indigo-900 transition-all">
+                <div class="relative max-w-xl shadow-lg shadow-indigo-500/5 rounded-2xl backdrop-blur-md bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 p-2 flex items-center justify-between focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
                     <div class="flex items-center flex-1 pl-3">
-                        <svg class="w-5 h-5 text-slate-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        <svg class="w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <input type="text" id="searchBar" placeholder="Cari simulasi (misal: Proyektil, Magnet, Cahaya)..." class="w-full bg-transparent text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 text-sm font-medium focus:outline-none">
+                        <input type="text" id="searchBar" placeholder="Cari simulasi (misal: Parabola, Coulomb, Arus AC, Optik, Gas)..." class="w-full bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm font-medium focus:outline-none">
                     </div>
                 </div>
             </div>
 
+            <!-- Hero Live Interactive Physics Canvas Box -->
             <div class="lg:col-span-5">
-                <div class="relative bg-gradient-to-tr from-indigo-500 to-violet-600 rounded-3xl p-1 shadow-xl shadow-indigo-100 group overflow-hidden">
-                    <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-                    <div class="relative bg-[#1E293B] rounded-[22px] overflow-hidden aspect-[16/10] flex items-center justify-center">
-                        <img src="assets/img/hero-preview.jpg" alt="Physics Engine Preview" class="w-full h-full object-cover opacity-80 mix-blend-luminosity" loading="lazy" onerror="handleImgError(this)">
-                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center space-x-2 shadow-lg">
-                            <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>
-                            <span id="live-sim-tag" class="i18n text-[10px] font-bold text-slate-800 tracking-wider uppercase">Simulasi Live</span>
+                <div class="relative bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-cyan-500/20 rounded-3xl p-1.5 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl border border-white/40 dark:border-slate-700/60 group overflow-hidden">
+                    <div class="relative bg-slate-950 rounded-[20px] overflow-hidden aspect-[16/10] flex items-center justify-center shadow-inner">
+                        <!-- Live Interactive Canvas -->
+                        <canvas id="heroPhysicsCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+                        
+                        <!-- Overlay Glass Tag -->
+                        <div class="absolute bottom-3 left-3 backdrop-blur-md bg-slate-900/80 border border-slate-700/80 px-3 py-1.5 rounded-full flex items-center space-x-2 shadow-lg">
+                            <span class="flex h-2 w-2 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                            </span>
+                            <span id="live-sim-tag" class="i18n text-[10px] font-extrabold text-cyan-400 tracking-wider uppercase">Live Interactive Grid</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3 mb-8">
-    <button onclick="filterCategory('all', this)" class="category-pill pill-active px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #6366F1;">
-        <span>🌐</span> <span data-key="catAll">Semua</span>
-    </button>
-    <button onclick="filterCategory('mekanika', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #06B6D4;">
-        <span>🌌</span> <span data-key="catMekanika">Mekanika</span>
-    </button>
-    <button onclick="filterCategory('listrik', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F59E0B;">
-        <span>⚡</span> <span data-key="catListrik">Listrik & Magnet</span>
-    </button>
-    <button onclick="filterCategory('gelombang', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #8B5CF6;">
-        <span>🔬</span> <span data-key="catGelombang">Gelombang & Optik</span>
-    </button>
-    <button onclick="filterCategory('termo', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F43F5E;">
-        <span>🌡️</span> <span data-key="catTermo">Termodinamika</span>
-    </button>
-    <button onclick="filterCategory('termo', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F43F5E;">
-    <span>🌡️</span> <span data-key="catTermo">Termodinamika</span>
-</button>
-<button onclick="filterCategory('fluida', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #0EA5E9;">
-    <span>💧</span> <span data-key="catFluida">Fluida</span>
-</button>
-</div>
+        <!-- Filter Kategori Pills -->
+        <div class="flex flex-wrap items-center gap-2.5 mb-8">
+            <button onclick="filterCategory('all', this)" class="category-pill pill-active px-5 py-2.5 rounded-xl border text-xs sm:text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #6366F1;">
+                <span>🌐</span> <span data-key="catAll">Semua</span>
+            </button>
+            <button onclick="filterCategory('mekanika', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-xl border text-xs sm:text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #06B6D4;">
+                <span>🌌</span> <span data-key="catMekanika">Mekanika</span>
+            </button>
+            <button onclick="filterCategory('listrik', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-xl border text-xs sm:text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F59E0B;">
+                <span>⚡</span> <span data-key="catListrik">Listrik & Magnet</span>
+            </button>
+            <button onclick="filterCategory('gelombang', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-xl border text-xs sm:text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #8B5CF6;">
+                <span>🔬</span> <span data-key="catGelombang">Gelombang & Optik</span>
+            </button>
+            <button onclick="filterCategory('termo', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-xl border text-xs sm:text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F43F5E;">
+                <span>🌡️</span> <span data-key="catTermo">Termodinamika</span>
+            </button>
+            <button onclick="filterCategory('fluida', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-xl border text-xs sm:text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #0EA5E9;">
+                <span>💧</span> <span data-key="catFluida">Fluida</span>
+            </button>
+        </div>
 
+        <!-- Simulation Grid Container -->
         <div class="relative">
-            <div id="simulationGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-500 max-h-[460px] overflow-hidden">
+            <div id="simulationGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-500 max-h-[500px] overflow-hidden">
                 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="mekanika">
+                <!-- 1. Gerak Parabola -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="mekanika">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/gerak-parabola.jpg" alt="Gerak Parabola" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/gerak-parabola.jpg" alt="Gerak Parabola" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" data-key="class10">Kelas 10</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleParabola">Gerak Parabola</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descParabola">Pelajari lintasan benda yang dipengaruhi gravitasi dan kecepatan awal.</p>
+                        <span class="bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase" data-key="class10">Kelas 10</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleParabola">Gerak Parabola</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descParabola">Pelajari lintasan proyektil yang dipengaruhi gravitasi dan hambatan udara.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/gerak-parabola/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/gerak-parabola/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="listrik">
+                <!-- 2. Hukum Coulomb -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="listrik">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/hukum-coulomb.jpg" alt="Hukum Coulomb" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/hukum-coulomb.jpg" alt="Hukum Coulomb" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" data-key="class12">Kelas 12</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleCoulomb">Hukum Coulomb</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descCoulomb">Eksperimen interaksi antara muatan listrik statis dalam ruang hampa.</p>
+                        <span class="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase" data-key="class12">Kelas 12</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleCoulomb">Hukum Coulomb</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descCoulomb">Eksperimen interaksi antara muatan listrik statis dengan drag-and-drop live.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/hukum-coulomb/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/hukum-coulomb/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="gelombang">
+                <!-- 3. Pembiasan Cahaya -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="gelombang">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/pembiasan-cahaya.jpg" alt="Pembiasan Cahaya" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/pembiasan-cahaya.jpg" alt="Pembiasan Cahaya" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" data-key="class11">Kelas 11</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titlePembiasan">Pembiasan Cahaya</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descPembiasan">Analisis perubahan arah rambat cahaya saat melewati dua medium berbeda.</p>
+                        <span class="bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase" data-key="class11">Kelas 11</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titlePembiasan">Pembiasan Cahaya</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descPembiasan">Analisis Hukum Snellius dan pemantulan sempurna pada dua medium berbeda.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/pembiasan-cahaya/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/pembiasan-cahaya/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="termo">
+                <!-- 4. Hukum Gas Ideal -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="termo">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/hukum-gas-ideal.jpg" alt="Hukum Gas Ideal" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/hukum-gas-ideal.jpg" alt="Hukum Gas Ideal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#F59E0B]/10 text-[#F59E0B] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" data-key="class11">Kelas 11</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleGas">Hukum Gas Ideal</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descGas">Hubungan antara tekanan, volume, dan suhu pada sistem gas tertutup.</p>
+                        <span class="bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase" data-key="class11">Kelas 11</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleGas">Hukum Gas Ideal</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descGas">Hubungan antara tekanan, volume, dan suhu pada sistem gas tertutup PV=nRT.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/hukum-gas-ideal/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/hukum-gas-ideal/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="mekanika">
+                <!-- 5. Hukum Hooke -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="mekanika">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/hukum-hooke.jpg" alt="Hukum Hooke" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/hukum-hooke.jpg" alt="Hukum Hooke" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" data-key="class11">Kelas 11</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleHooke">Hukum Hooke</h3>
+                        <span class="bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase" data-key="class11">Kelas 11</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleHooke">Hukum Hooke</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descHooke">Eksplorasi elastisitas, gaya regang, dan konstanta pertambahan panjang pegas.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/hukum-hooke/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/hukum-hooke/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="gelombang">
+                <!-- 6. Efek Doppler -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="gelombang">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/efek-doppler.jpg" alt="Efek Doppler" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/efek-doppler.jpg" alt="Efek Doppler" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" data-key="class11">Kelas 11</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleDoppler">Efek Doppler</h3>
+                        <span class="bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase" data-key="class11">Kelas 11</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleDoppler">Efek Doppler</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descDoppler">Amati perubahan frekuensi gelombang bunyi dari sumber yang bergerak.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/efek-doppler/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/efek-doppler/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="listrik">
+                <!-- 7. Rangkaian Arus AC -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="listrik">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/arus-ac.jpg" alt="Rangkaian Arus AC" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/arus-ac.jpg" alt="Rangkaian Arus AC" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" data-key="class12">Kelas 12</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleAC">Rangkaian Arus AC</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descAC">Simulasi sircuit bolak-balik terpadu menggunakan pembacaan grafik osiloskop live.</p>
+                        <span class="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase" data-key="class12">Kelas 12</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleAC">Rangkaian Arus AC</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descAC">Simulasi sirkuit RLC bolak-balik dengan pembacaan grafik osiloskop live.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/arus-ac/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/arus-ac/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="listrik">
+                <!-- 8. Rangkaian Arus DC -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="listrik">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/arus-dc.jpg" alt="Rangkaian Arus DC" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/arus-dc.jpg" alt="Rangkaian Arus DC" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" data-key="class12">Kelas 12</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleDC">Rangkaian Arus DC</h3>
+                        <span class="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase" data-key="class12">Kelas 12</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1" data-key="titleDC">Rangkaian Arus DC</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-key="descDC">Simulasi sirkuit searah dinamis sandbox dengan visualisasi aliran elektron.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/arus-dc/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm">→</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="gelombang">
-                    <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/cermin-optik.jpg" alt="Cermin Cekung dan Cembung" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
-                        </div>
-                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Cermin Cekung & Cembung</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Analisis pembentukan bayangan pada cermin lengkung menggunakan diagram sinar istimewa.</p>
-                    </div>
-                    <div class="px-5 pb-5">
-                        <a href="simulations/cermin-optik/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/arus-dc/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span data-key="btnExp">Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="mekanika">
+                <!-- 9. Cermin Cekung & Cembung -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="gelombang">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/energi-mekanik.jpg" alt="Kekekalan Energi Mekanik" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/cermin-optik.jpg" alt="Cermin Cekung dan Cembung" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Kekekalan Energi Mekanik</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Eksplorasi hubungan energi kinetik dan potensial pada bidang miring dengan gesekan.</p>
+                        <span class="bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Cermin Cekung & Cembung</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Pembentukan bayangan pada cermin lengkung dengan sinar-sinar istimewa.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/energi-mekanik/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/cermin-optik/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span>Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="mekanika">
+                <!-- 10. Kekekalan Energi Mekanik -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="mekanika">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/tumbukan-momentum.jpg" alt="Tumbukan dan Momentum" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/energi-mekanik.jpg" alt="Kekekalan Energi Mekanik" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Tumbukan & Momentum</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Simulasi tumbukan lenting sempurna dan tidak lenting berdasarkan kekekalan momentum.</p>
+                        <span class="bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Energi Mekanik</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Hubungan energi kinetik & potensial pada bidang miring bergesekan.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/tumbukan-momentum/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/energi-mekanik/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span>Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="fluida">
+                <!-- 11. Tumbukan & Momentum -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="mekanika">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/hukum-archimedes.jpg" alt="Hukum Archimedes" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/tumbukan-momentum.jpg" alt="Tumbukan dan Momentum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#F59E0B]/10 text-[#F59E0B] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Hukum Archimedes</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Analisis gaya apung pada benda terapung, melayang, dan tenggelam dalam fluida.</p>
+                        <span class="bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Tumbukan & Momentum</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Simulasi tumbukan lenting dan tidak lenting berbasis kekekalan momentum.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/hukum-archimedes/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/tumbukan-momentum/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span>Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="listrik">
+                <!-- 12. Hukum Archimedes -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="fluida">
                     <div class="p-5 flex-grow">
-                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
-                            <img src="assets/img/gaya-lorentz.jpg" alt="Gaya Lorentz" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/hukum-archimedes.jpg" alt="Hukum Archimedes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
                         </div>
-                        <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 12</span>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Gaya Lorentz</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Amati gerak melingkar partikel bermuatan dalam medan magnet homogen.</p>
+                        <span class="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Hukum Archimedes</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Analisis gaya apung pada benda terapung, melayang, dan tenggelam.</p>
                     </div>
                     <div class="px-5 pb-5">
-                        <a href="simulations/gaya-lorentz/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
-                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        <a href="simulations/hukum-archimedes/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span>Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
                 </div>
+
+                <!-- 13. Gaya Lorentz -->
+                <div class="sim-card backdrop-blur-md bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between overflow-hidden group" data-category="listrik">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-900 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-700/60 overflow-hidden relative">
+                            <img src="assets/img/gaya-lorentz.jpg" alt="Gaya Lorentz" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImgError(this)">
+                        </div>
+                        <span class="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">Kelas 12</span>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Gaya Lorentz</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Gerak melingkar partikel bermuatan dalam medan magnet homogen.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="simulations/gaya-lorentz/index.html" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-indigo-500/20 transition-all text-center block group/btn">
+                            <span>Mulai Eksperimen</span> <span class="text-sm group-hover/btn:translate-x-1 transition-transform">→</span>
+                        </a>
+                    </div>
+                </div>
+
             </div>
             
-            <div id="gradientOverlay" class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#F8FAFC] dark:from-slate-900 via-[#F8FAFC]/80 dark:via-slate-900/80 to-transparent flex items-end justify-center pb-2">
-                <button onclick="toggleSeeMore()" id="btnSeeMore" class="px-6 py-3 bg-white dark:bg-slate-800 text-[#6366F1] dark:text-indigo-300 border border-slate-200 dark:border-slate-700 hover:border-[#6366F1] font-semibold text-sm rounded-full shadow-md hover:shadow-lg flex items-center space-x-2 transition-all cursor-pointer z-10">
+            <!-- Expand Gradient Overlay -->
+            <div id="gradientOverlay" class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#F8FAFC] dark:from-slate-950 via-[#F8FAFC]/80 dark:via-slate-950/80 to-transparent flex items-end justify-center pb-2 z-10">
+                <button onclick="toggleSeeMore()" id="btnSeeMore" class="px-6 py-3 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 text-[#6366F1] dark:text-indigo-400 border border-slate-200 dark:border-slate-700/80 hover:border-[#6366F1] font-bold text-xs rounded-full shadow-lg hover:shadow-indigo-500/10 flex items-center space-x-2 transition-all cursor-pointer">
                     <span id="btnText" data-key="btnSeeMore">Lihat Semua Simulasi</span>
-                    <svg id="btnIcon" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg id="btnIcon" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
             </div>
         </div>
 
     </div>
 
-    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-16 py-12 border-t border-slate-200 dark:border-slate-700 text-center w-full">
-        <div class="max-w-7xl mx-auto px-4 text-slate-600 dark:text-slate-300">
-            <h4 class="text-md font-bold text-[#6366F1] mb-4">▲ USM PhysX Lab</h4>
-            <div class="flex justify-center space-x-6 text-xs font-medium mb-6">
-                <a href="kebijakan-privasi.html" id="footer-privacy" class="i18n hover:text-slate-900">Kebijakan Privasi</a>
-                <a href="kontak.html" id="footer-contact" class="i18n hover:text-slate-900">Kontak Kami</a>
-                <a href="peta-situs.html" id="footer-sitemap" class="i18n hover:text-slate-900">Peta Situs</a>
+    <!-- Footer -->
+    <footer class="backdrop-blur-md bg-white/40 dark:bg-slate-900/40 mt-16 py-12 border-t border-slate-200/60 dark:border-slate-800/60 text-center w-full relative z-20">
+        <div class="max-w-7xl mx-auto px-4 text-slate-600 dark:text-slate-400">
+            <h4 class="text-base font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-cyan-400 mb-4 inline-block">▲ USM PhysX Lab</h4>
+            <div class="flex justify-center flex-wrap gap-6 text-xs font-semibold mb-6">
+                <a href="kebijakan-privasi.html" id="footer-privacy" class="i18n hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Kebijakan Privasi</a>
+                <a href="kontak.html" id="footer-contact" class="i18n hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Kontak Kami</a>
+                <a href="peta-situs.html" id="footer-sitemap" class="i18n hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Peta Situs</a>
             </div>
             <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Educational Research Division. All rights reserved.</p>
         </div>
     </footer>
 
+    <!-- Interactive Scripts -->
     <script>
         let currentFilter = 'all';
 
-        // Fallback kalau gambar dari Unsplash CDN gagal dimuat (offline/rate-limit/diblokir)
+        // SVG Fallback jika gambar gagal dimuat
         function handleImgError(img) {
-            img.onerror = null; // cegah infinite loop kalau fallback juga gagal
-            img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='225' viewBox='0 0 300 225'%3E%3Crect width='300' height='225' fill='%23EEF2FF'/%3E%3Ctext x='150' y='128' font-size='48' text-anchor='middle' font-family='Arial,sans-serif'%3E🔬%3C/text%3E%3C/svg%3E";
+            img.onerror = null;
+            img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='225' viewBox='0 0 300 225'%3E%3Crect width='300' height='225' fill='%230F172A'/%3E%3Ctext x='150' y='128' font-size='48' text-anchor='middle' font-family='Arial,sans-serif'%3E🔬%3C/text%3E%3C/svg%3E";
         }
 
         // Dark Mode
@@ -438,66 +479,57 @@
             updateDarkModeIcon(isDark);
         }
 
-        // Sinkronkan ikon matahari/bulan sesuai tema yang sudah diterapkan
-        // (class 'dark' sudah ditambahkan lebih dulu di <head> supaya tidak ada flash)
         updateDarkModeIcon(document.documentElement.classList.contains('dark'));
 
-        // Bahasa dashboard & seluruh modul kini diterjemahkan otomatis oleh
-        // lang-loader.js (window.PhysXLang) - tidak ada lagi kamus manual di sini.
-
+        // Language Dropdown
         function toggleLangDropdown() {
             document.getElementById('langDropdownMenu').classList.toggle('hidden');
             document.getElementById('dropdownArrow').classList.toggle('rotate-180');
         }
 
-        function toggleMobileMenu() {
-            document.getElementById('mobileNavMenu').classList.toggle('hidden');
-            document.getElementById('mobileMenuIconOpen').classList.toggle('hidden');
-            document.getElementById('mobileMenuIconClose').classList.toggle('hidden');
-        }
-
         function changeLanguage(lang) {
-            // Delegasikan seluruh proses terjemahan ke engine universal di lang-loader.js
-            if (window.PhysXLang) {
-                window.PhysXLang.applyLanguage(lang);
-            }
-
-            // Tutup dropdown
+            if (window.PhysXLang) window.PhysXLang.applyLanguage(lang);
             document.getElementById('langDropdownMenu').classList.add('hidden');
             document.getElementById('dropdownArrow').classList.remove('rotate-180');
         }
 
-        // Catatan: inisialisasi bahasa saat halaman dimuat sudah otomatis ditangani
-        // oleh listener DOMContentLoaded di dalam lang-loader.js.
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileNavMenu');
+            const openIcon = document.getElementById('mobileMenuIconOpen');
+            const closeIcon = document.getElementById('mobileMenuIconClose');
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            openIcon.classList.toggle('hidden', !isHidden);
+            closeIcon.classList.toggle('hidden', isHidden);
+        }
 
         window.addEventListener('click', function(e) {
             const btn = document.getElementById('langDropdownBtn');
             const menu = document.getElementById('langDropdownMenu');
-            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
                 menu.classList.add('hidden');
                 document.getElementById('dropdownArrow').classList.remove('rotate-180');
             }
 
             const mobileBtn = document.getElementById('mobileMenuBtn');
             const mobileMenu = document.getElementById('mobileNavMenu');
-            if (!mobileBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+            if (mobileBtn && mobileMenu && !mobileBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
                 mobileMenu.classList.add('hidden');
                 document.getElementById('mobileMenuIconOpen').classList.remove('hidden');
                 document.getElementById('mobileMenuIconClose').classList.add('hidden');
             }
         });
 
-        // Fungsi Collapsible Expand
+        // Expand / Collapse Grid
         async function toggleSeeMore() {
             const grid = document.getElementById('simulationGrid');
             const overlay = document.getElementById('gradientOverlay');
             const btnText = document.getElementById('btnText');
             const btnIcon = document.getElementById('btnIcon');
             const currentLang = localStorage.getItem('selectedLanguage') || 'id';
-            let labelID; // label sumber Bahasa Indonesia, diterjemahkan otomatis di bawah
+            let labelID;
 
             if (grid.style.maxHeight === 'none') {
-                grid.style.maxHeight = '460px';
+                grid.style.maxHeight = '500px';
                 overlay.classList.add('absolute', 'bottom-0', 'h-40', 'bg-gradient-to-t');
                 overlay.classList.remove('relative', 'pt-6', 'pb-0');
                 labelID = 'Lihat Semua Simulasi';
@@ -516,7 +548,7 @@
                 : await window.PhysXLang.translateText(labelID, currentLang);
         }
 
-        // Fungsi Filter Kategori
+        // Category Filter
         function filterCategory(category, activePill) {
             currentFilter = category;
             const cards = document.querySelectorAll('.sim-card');
@@ -524,11 +556,12 @@
             const overlay = document.getElementById('gradientOverlay');
 
             document.querySelectorAll('.category-pill').forEach(pill => {
-    pill.classList.remove('pill-active');
-    pill.classList.add('pill-inactive');
-});
-activePill.classList.remove('pill-inactive');
-activePill.classList.add('pill-active');
+                pill.classList.remove('pill-active');
+                pill.classList.add('pill-inactive');
+            });
+            activePill.classList.remove('pill-inactive');
+            activePill.classList.add('pill-active');
+
             let visibleCount = 0;
             cards.forEach(card => {
                 const cardCat = card.getAttribute('data-category');
@@ -544,27 +577,138 @@ activePill.classList.add('pill-active');
                 grid.style.maxHeight = 'none';
                 overlay.classList.add('hidden');
             } else {
-                grid.style.maxHeight = '460px';
+                grid.style.maxHeight = '500px';
                 overlay.classList.remove('hidden');
             }
         }
 
         // Live Search
         function performSearch() {
-    const keyword = document.getElementById('searchBar').value.toLowerCase();
-    const cards = document.querySelectorAll('.sim-card');
-    cards.forEach(card => {
-        const title = card.querySelector('h3').innerText.toLowerCase();
-        const desc = card.querySelector('p').innerText.toLowerCase();
-        const cardCat = card.getAttribute('data-category');
-        const matchesSearch = title.includes(keyword) || desc.includes(keyword);
-        const matchesCategory = currentFilter === 'all' || cardCat === currentFilter;
-        card.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
-    });
-}
+            const keyword = document.getElementById('searchBar').value.toLowerCase();
+            const cards = document.querySelectorAll('.sim-card');
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const desc = card.querySelector('p').innerText.toLowerCase();
+                const cardCat = card.getAttribute('data-category');
+                const matchesSearch = title.includes(keyword) || desc.includes(keyword);
+                const matchesCategory = currentFilter === 'all' || cardCat === currentFilter;
+                card.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
+            });
+        }
 
-document.getElementById('searchBar').addEventListener('input', performSearch);
-window.addEventListener('physx:languageChanged', performSearch);
+        document.getElementById('searchBar').addEventListener('input', performSearch);
+        window.addEventListener('physx:languageChanged', performSearch);
+
+        // ==========================================================
+        // HERO LIVE INTERACTIVE PHYSICS PARTICLE CANVAS (60 FPS)
+        // ==========================================================
+        (function initHeroCanvas() {
+            const canvas = document.getElementById('heroPhysicsCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const numParticles = 28;
+            const particles = [];
+            const mouse = { x: null, y: null, radius: 100 };
+
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+
+            canvas.addEventListener('mouseleave', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            for (let i = 0; i < numParticles; i++) {
+                particles.push({
+                    x: Math.random() * (canvas.width || 400),
+                    y: Math.random() * (canvas.height || 250),
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: (Math.random() - 0.5) * 1.5,
+                    radius: Math.random() * 3 + 2,
+                    color: i % 3 === 0 ? '#6366F1' : (i % 3 === 1 ? '#06B6D4' : '#8B5CF6')
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid background effect
+                ctx.strokeStyle = 'rgba(51, 65, 85, 0.25)';
+                ctx.lineWidth = 1;
+                const gridSize = 25;
+                for (let x = 0; x < canvas.width; x += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < canvas.height; y += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
+                    ctx.stroke();
+                }
+
+                // Update & draw particles
+                for (let i = 0; i < particles.length; i++) {
+                    let p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                    // Mouse attraction
+                    if (mouse.x !== null && mouse.y !== null) {
+                        let dx = mouse.x - p.x;
+                        let dy = mouse.y - p.y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < mouse.radius) {
+                            p.x += (dx / dist) * 0.8;
+                            p.y += (dy / dist) * 0.8;
+                        }
+                    }
+
+                    // Particle connections (inter-particle force fields)
+                    for (let j = i + 1; j < particles.length; j++) {
+                        let p2 = particles[j];
+                        let dx = p.x - p2.x;
+                        let dy = p.y - p2.y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 85) {
+                            ctx.strokeStyle = `rgba(99, 102, 241, ${1 - dist / 85})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+
+                    // Draw Node
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        })();
     </script>
 </body>
 </html>
