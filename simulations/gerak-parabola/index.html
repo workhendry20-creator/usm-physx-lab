@@ -14,6 +14,7 @@
         }
     </script>
     <script src="../../lang-loader.js"></script>
+    <script src="../../challenge-engine.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -314,10 +315,16 @@
 // Validasi Tantangan Lab
 const badge = document.getElementById('challenge-status');
 if (targetRmax !== null && Math.abs(localRMax - targetRmax) < 2) {
-    challengeCompleted = true;
-    badge.innerText = "Sukses";
-    badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+    if (!challengeCompleted) {
+        challengeCompleted = true;
+        badge.innerText = "Sukses";
+        badge.className = "bg-emerald-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase animate-bounce";
+        if (window.PhysXGamification) {
+            window.PhysXGamification.triggerSuccess("Gerak Parabola (Target R_max)", generateNewChallenge);
+        }
+    }
 } else if (targetRmax !== null) {
+    challengeCompleted = false;
     badge.innerText = "Mencari";
     badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
 }
