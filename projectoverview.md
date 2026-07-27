@@ -1,7 +1,7 @@
 # 🔬 USM PhysX Lab — Project Overview
 
 > **Dokumen Gambaran Umum Proyek**  
-> Laboratorium Fisika Virtual Interaktif untuk Pembelajaran SMA (Kelas 10–12)  
+> Laboratorium Fisika Virtual Interaktif untuk Pembelajaran SMA (SMA)  
 > *Dikembangkan oleh Divisi Riset Edukasi USM (2026)*
 
 ---

@@ -1,6 +1,6 @@
 # 🔬 USM PhysX Lab
 
-**Laboratorium Fisika Virtual** — platform simulasi interaktif untuk pembelajaran fisika tingkat SMA (Kelas 10-12), dikembangkan sebagai bagian dari divisi riset edukasi USM.
+**Laboratorium Fisika Virtual** — platform simulasi interaktif untuk pembelajaran fisika tingkat SMA, dikembangkan sebagai bagian dari divisi riset edukasi USM.
 
 ---
 
