@@ -311,7 +311,8 @@
             document.getElementById('calc-rmax').innerText = localRMax.toFixed(2);
             document.getElementById('calc-ttotal').innerText = tempT.toFixed(2);
 
-            const badge = document.getElementById('challenge-status');
+// Validasi Tantangan Lab
+const badge = document.getElementById('challenge-status');
 if (targetRmax !== null && Math.abs(localRMax - targetRmax) < 2) {
     challengeCompleted = true;
     badge.innerText = "Sukses";

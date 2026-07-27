@@ -215,6 +215,8 @@
         await Promise.all(pendingTasks);
 
         if (isTranslating) hideLoading();
+
+        window.dispatchEvent(new CustomEvent('physx:languageChanged'));
     }
 
     window.PhysXLang = { applyLanguage, translateText };

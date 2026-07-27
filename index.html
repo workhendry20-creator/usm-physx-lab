@@ -176,6 +176,12 @@
     <button onclick="filterCategory('termo', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F43F5E;">
         <span>🌡️</span> <span data-key="catTermo">Termodinamika</span>
     </button>
+    <button onclick="filterCategory('termo', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #F43F5E;">
+    <span>🌡️</span> <span data-key="catTermo">Termodinamika</span>
+</button>
+<button onclick="filterCategory('fluida', this)" class="category-pill pill-inactive px-5 py-2.5 rounded-full border text-sm flex items-center space-x-2 transition-all cursor-pointer" style="--pill-color: #0EA5E9;">
+    <span>💧</span> <span data-key="catFluida">Fluida</span>
+</button>
 </div>
 
         <div class="relative">
@@ -308,7 +314,85 @@
                         </a>
                     </div>
                 </div>
+                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="gelombang">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
+                            <img src="assets/img/cermin-optik.jpg" alt="Cermin Cekung dan Cembung" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        </div>
+                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Cermin Cekung & Cembung</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Analisis pembentukan bayangan pada cermin lengkung menggunakan diagram sinar istimewa.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="simulations/cermin-optik/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
+                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        </a>
+                    </div>
+                </div>
 
+                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="mekanika">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
+                            <img src="assets/img/energi-mekanik.jpg" alt="Kekekalan Energi Mekanik" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        </div>
+                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Kekekalan Energi Mekanik</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Eksplorasi hubungan energi kinetik dan potensial pada bidang miring dengan gesekan.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="simulations/energi-mekanik/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
+                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="mekanika">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
+                            <img src="assets/img/tumbukan-momentum.jpg" alt="Tumbukan dan Momentum" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        </div>
+                        <span class="bg-[#06B6D4]/10 text-[#06B6D4] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 10</span>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Tumbukan & Momentum</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Simulasi tumbukan lenting sempurna dan tidak lenting berdasarkan kekekalan momentum.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="simulations/tumbukan-momentum/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
+                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="fluida">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
+                            <img src="assets/img/hukum-archimedes.jpg" alt="Hukum Archimedes" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        </div>
+                        <span class="bg-[#F59E0B]/10 text-[#F59E0B] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 11</span>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Hukum Archimedes</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Analisis gaya apung pada benda terapung, melayang, dan tenggelam dalam fluida.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="simulations/hukum-archimedes/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
+                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="sim-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden" data-category="listrik">
+                    <div class="p-5 flex-grow">
+                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl aspect-[4/3] mb-4 flex items-center justify-center border border-slate-100 dark:border-slate-600 overflow-hidden">
+                            <img src="assets/img/gaya-lorentz.jpg" alt="Gaya Lorentz" class="w-full h-full object-cover" loading="lazy" onerror="handleImgError(this)">
+                        </div>
+                        <span class="bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Kelas 12</span>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-1">Gaya Lorentz</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Amati gerak melingkar partikel bermuatan dalam medan magnet homogen.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="simulations/gaya-lorentz/index.html" class="w-full py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center space-x-1 shadow-sm transition-all text-center block">
+                            <span>Mulai Eksperimen</span> <span class="text-sm">→</span>
+                        </a>
+                    </div>
+                </div>
             </div>
             
             <div id="gradientOverlay" class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#F8FAFC] dark:from-slate-900 via-[#F8FAFC]/80 dark:via-slate-900/80 to-transparent flex items-end justify-center pb-2">

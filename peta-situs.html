@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Situs - USM PhysX Lab</title>
+    <meta name="description" content="Peta situs lengkap USM PhysX Lab - Navigasi ke seluruh 13 modul simulasi fisika interaktif dan halaman informasi riset.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <script src="lang-loader.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-8">
+            <a href="index.html" class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-[#6366F1] rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-indigo-200">U</div>
+                <span class="text-xl font-bold text-[#2E3A59] dark:text-white tracking-tight">USM <span class="text-[#6366F1]">PhysX Lab</span></span>
+            </a>
+            <a href="index.html" class="i18n text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-[#6366F1] dark:hover:text-white transition-colors flex items-center gap-1">← Kembali ke Dashboard</a>
+        </nav>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-8 sm:p-10 mb-8">
+            <span class="i18n inline-block bg-[#EEF2FF] dark:bg-indigo-950 text-[#6366F1] dark:text-indigo-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-100 dark:border-indigo-800 mb-4">Navigasi Platform</span>
+            <h1 class="i18n text-3xl sm:text-4xl font-extrabold text-[#2E3A59] dark:text-white mb-4">Peta Situs USM PhysX Lab</h1>
+            <p class="i18n text-slate-600 dark:text-slate-300 leading-relaxed mb-8">Struktur direktori dan seluruh halaman laboratorium fisika virtual interaktif USM PhysX Lab.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h2 class="i18n text-lg font-bold text-[#6366F1] dark:text-indigo-400 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4 flex items-center gap-2">
+                        <span>📌</span> <span>Halaman Utama & Informasi</span>
+                    </h2>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="i18n hover:text-[#6366F1] font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🏠</span> <span>Dashboard & Catalog Simulasi</span></a></li>
+                        <li><a href="panduan.html" class="i18n hover:text-[#6366F1] font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>📖</span> <span>Panduan Penggunaan & FAQ</span></a></li>
+                        <li><a href="tentang-riset.html" class="i18n hover:text-[#6366F1] font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🔬</span> <span>Tentang Riset & Tim Edukasi</span></a></li>
+                        <li><a href="kebijakan-privasi.html" class="i18n hover:text-[#6366F1] font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🔒</span> <span>Kebijakan Privasi</span></a></li>
+                        <li><a href="kontak.html" class="i18n hover:text-[#6366F1] font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>✉️</span> <span>Hubungi Kami</span></a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h2 class="i18n text-lg font-bold text-[#06B6D4] dark:text-cyan-400 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4 flex items-center gap-2">
+                        <span>🌌</span> <span>Kategori: Mekanika</span>
+                    </h2>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="simulations/gerak-parabola/index.html" class="i18n hover:text-[#06B6D4] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🎯</span> <span>Gerak Parabola (Kelas 10)</span></a></li>
+                        <li><a href="simulations/energi-mekanik/index.html" class="i18n hover:text-[#06B6D4] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🎢</span> <span>Kekekalan Energi Mekanik (Kelas 10)</span></a></li>
+                        <li><a href="simulations/tumbukan-momentum/index.html" class="i18n hover:text-[#06B6D4] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>💥</span> <span>Tumbukan & Momentum (Kelas 10)</span></a></li>
+                        <li><a href="simulations/hukum-hooke/index.html" class="i18n hover:text-[#06B6D4] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🌀</span> <span>Hukum Hooke & Pegas (Kelas 11)</span></a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h2 class="i18n text-lg font-bold text-[#F59E0B] dark:text-amber-400 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4 flex items-center gap-2">
+                        <span>⚡</span> <span>Kategori: Listrik & Magnet</span>
+                    </h2>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="simulations/hukum-coulomb/index.html" class="i18n hover:text-[#F59E0B] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>⚛️</span> <span>Hukum Coulomb (Kelas 12)</span></a></li>
+                        <li><a href="simulations/arus-ac/index.html" class="i18n hover:text-[#F59E0B] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>〰️</span> <span>Rangkaian Arus AC & Osiloskop (Kelas 12)</span></a></li>
+                        <li><a href="simulations/arus-dc/index.html" class="i18n hover:text-[#F59E0B] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🔋</span> <span>Rangkaian Arus DC (Kelas 12)</span></a></li>
+                        <li><a href="simulations/gaya-lorentz/index.html" class="i18n hover:text-[#F59E0B] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🧲</span> <span>Gaya Lorentz & Medan Magnet (Kelas 12)</span></a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h2 class="i18n text-lg font-bold text-[#8B5CF6] dark:text-purple-400 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4 flex items-center gap-2">
+                        <span>🔬</span> <span>Gelombang, Optik & Fluida</span>
+                    </h2>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="simulations/pembiasan-cahaya/index.html" class="i18n hover:text-[#8B5CF6] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🌈</span> <span>Pembiasan Cahaya (Kelas 11)</span></a></li>
+                        <li><a href="simulations/efek-doppler/index.html" class="i18n hover:text-[#8B5CF6] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>📢</span> <span>Efek Doppler Gelombang Bunyi (Kelas 11)</span></a></li>
+                        <li><a href="simulations/cermin-optik/index.html" class="i18n hover:text-[#8B5CF6] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🪞</span> <span>Cermin Cekung & Cembung (Kelas 11)</span></a></li>
+                        <li><a href="simulations/hukum-gas-ideal/index.html" class="i18n hover:text-[#8B5CF6] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>🌡️</span> <span>Hukum Gas Ideal (Kelas 11)</span></a></li>
+                        <li><a href="simulations/hukum-archimedes/index.html" class="i18n hover:text-[#8B5CF6] text-slate-700 dark:text-slate-200 flex items-center gap-2"><span>💧</span> <span>Hukum Archimedes & Gaya Apung (Kelas 11)</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 py-8 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <div class="max-w-7xl mx-auto px-4 text-slate-600 dark:text-slate-300">
+            <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Educational Research Division. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Penggunaan - USM PhysX Lab</title>
+    <meta name="description" content="Panduan lengkap cara menggunakan USM PhysX Lab untuk siswa dan guru, termasuk FAQ dan troubleshooting.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236366F1'/%3E%3Ctext x='50' y='68' font-size='55' font-weight='800' fill='white' text-anchor='middle' font-family='Arial,sans-serif'%3EU%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <script src="lang-loader.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        details > summary { cursor: pointer; list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] .faq-chevron { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between transition-colors duration-300">
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <nav class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between mb-8">
+            <a href="index.html" class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-[#6366F1] rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-indigo-200">U</div>
+                <span class="text-xl font-bold text-[#2E3A59] dark:text-white tracking-tight">USM <span class="text-[#6366F1]">PhysX Lab</span></span>
+            </a>
+            <a href="index.html" class="i18n text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-[#6366F1] dark:hover:text-white transition-colors flex items-center gap-1">← Kembali ke Dashboard</a>
+        </nav>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-8 sm:p-10">
+            <span class="i18n inline-block bg-[#EEF2FF] dark:bg-indigo-950 text-[#6366F1] dark:text-indigo-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-100 dark:border-indigo-800 mb-4">Panduan Pengguna</span>
+            <h1 class="i18n text-3xl sm:text-4xl font-extrabold text-[#2E3A59] dark:text-white mb-6">Cara Menggunakan USM PhysX Lab</h1>
+
+            <p class="i18n text-slate-600 dark:text-slate-300 leading-relaxed mb-8">USM PhysX Lab dirancang agar siswa bisa bereksperimen dengan konsep fisika secara langsung, tanpa perlu peralatan laboratorium fisik. Berikut langkah-langkah menggunakannya.</p>
+
+            <div class="space-y-6">
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#6366F1] text-white font-bold flex items-center justify-center">1</div>
+                    <div>
+                        <h3 class="i18n font-bold text-slate-800 dark:text-slate-100 mb-1">Pilih Modul Simulasi</h3>
+                        <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Dari dashboard utama, gunakan kolom pencarian atau filter kategori (Mekanika, Listrik & Magnet, Gelombang & Optik, Termodinamika) untuk menemukan simulasi yang ingin dipelajari.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#6366F1] text-white font-bold flex items-center justify-center">2</div>
+                    <div>
+                        <h3 class="i18n font-bold text-slate-800 dark:text-slate-100 mb-1">Atur Parameter Eksperimen</h3>
+                        <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Setiap modul punya panel parameter di sisi kanan (slider dan input angka). Ubah nilai seperti kecepatan, sudut, muatan, atau suhu sesuai skenario yang ingin diuji.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#6366F1] text-white font-bold flex items-center justify-center">3</div>
+                    <div>
+                        <h3 class="i18n font-bold text-slate-800 dark:text-slate-100 mb-1">Jalankan Simulasi</h3>
+                        <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Klik tombol "Mulai" untuk menjalankan simulasi secara real-time. Gunakan tombol "Jeda" dan "Reset" untuk mengontrol jalannya eksperimen.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#6366F1] text-white font-bold flex items-center justify-center">4</div>
+                    <div>
+                        <h3 class="i18n font-bold text-slate-800 dark:text-slate-100 mb-1">Amati Hasil Analisis</h3>
+                        <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Panel hasil analisis numerik akan menampilkan data seperti waktu, posisi, gaya, atau nilai lain secara real-time, membantu memahami hubungan antar variabel fisika.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#6366F1] text-white font-bold flex items-center justify-center">5</div>
+                    <div>
+                        <h3 class="i18n font-bold text-slate-800 dark:text-slate-100 mb-1">Ganti Bahasa Bila Diperlukan</h3>
+                        <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Gunakan dropdown bahasa di pojok kanan atas dashboard untuk beralih antara Bahasa Indonesia, English, atau Bahasa Melayu. Pilihan ini berlaku untuk seluruh halaman.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-slate-100 dark:border-slate-700">
+                <a href="index.html" class="i18n inline-flex items-center gap-2 px-5 py-2.5 bg-[#6366F1] hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all">Mulai Eksperimen Sekarang →</a>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-8 sm:p-10 mt-6">
+            <span class="i18n inline-block bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-amber-100 dark:border-amber-800 mb-4">Bantuan</span>
+            <h2 class="i18n text-2xl sm:text-3xl font-extrabold text-[#2E3A59] dark:text-white mb-6">Pertanyaan yang Sering Diajukan (FAQ)</h2>
+
+            <div class="space-y-3">
+                <details class="group border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
+                    <summary class="flex items-center justify-between font-semibold text-sm text-slate-800 dark:text-slate-100">
+                        <span class="i18n">Kenapa gambar pratinjau modul tidak muncul?</span>
+                        <svg class="faq-chevron w-4 h-4 text-slate-400 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed mt-3">Kemungkinan file gambar belum tersedia di server, atau koneksi internet kamu sedang bermasalah. Sistem otomatis menampilkan ikon pengganti sementara sampai gambar berhasil dimuat — jadi tampilan tetap rapi meski gambar belum ada.</p>
+                </details>
+
+                <details class="group border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
+                    <summary class="flex items-center justify-between font-semibold text-sm text-slate-800 dark:text-slate-100">
+                        <span class="i18n">Kenapa saat ganti bahasa ada jeda beberapa detik?</span>
+                        <svg class="faq-chevron w-4 h-4 text-slate-400 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed mt-3">Sistem menerjemahkan teks secara langsung lewat internet, jadi butuh waktu sesaat. Perhatikan garis progress tipis di bagian atas layar dan badge "Menerjemahkan..." di pojok kanan bawah sebagai tanda proses sedang berjalan.</p>
+                </details>
+
+                <details class="group border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
+                    <summary class="flex items-center justify-between font-semibold text-sm text-slate-800 dark:text-slate-100">
+                        <span class="i18n">Apakah USM PhysX Lab bisa diakses lewat HP atau tablet?</span>
+                        <svg class="faq-chevron w-4 h-4 text-slate-400 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed mt-3">Bisa. Tampilan dashboard sudah responsif dengan menu navigasi khusus mobile. Namun untuk pengalaman terbaik saat mengatur parameter simulasi (slider, drag komponen), disarankan pakai layar yang lebih besar seperti laptop atau tablet.</p>
+                </details>
+
+                <details class="group border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
+                    <summary class="flex items-center justify-between font-semibold text-sm text-slate-800 dark:text-slate-100">
+                        <span class="i18n">Browser apa yang direkomendasikan?</span>
+                        <svg class="faq-chevron w-4 h-4 text-slate-400 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed mt-3">Google Chrome, Microsoft Edge, atau Mozilla Firefox versi terbaru memberikan performa terbaik, terutama untuk simulasi yang menggunakan animasi canvas dan audio (seperti modul Efek Doppler).</p>
+                </details>
+
+                <details class="group border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
+                    <summary class="flex items-center justify-between font-semibold text-sm text-slate-800 dark:text-slate-100">
+                        <span class="i18n">Apakah preferensi bahasa dan tema saya tersimpan?</span>
+                        <svg class="faq-chevron w-4 h-4 text-slate-400 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed mt-3">Ya. Pilihan bahasa (ID/EN/MS) dan tema terang/gelap otomatis tersimpan di perangkat kamu, jadi tidak perlu diatur ulang tiap kali membuka website. Data hasil eksperimen sendiri belum disimpan secara permanen saat ini.</p>
+                </details>
+
+                <details class="group border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
+                    <summary class="flex items-center justify-between font-semibold text-sm text-slate-800 dark:text-slate-100">
+                        <span class="i18n">Kenapa animasi simulasi terlihat patah-patah (lag)?</span>
+                        <svg class="faq-chevron w-4 h-4 text-slate-400 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    <p class="i18n text-sm text-slate-500 dark:text-slate-400 leading-relaxed mt-3">Coba tutup tab atau aplikasi lain yang sedang berjalan berat di latar belakang, atau gunakan perangkat dengan spesifikasi lebih baru. Simulasi menggunakan animasi Canvas real-time yang cukup ringan, tapi tetap butuh sedikit tenaga prosesor perangkat kamu.</p>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-[#E2E8F0] dark:bg-slate-800 mt-16 py-12 border-t border-slate-200 dark:border-slate-700 text-center w-full">
+        <div class="max-w-7xl mx-auto px-4 text-slate-600 dark:text-slate-300">
+            <h4 class="text-md font-bold text-[#6366F1] mb-4">▲ USM PhysX Lab</h4>
+            <div class="flex justify-center space-x-6 text-xs font-medium mb-6">
+                <a href="kebijakan-privasi.html" class="i18n hover:text-slate-900 dark:hover:text-white">Kebijakan Privasi</a>
+                <a href="kontak.html" class="i18n hover:text-slate-900 dark:hover:text-white">Kontak Kami</a>
+                <a href="peta-situs.html" class="i18n hover:text-slate-900 dark:hover:text-white">Peta Situs</a>
+            </div>
+            <p class="text-xs text-slate-400 dark:text-slate-500">© 2026 USM PhysX Lab - Educational Research Division. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
