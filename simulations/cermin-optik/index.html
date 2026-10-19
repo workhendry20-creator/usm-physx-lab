@@ -87,7 +87,7 @@
                         <span class="text-[10px] block text-cyan-200 uppercase font-bold tracking-wider">Target Perbesaran (M)</span>
                         <span class="text-2xl font-black font-mono tracking-tight"><span id="target-mag-display">---</span>×</span>
                     </div>
-                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-cyan-50 text-[#06B6D4] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                    <button id="btn-random-target" onclick="generateRandomTarget()" class="w-full py-2 bg-white hover:bg-cyan-50 text-[#06B6D4] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer relative z-10">
                         Acak Target Baru
                     </button>
                 </div>
@@ -197,16 +197,26 @@
             updateEngineValues();
         }
 
-        function generateNewChallenge() {
+        function generateRandomTarget() {
             const targets = [-2.0, -1.0, -0.5, 0.5, 1.0, 1.5, 2.5];
-            targetMag = targets[Math.floor(Math.random() * targets.length)];
+            let newTarget;
+            do {
+                newTarget = targets[Math.floor(Math.random() * targets.length)];
+            } while (targets.length > 1 && newTarget === targetMag);
+            targetMag = newTarget;
             challengeCompleted = false;
-            document.getElementById('target-mag-display').innerText = targetMag.toFixed(1);
+            const display = document.getElementById('target-mag-display');
+            if (display) display.innerText = targetMag.toFixed(1);
             const badge = document.getElementById('challenge-status');
-            badge.innerText = "Mencari";
-            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            if (badge) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
             updateEngineValues();
         }
+        const generateNewChallenge = generateRandomTarget;
+        window.generateRandomTarget = generateRandomTarget;
+        window.generateNewChallenge = generateRandomTarget;
 
         function updateEngineValues() {
             const fSigned = mirrorType === 'cekung' ? f : -f;
@@ -308,7 +318,17 @@
         }
 
         window.addEventListener('resize', resizeCanvas);
-        window.onload = function() { resizeCanvas(); generateNewChallenge(); };
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnRandom = document.getElementById('btn-random-target');
+            if (btnRandom) {
+                btnRandom.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    generateRandomTarget();
+                });
+            }
+            generateRandomTarget();
+        });
+        window.onload = function() { resizeCanvas(); };
     </script>
 </body>
 </html>

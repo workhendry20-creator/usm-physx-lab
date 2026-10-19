@@ -95,7 +95,7 @@
                         <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Gaya Elektrostatik</span>
                         <span class="text-2xl font-black font-mono tracking-tight"><span id="target-force-display">---</span> N</span>
                     </div>
-                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                    <button id="btn-random-target" onclick="generateRandomTarget()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer relative z-10">
                         Acak Tantangan Baru
                     </button>
                 </div>
@@ -194,20 +194,30 @@
         }
 
         // Fungsi Pembuat Angka Target Secara Acak
-        function generateNewChallenge() {
+        function generateRandomTarget() {
             // Pilih nilai acak yang realistis didapatkan dari kombinasi slider & koordinat pixel
             const randomTargets = [134.81, 53.93, 269.63, 67.41, 120.55, 337.03, 84.26];
-            targetForce = randomTargets[Math.floor(Math.random() * randomTargets.length)];
+            let newTarget;
+            do {
+                newTarget = randomTargets[Math.floor(Math.random() * randomTargets.length)];
+            } while (randomTargets.length > 1 && newTarget === targetForce);
+            targetForce = newTarget;
             
             challengeCompleted = false;
-            document.getElementById('target-force-display').innerText = targetForce.toFixed(2);
+            const display = document.getElementById('target-force-display');
+            if (display) display.innerText = targetForce.toFixed(2);
             
             const badge = document.getElementById('challenge-status');
-            badge.innerText = "Mencari";
-            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            if (badge) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
             
             updateEngineValues();
         }
+        const generateNewChallenge = generateRandomTarget;
+        window.generateRandomTarget = generateRandomTarget;
+        window.generateNewChallenge = generateRandomTarget;
 
         function syncInputs(paramId, origin) {
             const rangeInput = document.getElementById(`param-${paramId}`);
@@ -455,6 +465,16 @@
         window.addEventListener('touchend', handleMouseUp);
 
         window.addEventListener('resize', resizeCanvas);
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnRandom = document.getElementById('btn-random-target');
+            if (btnRandom) {
+                btnRandom.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    generateRandomTarget();
+                });
+            }
+            generateRandomTarget();
+        });
         window.onload = function() {
             resizeCanvas();
         };

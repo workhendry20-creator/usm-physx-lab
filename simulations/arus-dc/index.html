@@ -96,7 +96,7 @@
                             <span class="text-[9px] uppercase font-bold tracking-widest text-emerald-300 block mb-0.5">Target Kuat Arus (I)</span>
                             <span id="targetCurrentDisplay" class="text-2xl font-black tracking-tight">1.50 A</span>
                         </div>
-                        <button onclick="generateNewTarget()" class="w-full py-2 bg-white text-emerald-700 text-xs font-bold rounded-lg shadow-sm hover:bg-emerald-50 transition-all">
+                        <button id="btn-random-target" onclick="generateRandomTarget()" class="w-full py-2 bg-white text-emerald-700 text-xs font-bold rounded-lg shadow-sm hover:bg-emerald-50 transition-all cursor-pointer relative z-10">
                             Acak Target Baru
                         </button>
                     </div>
@@ -279,14 +279,25 @@
             checkChallengeMatch();
         }
 
-        function generateNewTarget() {
+        function generateRandomTarget() {
             const randomTargets = [0.30, 0.50, 0.60, 0.90, 1.00, 1.20, 1.50, 2.00, 2.40, 3.00, 4.00];
-            targetCurrent = randomTargets[Math.floor(Math.random() * randomTargets.length)];
-            targetCurrentDisplay.innerText = targetCurrent.toFixed(2) + ' A';
-            challengeStatus.innerText = "Mencari";
-            challengeStatus.className = "bg-emerald-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider";
+            let newTarget;
+            do {
+                newTarget = randomTargets[Math.floor(Math.random() * randomTargets.length)];
+            } while (randomTargets.length > 1 && newTarget === targetCurrent);
+            targetCurrent = newTarget;
+            if (targetCurrentDisplay) targetCurrentDisplay.innerText = targetCurrent.toFixed(2) + ' A';
+            if (challengeStatus) {
+                challengeStatus.innerText = "Mencari";
+                challengeStatus.className = "bg-emerald-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider";
+            }
             checkChallengeMatch();
         }
+        const generateNewTarget = generateRandomTarget;
+        const generateNewChallenge = generateRandomTarget;
+        window.generateRandomTarget = generateRandomTarget;
+        window.generateNewTarget = generateRandomTarget;
+        window.generateNewChallenge = generateRandomTarget;
 
         function checkChallengeMatch() {
             if (Math.abs(current - targetCurrent) < 0.02 && isSwitchClosed && !isShortCircuit) {
@@ -430,8 +441,18 @@
             requestAnimationFrame(animate);
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnRandom = document.getElementById('btn-random-target');
+            if (btnRandom) {
+                btnRandom.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    generateRandomTarget();
+                });
+            }
+            generateRandomTarget();
+        });
         calculateOhm();
-        generateNewTarget();
+        generateRandomTarget();
         animate();
     </script>
 </body>

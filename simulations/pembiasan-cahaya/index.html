@@ -88,7 +88,7 @@
                         <span class="text-[10px] block text-cyan-200 uppercase font-bold tracking-wider">Target Sudut Bias (θ₂)</span>
                         <span class="text-2xl font-black font-mono tracking-tight"><span id="target-angle-display">---</span>°</span>
                     </div>
-                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-cyan-50 text-[#06B6D4] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                    <button id="btn-random-target" onclick="generateRandomTarget()" class="w-full py-2 bg-white hover:bg-cyan-50 text-[#06B6D4] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer relative z-10">
                         Acak Tantangan Baru
                     </button>
                 </div>
@@ -172,19 +172,29 @@
             updateEngineValues();
         }
 
-        function generateNewChallenge() {
+        function generateRandomTarget() {
             const randomTargets = [32.0, 19.2, 45.0, 28.1, 22.1, 30.0, 15.6];
-            targetAngle = randomTargets[Math.floor(Math.random() * randomTargets.length)];
+            let newTarget;
+            do {
+                newTarget = randomTargets[Math.floor(Math.random() * randomTargets.length)];
+            } while (randomTargets.length > 1 && newTarget === targetAngle);
+            targetAngle = newTarget;
             
             challengeCompleted = false;
-            document.getElementById('target-angle-display').innerText = targetAngle.toFixed(1);
+            const display = document.getElementById('target-angle-display');
+            if (display) display.innerText = targetAngle.toFixed(1);
             
             const badge = document.getElementById('challenge-status');
-            badge.innerText = "Mencari";
-            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            if (badge) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
             
             updateEngineValues();
         }
+        const generateNewChallenge = generateRandomTarget;
+        window.generateRandomTarget = generateRandomTarget;
+        window.generateNewChallenge = generateRandomTarget;
 
         function changeMedium(id) {
             if (id === '1') n1 = parseFloat(document.getElementById('select-m1').value);
@@ -398,6 +408,16 @@
         window.addEventListener('touchend', () => { isDraggingLaser = false; });
 
         window.addEventListener('resize', resizeCanvas);
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnRandom = document.getElementById('btn-random-target');
+            if (btnRandom) {
+                btnRandom.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    generateRandomTarget();
+                });
+            }
+            generateRandomTarget();
+        });
         window.onload = function() { resizeCanvas(); };
     </script>
 </body>

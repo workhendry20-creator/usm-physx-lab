@@ -87,7 +87,7 @@
                         <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Jari-Jari (r)</span>
                         <span class="text-2xl font-black font-mono tracking-tight"><span id="target-r-display">---</span> m</span>
                     </div>
-                    <button onclick="generateNewChallenge()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                    <button id="btn-random-target" onclick="generateRandomTarget()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer relative z-10">
                         Acak Target Baru
                     </button>
                 </div>
@@ -187,16 +187,26 @@
             updateEngineValues();
         }
 
-        function generateNewChallenge() {
+        function generateRandomTarget() {
             const targets = [4.5, 6.0, 7.5, 9.0, 11.0, 13.5];
-            targetRadius = targets[Math.floor(Math.random() * targets.length)];
+            let newTarget;
+            do {
+                newTarget = targets[Math.floor(Math.random() * targets.length)];
+            } while (targets.length > 1 && newTarget === targetRadius);
+            targetRadius = newTarget;
             challengeCompleted = false;
-            document.getElementById('target-r-display').innerText = targetRadius.toFixed(1);
+            const display = document.getElementById('target-r-display');
+            if (display) display.innerText = targetRadius.toFixed(1);
             const badge = document.getElementById('challenge-status');
-            badge.innerText = "Mencari";
-            badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            if (badge) {
+                badge.innerText = "Mencari";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase";
+            }
             updateEngineValues();
         }
+        const generateNewChallenge = generateRandomTarget;
+        window.generateRandomTarget = generateRandomTarget;
+        window.generateNewChallenge = generateRandomTarget;
 
         function updateEngineValues() {
             const vReal = vInput * 1e6;
@@ -261,7 +271,17 @@
         }
 
         window.addEventListener('resize', resizeCanvas);
-        window.onload = function() { resizeCanvas(); generateNewChallenge(); animate(); };
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnRandom = document.getElementById('btn-random-target');
+            if (btnRandom) {
+                btnRandom.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    generateRandomTarget();
+                });
+            }
+            generateRandomTarget();
+        });
+        window.onload = function() { resizeCanvas(); animate(); };
     </script>
 </body>
 </html>
