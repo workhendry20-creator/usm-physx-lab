@@ -57,8 +57,8 @@
                         <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Laboratorium Akustik Doppler</h2>
                     </div>
                     <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
-                        <div>Frek. Sumber (f_s): <span id="m-fs" class="text-indigo-600 font-bold">400</span> Hz</div>
-                        <div>Frek. Pendengar (f_p): <span id="m-fp" class="text-rose-600 font-bold">400</span> Hz</div>
+                        <div>Frek. Sumber (f<sub>s</sub>): <span id="m-fs" class="text-indigo-600 font-bold">400</span> Hz</div>
+                        <div>Frek. Pendengar (f<sub>p</sub>): <span id="m-fp" class="text-rose-600 font-bold">400</span> Hz</div>
                     </div>
                 </div>
 
@@ -80,7 +80,16 @@
                 </div>
 
                 <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
-                    <div>Persamaan Doppler Penuh: <span class="font-mono font-bold text-indigo-600">f_p = f_s · (v ± v_p) / (v ± v_s)</span></div>
+                    <div class="flex items-center gap-2">
+                        <span>Persamaan Doppler:</span>
+                        <div class="inline-flex items-center gap-1 font-serif text-slate-800 dark:text-slate-200">
+                            <span>f<sub>p</sub> = f<sub>s</sub> ·</span>
+                            <div class="inline-flex flex-col items-center align-middle px-1 border-l-0">
+                                <span class="border-b border-current px-1 text-xs sm:text-sm font-semibold">v ± v<sub>p</sub></span>
+                                <span class="px-1 text-xs sm:text-sm font-semibold">v ∓ v<sub>s</sub></span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Status Gelombang: <span id="wave-status" class="text-emerald-500 font-bold">Konsetris (Statis)</span></div>
                 </div>
             </div>
@@ -95,7 +104,7 @@
                     </div>
                     <p class="text-xs text-indigo-100 leading-relaxed mb-3">Sesuaikan parameter kecepatan agar frekuensi yang didengar pengamat tepat pada target:</p>
                     <div class="bg-black/20 rounded-xl p-3 text-center mb-3 border border-white/10">
-                        <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Frekuensi Pendengar (f_p)</span>
+                        <span class="text-[10px] block text-indigo-200 uppercase font-bold tracking-wider">Target Frekuensi Pendengar (f<sub>p</sub>)</span>
                         <span class="text-2xl font-black font-mono tracking-tight"><span id="target-fp-display">---</span> Hz</span>
                     </div>
                     <button id="btn-random-target" onclick="generateRandomTarget()" class="w-full py-2 bg-white hover:bg-indigo-50 text-[#6366F1] text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer relative z-10">
@@ -110,7 +119,7 @@
                     
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Sumber ($v_s$)</label>
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Sumber (v<sub>s</sub>)</label>
                             <div class="flex items-center space-x-1 bg-indigo-50 border border-indigo-100 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-vs" min="-400" max="400" value="40" class="w-12 bg-transparent text-xs font-bold font-mono text-indigo-600 focus:outline-none text-right" oninput="syncInputs('vs', 'num')">
                                 <span class="text-[10px] font-bold text-indigo-400 font-mono">m/s</span>
@@ -126,7 +135,7 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Pendengar ($v_p$)</label>
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kecepatan Pendengar (v<sub>p</sub>)</label>
                             <div class="flex items-center space-x-1 bg-emerald-50 border border-emerald-100 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-vp" min="-150" max="150" value="0" class="w-12 bg-transparent text-xs font-bold font-mono text-emerald-600 focus:outline-none text-right" oninput="syncInputs('vp', 'num')">
                                 <span class="text-[10px] font-bold text-emerald-400 font-mono">m/s</span>
@@ -142,7 +151,7 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Frekuensi Dasar ($f_s$)</label>
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Frekuensi Dasar (f<sub>s</sub>)</label>
                             <div class="flex items-center space-x-1 bg-rose-50 border border-rose-100 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-fs" min="300" max="600" step="10" value="400" class="w-12 bg-transparent text-xs font-bold font-mono text-rose-600 focus:outline-none text-right" oninput="syncInputs('fs', 'num')">
                                 <span class="text-[10px] font-bold text-rose-400 font-mono">Hz</span>

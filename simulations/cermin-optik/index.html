@@ -56,7 +56,7 @@
                         <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Diagram Sinar Istimewa</h2>
                     </div>
                     <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
-                        <div>Jarak Bayangan (s'): <span id="m-si" class="text-indigo-600 font-bold">0.0</span> cm</div>
+                        <div>Jarak Bayangan (s′): <span id="m-si" class="text-indigo-600 font-bold">0.0</span> cm</div>
                         <div>Perbesaran (M): <span id="m-mag" class="text-cyan-600 font-bold">0.0</span>×</div>
                     </div>
                 </div>
@@ -69,7 +69,25 @@
                 </div>
 
                 <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
-                    <div>Persamaan Cermin: <span class="font-mono font-bold">1/f = 1/s + 1/s'</span></div>
+                    <div class="flex items-center gap-2">
+                        <span>Persamaan Cermin:</span>
+                        <div class="inline-flex items-center gap-1 font-serif text-slate-800 dark:text-slate-200">
+                            <div class="inline-flex flex-col items-center align-middle px-1 border-l-0">
+                                <span class="border-b border-current px-1 text-xs sm:text-sm font-semibold">1</span>
+                                <span class="px-1 text-xs sm:text-sm font-semibold">f</span>
+                            </div>
+                            <span>=</span>
+                            <div class="inline-flex flex-col items-center align-middle px-1 border-l-0">
+                                <span class="border-b border-current px-1 text-xs sm:text-sm font-semibold">1</span>
+                                <span class="px-1 text-xs sm:text-sm font-semibold">s</span>
+                            </div>
+                            <span>+</span>
+                            <div class="inline-flex flex-col items-center align-middle px-1 border-l-0">
+                                <span class="border-b border-current px-1 text-xs sm:text-sm font-semibold">1</span>
+                                <span class="px-1 text-xs sm:text-sm font-semibold">s′</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Sifat Bayangan: <span id="image-status" class="text-emerald-500 font-bold">-</span></div>
                 </div>
             </div>

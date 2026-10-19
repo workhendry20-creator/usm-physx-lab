@@ -56,7 +56,7 @@
                         <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Bejana Fluida & Benda Uji</h2>
                     </div>
                     <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
-                        <div>Gaya Apung (F_a): <span id="m-fa" class="text-cyan-600 font-bold">0.00</span> N</div>
+                        <div>Gaya Apung (F<sub>a</sub>): <span id="m-fa" class="text-cyan-600 font-bold">0.00</span> N</div>
                         <div>Terendam: <span id="m-submerged" class="text-indigo-600 font-bold">0</span>%</div>
                     </div>
                 </div>
@@ -66,7 +66,22 @@
                 </div>
 
                 <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
-                    <div>Persamaan: <span class="font-mono font-bold">F_a = ρ_fluida · g · V_terendam</span></div>
+                    <div class="flex items-center gap-2">
+                        <span>Hukum Archimedes:</span>
+                        <div class="inline-flex items-center gap-1 font-serif text-slate-800 dark:text-slate-200">
+                            <span>F<sub>a</sub> = ρ<sub>f</sub> · g · V<sub>terendam</sub></span>
+                            <span class="mx-1 text-slate-400 font-sans text-xs">|</span>
+                            <div class="inline-flex flex-col items-center align-middle px-1 border-l-0">
+                                <span class="border-b border-current px-1 text-xs sm:text-sm font-semibold">V<sub>terendam</sub></span>
+                                <span class="px-1 text-xs sm:text-sm font-semibold">V<sub>total</sub></span>
+                            </div>
+                            <span>=</span>
+                            <div class="inline-flex flex-col items-center align-middle px-1 border-l-0">
+                                <span class="border-b border-current px-1 text-xs sm:text-sm font-semibold">ρ<sub>b</sub></span>
+                                <span class="px-1 text-xs sm:text-sm font-semibold">ρ<sub>f</sub></span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Kondisi: <span id="float-status" class="text-emerald-500 font-bold">Terapung</span></div>
                 </div>
             </div>
@@ -96,7 +111,7 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Jenis Benda (ρ_b)</label>
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Jenis Benda (ρ<sub>b</sub>)</label>
                             <div class="flex items-center space-x-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-800 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-rhoB" min="100" max="2000" step="10" value="600" class="w-14 bg-transparent text-xs font-bold font-mono text-amber-600 focus:outline-none text-right" oninput="syncInputs('rhoB', 'num')">
                                 <span class="text-[10px] font-bold text-amber-400 font-mono">kg/m³</span>
@@ -111,7 +126,7 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Jenis Fluida (ρ_f)</label>
+                            <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Massa Jenis Fluida (ρ<sub>f</sub>)</label>
                             <div class="flex items-center space-x-1 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800 rounded px-1.5 py-0.5">
                                 <input type="number" id="num-rhoF" min="800" max="1200" step="10" value="1000" class="w-14 bg-transparent text-xs font-bold font-mono text-cyan-600 focus:outline-none text-right" oninput="syncInputs('rhoF', 'num')">
                                 <span class="text-[10px] font-bold text-cyan-400 font-mono">kg/m³</span>

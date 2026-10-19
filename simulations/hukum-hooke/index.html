@@ -59,7 +59,7 @@
                     <div class="flex items-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
                         <div>Gaya (F): <span id="m-force" class="text-rose-600 font-bold">0.00</span> N</div>
                         <div>Konstanta (k): <span id="m-k" class="text-indigo-600 font-bold">200</span> N/m</div>
-                        <div>Pertambahan Δx: <span id="m-dx" class="text-amber-600 font-bold">0.00</span> m</div>
+                        <div>Pertambahan (Δx): <span id="m-dx" class="text-amber-600 font-bold">0.00</span> m</div>
                     </div>
                 </div>
 
@@ -81,7 +81,18 @@
                 </div>
 
                 <div class="flex items-center justify-between mt-4 bg-slate-50 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 text-xs text-slate-500 dark:text-slate-400">
-                    <div>Persamaan Hooke: <span class="font-mono font-bold">F = k · Δx</span></div>
+                    <div class="flex items-center gap-2">
+                        <span>Hukum Hooke:</span>
+                        <div class="inline-flex items-center gap-1 font-serif text-slate-800 dark:text-slate-200">
+                            <span>Δx =</span>
+                            <div class="inline-flex flex-col items-center align-middle px-1 border-l-0">
+                                <span class="border-b border-current px-1 text-xs sm:text-sm font-semibold">F</span>
+                                <span class="px-1 text-xs sm:text-sm font-semibold">k</span>
+                            </div>
+                            <span class="mx-1 text-slate-400 font-sans text-xs">|</span>
+                            <span class="text-xs font-mono font-bold">F = k · Δx</span>
+                        </div>
+                    </div>
                     <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Status Pegas: <span id="spring-status" class="text-emerald-500 font-bold">Aman (Elastis)</span></div>
                 </div>
             </div>
